@@ -1,0 +1,78 @@
+version: '3.7'
+
+services:
+    firewall:
+        privileged: true
+        container_name : Firewall
+        build: .
+        cap_add : 
+            - NET_ADMIN 
+        stdin_open: true
+        tty: true
+        networks:
+           lan:
+             ipv4_address: 192.168.100.2
+           dmz:
+             ipv4_address: 192.168.200.2
+        command: /bin/bash
+        sysctls:
+            net.ipv4.conf.all.send_redirects: 0
+            net.ipv4.conf.all.secure_redirects: 0
+            net.ipv4.conf.all.accept_redirects: 0
+
+    client_in_lan:
+        privileged: true
+        container_name : Client_in_LAN
+        build: .
+        cap_add : 
+            - NET_ADMIN
+        depends_on: 
+            - firewall
+        stdin_open: true
+        tty: true
+        networks:
+           lan:
+             ipv4_address: 192.168.100.3
+        command: /bin/bash
+        sysctls:
+            net.ipv4.conf.all.send_redirects: 0
+            net.ipv4.conf.all.secure_redirects: 0 
+            net.ipv4.conf.all.accept_redirects: 0
+
+    server_in_dmz:
+        privileged: true
+        container_name : Server_in_DMZ
+        build: .
+        cap_add : 
+            - NET_ADMIN
+        depends_on: 
+            - firewall
+        stdin_open: true
+        tty: true
+        networks:
+            dmz:
+              ipv4_address: 192.168.200.3
+        command: /bin/bash
+        sysctls:
+            net.ipv4.conf.all.send_redirects: 0
+            net.ipv4.conf.all.secure_redirects: 0 
+            net.ipv4.conf.all.accept_redirects: 0
+        
+
+networks:
+    lan:
+        driver: "bridge"
+        name: lan
+        ipam:
+            config:
+                - 
+                 subnet: 192.168.100.0/24
+                 #gateway: 192.168.100.2
+    dmz:
+        driver: "bridge"
+        name: dmz
+        ipam:
+            config:
+                - 
+                 subnet: 192.168.200.0/24
+                 #gateway: 192.168.200.2
