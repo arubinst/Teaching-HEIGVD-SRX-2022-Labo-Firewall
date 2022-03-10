@@ -281,14 +281,14 @@ On va fournir une route vers l'internet à travers le firewall aux deux réseaux
 ```bash
 nft add table nat
 nft 'add chain nat postrouting { type nat hook postrouting priority 100 ; }'
-nft add rule nat postrouting masquerade
+nft add rule nat postrouting meta oifname "eth0" masquerade
 ```
 
-La dernière commande `nftables` définit une règle dans le tableau NAT qui permet la redirection de ports et donc, l'accès à l'Internet pour les deux autres machines.
+La dernière commande `nftables` définit une règle dans le tableau NAT qui permet la redirection de ports et donc, l'accès à l'Internet pour les deux autres machines à travers l'interface eth0 qui est connectée au WAN.
 
 
 <ol type="a" start="2">
-  <li>Quelle est l'utilité des de la première commande ? 
+  <li>Quelle est l'utilité de la première commande ? 
   </li>                                  
 </ol> 
 
@@ -299,7 +299,7 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 ---
 
 <ol type="a" start="3">
-  <li>Quelle est l'utilité des de la deuxième commande ? Expliquer chacun des paramètres.
+  <li>Quelle est l'utilité de la deuxième commande ? Expliquer chacun des paramètres.
   </li>                                  
 </ol> 
 
@@ -308,7 +308,6 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 **Réponse :**
 
 ---
-
 
 
 Cette autre commande démarre le service SSH du serveur :
