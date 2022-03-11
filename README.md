@@ -131,13 +131,19 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 | Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
 | :---:             | :---:                  | :---:| :------: | :------: | :----: |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
+| *                 | *                      | Any  | Any      | Any      | Drop   |
+| 192.168.100.0/24  | Interface WAN          | TCP  | Any      | 53       | Accept |
+| 192.168.100.0/24  | Interface WAN          | UDP  | Any      | 53       | Accept |
+| 192.168.100.0/24  | Interface WAN          | ICMP |          |          | Accept |
+| 192.168.100.0/24  | 192.168.200.0/24       | ICMP |          |          | Accept |
+| 192.168.200.0/24  | 192.168.100.0/24       | ICMP |          |          | Accept |
+| 192.168.100.0/24  | Interface WAN          | TCP  | Any      | 80       | Accept |
+| 192.168.100.0/24  | Interface WAN          | TCP  | Any      | 8080     | Accept |
+| 192.168.100.0/24  | Interface WAN          | TCP  | Any      | 443      | Accept |
+| 192.168.100.0/24  | 192.168.200.0/24       | TCP  | Any      | 80       | Accept |
+| Interface WAN     | 192.168.200.0/24       | TCP  | Any      | 80       | Accept |
+| 192.168.100.0/24  | 192.168.200.0/24       | TCP  | Any      | 22       | Accept |
+| 192.168.100.0/24  | 192.168.100.2          | TCP  | Any      | 22       | Accept |
 
 ---
 
