@@ -359,6 +359,25 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 ---
 
 **Réponse :**
+On ajoute simplement les règles dans le fichier "/etc/nftables.conf" ce fichier est lu lors du démarrage du service nft.
+
+On remarque qu'un fichier est déja existant avec le Shebang suivant :
+```bash
+#!/usr/sbin/nft -f
+```
+suivi de la commande :
+
+```bash
+flush ruleset
+```
+
+donc quand on a fini d'ajouter une table / chain / rule : on rajoute la table modifée dans ce fichier.
+
+Exemple:
+On vient de modifier la table "nat" on souhaite la rendre persistente :
+```bash
+nft list table nat >> /etc/nftables.conf 
+```
 
 ---
 
