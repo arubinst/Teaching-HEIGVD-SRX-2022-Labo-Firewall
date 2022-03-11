@@ -263,8 +263,14 @@ ping 192.168.100.3
 ---
 
 **LIVRABLES : captures d'écran des routes des deux machines et de votre nouvelle tentative de ping.**
-![Ping pass](figures/ping_pass.png) 
 
+![serverDMZ_route](figures/serverDMZ_route.png) 
+![ping_server_to_client](figures/ping_server_to_client.png)
+*serveur DMZ vers le client*
+
+![client_route](figures/client_route.png) 
+![ping_client_to_server](figures/ping_client_to_server.png)
+*client vers le serveur DMZ*
 ---
 
 La communication est maintenant possible entre les deux machines. Pourtant, si vous essayez de communiquer depuis le client ou le serveur vers l'Internet, ça ne devrait pas encore fonctionner sans une manipulation supplémentaire au niveau du firewall ou sans un service de redirection ICMP. Vous pouvez le vérifier avec un ping depuis le client ou le serveur vers une adresse Internet.
