@@ -38,7 +38,7 @@ Vous pouvez répondre aux questions en modifiant directement votre clone du READ
 
 ## Introduction
 
-L’objectif principal de ce laboratoire est de familiariser les étudiants avec les pares-feu et en particulier avec `netfilter` et `nftables`, le successeur du vénérable `iptables`. 
+L’objectif principal de ce laboratoire est de familiariser les étudiants avec les pares-feu et en particulier avec `netfilter` et `nftables`, le successeur du vénérable `iptables`.
 En premier, une partie théorique permet d’approfondir la rédaction de règles de filtrage.
 
 Par la suite, la mise en pratique d’un pare-feu permettra d’approfondir la configuration et l’utilisation d’un pare-feu ainsi que la compréhension des règles.
@@ -51,30 +51,30 @@ La documentation contient aussi un excellent résumé pour "[apprendre nftables 
 
 Ce texte se réfère au laboratoire « Pare-feu » à suivre dans le cadre du cours Sécurité des Réseaux, 2022, version 8.0.  Au cours du temps, il a été rédigé, modifié et amélioré par les co-auteurs suivants : Gilles-Etienne Vallat, Alexandre Délez, Olivia Manz, Patrick Mast, Christian Buchs, Sylvain Pasini, Vincent Pezzi, Yohan Martini, Ioana Carlson, Abraham Rubinstein et Frédéric Saam.
 
-## Echéance 
+## Echéance
 
-Ce travail devra être rendu le dimanche après la fin de la 2ème séance de laboratoire, soit au plus tard, **le 01 avril 2021, à 23h59.**
+Ce travail devra être rendu le dimanche après la fin de la 2ème séance de laboratoire, soit au plus tard, **le 18 Mars 2022, à 23h59.**
 
 # Réseaux cible
 
-## Topologie 
+## Topologie
 
 Durant ce laboratoire, nous allons utiliser une seule topologie réseau :
 
 ![Topologie du réseau virtualisé](figures/Topologie.png)
 
-Notre réseau local (LAN) sera connecté à Internet (WAN) au travers d’un pare-feu. Nous placerons un serveur Web en zone démilitarisée (DMZ). 
+Notre réseau local (LAN) sera connecté à Internet (WAN) au travers d’un pare-feu. Nous placerons un serveur Web en zone démilitarisée (DMZ).
 
-Par conséquent, nous distinguons clairement trois sous-réseaux : 
+Par conséquent, nous distinguons clairement trois sous-réseaux :
 
 - Internet (WAN), le réseau de l'école ou votre propre réseau servira de WAN,
 - le réseau local (LAN),
-- la zone démilitarisée (DMZ). 
+- la zone démilitarisée (DMZ).
 
 Ce réseau sera créé de manière virtuelle. Il sera simulé sur un seul ordinateur utilisant trois conteneurs Docker basés sur le système d’exploitation Ubuntu :
 
 - La première machine, Firewall, fait office de pare-feu. Elle comporte trois interfaces réseaux. Afin que ce poste puisse servir de pare-feu dans notre réseau, nftables sera utilisé.
-- La seconde machine, Client\_In\_LAN, fait office de client dans le réseau local (LAN). 
+- La seconde machine, Client\_In\_LAN, fait office de client dans le réseau local (LAN).
 - La dernière machine, Server\_In\_DMZ, fait office de serveur Web en (DMZ).
 
 Nous allons utiliser les trois interfaces réseaux de la machine Firewall afin de pouvoir connecter le LAN et la DMZ à Internet (WAN). Les machines Client\_In\_LAN et Server\_In\_DMZ comportent chacune une interfaces réseau eth0.
@@ -120,7 +120,7 @@ Pour établir la table de filtrage, voici les **conditions à respecter** dans l
   </li>                                  
 </ol>
 
-_Pour l'autorisation d'accès (**Accept**), il s'agit d'être le plus précis possible lors de la définition de la source et la destination : si l'accès ne concerne qu'une seule machine (ou un groupe), il faut préciser son adresse IP ou son nom (si vous ne pouvez pas encore la déterminer), et non la zone. 
+_Pour l'autorisation d'accès (**Accept**), il s'agit d'être le plus précis possible lors de la définition de la source et la destination : si l'accès ne concerne qu'une seule machine (ou un groupe), il faut préciser son adresse IP ou son nom (si vous ne pouvez pas encore la déterminer), et non la zone.
 Appliquer le principe inverse (être le plus large possible) lorsqu'il faut refuser (**Drop**) une connexion._
 
 _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec son masque (par exemple, "/24" correspond à 255.255.255.0) ou l'interface réseau (par exemple : "interface WAN") si l'adresse du sous-réseau ne peut pas être déterminé avec précision._
@@ -171,7 +171,7 @@ Nous allons commencer par lancer docker-compose. Il suffit de taper la commande 
 ```bash
 docker-compose up --detach
 ```
-Le téléchargement et génération d'images prend peu de temps. 
+Le téléchargement et génération d'images prend peu de temps.
 
 Vous pouvez vérifier que les réseaux ont été créés avec la commande `docker network ls`. Un réseau `lan` et un réseau `dmz` devraient se trouver dans la liste.
 
@@ -228,7 +228,7 @@ Il faut donc définir le Firewall comme passerelle par défaut pour le client da
 Dans un terminal de votre client, taper les commandes suivantes :
 
 ```bash
-ip route del default 
+ip route del default
 ip route add default via 192.168.100.2
 ```
 
@@ -237,7 +237,7 @@ ip route add default via 192.168.100.2
 Dans un terminal de votre serveur dans DMZ, taper les commandes suivantes :
 
 ```bash
-ip route del default 
+ip route del default
 ip route add default via 192.168.200.2
 
 service nginx start
@@ -258,7 +258,7 @@ ping 192.168.100.3
 
 ---
 
-La communication est maintenant possible entre les deux machines. Pourtant, si vous essayez de communiquer depuis le client ou le serveur vers l'Internet, ça ne devrait pas encore fonctionner sans une manipulation supplémentaire au niveau du firewall ou sans un service de redirection ICMP. Vous pouvez le vérifier avec un ping depuis le client ou le serveur vers une adresse Internet. 
+La communication est maintenant possible entre les deux machines. Pourtant, si vous essayez de communiquer depuis le client ou le serveur vers l'Internet, ça ne devrait pas encore fonctionner sans une manipulation supplémentaire au niveau du firewall ou sans un service de redirection ICMP. Vous pouvez le vérifier avec un ping depuis le client ou le serveur vers une adresse Internet.
 
 Par exemple :
 
@@ -288,9 +288,9 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 
 
 <ol type="a" start="2">
-  <li>Quelle est l'utilité de la première commande ? 
+  <li>Quelle est l'utilité de la première commande ?
   </li>                                  
-</ol> 
+</ol>
 
 ---
 
@@ -301,7 +301,7 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 <ol type="a" start="3">
   <li>Quelle est l'utilité de la deuxième commande ? Expliquer chacun des paramètres.
   </li>                                  
-</ol> 
+</ol>
 
 ---
 
@@ -325,19 +325,19 @@ Vérifiez que la connexion à l'Internet est maintenant possible depuis les deux
 
 Une règle permet d’autoriser ou d’interdire une connexion. `nftables` met à disposition plusieurs options pour la création de ces règles. En particulier, on peut définir les politiques par défaut, des règles de filtrage pour le firewall ou des fonctionnalités de translation d’adresses (nat). **Vous devriez configurer vos politiques en premier.**
 
-`nftables` vous permet la configuration de pare-feux avec et sans état. **Pour ce laboratoire, vous avez le choix d'utiliser le mode avec état, sans état ou une combinaison des deux**. 
+`nftables` vous permet la configuration de pare-feux avec et sans état. **Pour ce laboratoire, vous avez le choix d'utiliser le mode avec état, sans état ou une combinaison des deux**.
 
 Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la théorie et appuyez-vous sur des informations trouvées sur Internet pour traduire votre tableau de règles de filtrage en commandes `nftables`. Les règles prennent effet immédiatement après avoir appuyé sur &lt;enter>\. Vous pouvez donc les tester au fur et à mesure que vous les configurez.
 
 
 ## Sauvegarde et récupération des règles
 
-**Important** : Les règles de filtrage définies avec `nftables` ne sont pas persistantes (par défaut, elles sont perdues après chaque redémarrage de la machine firewall). Il existe pourtant de manières de sauvegarder votre config. 
+**Important** : Les règles de filtrage définies avec `nftables` ne sont pas persistantes (par défaut, elles sont perdues après chaque redémarrage de la machine firewall). Il existe pourtant de manières de sauvegarder votre config.
 
 <ol type="a" start="4">
   <li>Faire une recherche et expliquer une méthode de rendre la config de votre firewall persistente.
   </li>                                  
-</ol> 
+</ol>
 
 ---
 
@@ -352,7 +352,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 <ol type="a" start="5">
   <li>Quelle commande affiche toutes les règles de filtrage en vigueur ?
   </li>                                  
-</ol> 
+</ol>
 
 ---
 
@@ -364,7 +364,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 <ol type="a" start="6">
   <li>Quelle commande est utilisée pour effacer toutes les règles de filtrage en vigueur ?
   </li>                                  
-</ol> 
+</ol>
 
 ---
 
@@ -376,7 +376,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 <ol type="a" start="7">
   <li>Quelle commande est utilisée pour effacer les chaines ?
   </li>                                  
-</ol> 
+</ol>
 
 ---
 
@@ -389,7 +389,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ## Tests des connections et exemple de l'application d'une règle
 
-Pour chaque manipulation, il est important de **garder les règles déjà créées**, les nouvelles sont ajoutées aux existantes. 
+Pour chaque manipulation, il est important de **garder les règles déjà créées**, les nouvelles sont ajoutées aux existantes.
 
 Pour commencer sur une base fonctionnelle, nous allons configurer le pare-feu pour accepter le **ping** dans certains cas. Cela va permettre de tester la connectivité du réseau.
 
@@ -412,7 +412,7 @@ LIVRABLE : Commandes nftables
 ### Questions
 
 <ol type="a" start="8">
-  <li>Afin de tester la connexion entre le client (Client_in_LAN) et le WAN, tapez la commande suivante depuis le client : 
+  <li>Afin de tester la connexion entre le client (Client_in_LAN) et le WAN, tapez la commande suivante depuis le client :
   </li>                                  
 </ol>
 
@@ -434,7 +434,7 @@ traceroute 8.8.8.8
 ---
 
 <ol type="a" start="9">
-  <li>Testez ensuite toutes les règles, depuis le Client_in_LAN puis depuis le serveur Web (Server_in_DMZ) et remplir le tableau suivant : 
+  <li>Testez ensuite toutes les règles, depuis le Client_in_LAN puis depuis le serveur Web (Server_in_DMZ) et remplir le tableau suivant :
   </li>                                  
 </ol>
 
@@ -458,7 +458,7 @@ traceroute 8.8.8.8
 ## Règles pour le protocole DNS
 
 <ol type="a" start="10">
-  <li>Si un ping est effectué sur un serveur externe en utilisant en argument un nom DNS, le client ne pourra pas le résoudre. Le démontrer à l'aide d'une capture, par exemple avec la commande suivante : 
+  <li>Si un ping est effectué sur un serveur externe en utilisant en argument un nom DNS, le client ne pourra pas le résoudre. Le démontrer à l'aide d'une capture, par exemple avec la commande suivante :
   </li>                                  
 </ol>
 
@@ -487,7 +487,7 @@ LIVRABLE : Commandes nftables
 ---
 
 <ol type="a" start="11">
-  <li>Tester en réitérant la commande ping sur le serveur de test (Google ou autre) : 
+  <li>Tester en réitérant la commande ping sur le serveur de test (Google ou autre) :
   </li>                                  
 </ol>
 
@@ -498,7 +498,7 @@ LIVRABLE : Commandes nftables
 ---
 
 <ol type="a" start="12">
-  <li>Remarques (sur le message du premier ping)? 
+  <li>Remarques (sur le message du premier ping)?
   </li>                                  
 </ol>
 
@@ -542,7 +542,7 @@ LIVRABLE : Commandes nftables
 ---
 
 <ol type="a" start="13">
-  <li>Tester l’accès à ce serveur depuis le LAN utilisant utilisant wget (ne pas oublier les captures d'écran). 
+  <li>Tester l’accès à ce serveur depuis le LAN utilisant utilisant wget (ne pas oublier les captures d'écran).
   </li>                                  
 </ol>
 
@@ -556,7 +556,7 @@ LIVRABLE : Commandes nftables
 ## Règles pour le protocole ssh
 
 <ol type="a" start="14">
-  <li>Créer et appliquer la règle adéquate pour que les <b>conditions 6 et 7 du cahier des charges</b> soient respectées. 
+  <li>Créer et appliquer la règle adéquate pour que les <b>conditions 6 et 7 du cahier des charges</b> soient respectées.
   </li>                                  
 </ol>
 
@@ -583,7 +583,7 @@ ssh root@192.168.200.3
 ---
 
 <ol type="a" start="15">
-  <li>Expliquer l'utilité de <b>ssh</b> sur un serveur. 
+  <li>Expliquer l'utilité de <b>ssh</b> sur un serveur.
   </li>                                  
 </ol>
 
@@ -595,7 +595,7 @@ ssh root@192.168.200.3
 ---
 
 <ol type="a" start="16">
-  <li>En général, à quoi faut-il particulièrement faire attention lors de l'écriture des règles du pare-feu pour ce type de connexion ? 
+  <li>En général, à quoi faut-il particulièrement faire attention lors de l'écriture des règles du pare-feu pour ce type de connexion ?
   </li>                                  
 </ol>
 
