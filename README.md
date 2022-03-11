@@ -129,15 +129,23 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 **LIVRABLE : Remplir le tableau**
 
-| Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
-| :---:             | :---:                  | :---:| :------: | :------: | :----: |
+| Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action | Commentaire |
+| :---:             | :---:                  | :---:| :------: | :------: | :----: | :---------- |
+| *                 | *                      | *    | *        | *        | DROP   | Bloque tout par défaut |
+| 192.168.100.0/24  | *                      | UDP  | *        | 53       | ACCEPT | DNS LAN -> WAN |
+| 192.168.100.0/24  | *                      | TCP  | *        | 53       | ACCEPT | DNS LAN -> WAN |
+| 192.168.100.0/24  | *                      | ICMP | *        | *        | ACCEPT | PING LAN -> * |
+| 192.168.200.0/24  | 192.168.100.0/24       | ICMP | *        | *        | ACCEPT | PING DMZ -> LAN |
+| 192.168.100.0/24  | *                      | TCP  | *        | 80       | ACCEPT | HTTP LAN -> * |
+| 192.168.100.0/24  | *                      | TCP  | *        | 8080     | ACCEPT | HTTP LAN -> * |
+| 192.168.100.0/24  | *                      | TCP  | *        | 443      | ACCEPT | HTTPS LAN -> * |
+| *                 | 192.168.200.0/24       | TCP  | *        | 80       | ACCEPT | HTTP * -> DMZ |
+| 192.168.100.0/24  | 192.168.200.0/24       | TCP  | *        | 22       | ACCEPT | SSH LAN -> DMZ |
+| 192.168.100.0/24  | 192.168.100.2          | TCP  | *        | 22       | ACCEPT | SSH LAN -> FW |
 |                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
+
+* Les réponses sont autorisées en entrées lorsqu'elles ont un lien avec une
+  requête sortant ou font partie d'une connexion établie.(RELATED, ESTABLISHED)
 
 ---
 
