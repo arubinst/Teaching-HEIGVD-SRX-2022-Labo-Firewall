@@ -382,6 +382,11 @@ On vient de modifier la table "nat" on souhaite la rendre persistente :
 nft list table nat >> /etc/nftables.conf 
 ```
 
+Ou plus directement si on a crée différentes règles dans différentes tables on peut procéder ainsi :
+```bash
+nft list ruleset > /etc/nftables.conf
+```
+
 ---
 
 
@@ -396,6 +401,9 @@ nft list table nat >> /etc/nftables.conf
 ---
 
 **Réponse :**
+```bash
+nft list ruleset
+```
 
 ---
 
@@ -408,6 +416,9 @@ nft list table nat >> /etc/nftables.conf
 ---
 
 **Réponse :**
+```bash
+flush ruleset
+```
 
 ---
 
@@ -420,6 +431,15 @@ nft list table nat >> /etc/nftables.conf
 ---
 
 **Réponse :**
+
+pour flush :
+```bash
+nft flush chain mytable mychain
+```
+pour delete :
+```bash
+nft delete chain mytable mychain
+```
 
 ---
 
