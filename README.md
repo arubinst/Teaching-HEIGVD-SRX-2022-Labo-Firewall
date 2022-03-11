@@ -307,6 +307,8 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 
 **Réponse :**
 
+On créé une table qu'on appelle table associée a la famille ip (par défaut). Une table est un conteneur de chains, sets, maps, elle doit être associée a une famille (dans notre cas ip(v4)).
+
 ---
 
 <ol type="a" start="3">
@@ -317,6 +319,10 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 ---
 
 **Réponse :**
+
+On ajoute une chain de type nat a notre table nommée "nat" , on indique que cette chain sera traité en "postrouting" donc après routage du packet, et on lui assigne une priorité (100).
+
+Donc toutes les règles qu'on ajoutera dans cette chain dépendront implicitement de ces paramètres de chain
 
 ---
 
