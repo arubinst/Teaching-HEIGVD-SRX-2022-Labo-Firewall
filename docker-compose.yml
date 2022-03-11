@@ -2,6 +2,7 @@ version: '3.7'
 
 services:
     firewall:
+        hostname: Firewall
         privileged: true
         container_name : Firewall
         build: .
@@ -26,6 +27,7 @@ services:
             net.ipv4.conf.all.accept_redirects: 0
 
     client_in_lan:
+        hostname: Client_LAN
         privileged: true
         container_name : Client_in_LAN
         build: .
@@ -45,6 +47,7 @@ services:
             net.ipv4.conf.all.accept_redirects: 0
 
     server_in_dmz:
+        hostname: DMZ
         privileged: true
         container_name : Server_in_DMZ
         build: .
