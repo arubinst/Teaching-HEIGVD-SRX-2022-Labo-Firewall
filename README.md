@@ -302,6 +302,8 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 
 **Réponse :**
 
+Cette commande permet de créer une nouvelle table appelée _nat_.
+
 ---
 
 <ol type="a" start="3">
@@ -312,6 +314,14 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 ---
 
 **Réponse :**
+
+Cette commande crée une nouvelle chaine à la table _nat_ crée précédamment.
+
+- _nat_: Nom de la table concernée
+- _postrouting_: Nom de la chaine
+- _type nat_: On spécifie le type de chaine à créer, dans notre cas _nat_ pour faire du network address translation
+- _hook postrouting_: On spécifie le type de hook de Netfilter. Pour du NAT on utilise _postrouting_
+- _priority 100_: On spécifie la priorité de la chaine dans Netfilter. La valeur _100_ est la valeur utilisée pour du NAT Source
 
 ---
 
@@ -349,6 +359,17 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 **Réponse :**
 
+On peut créer ou modifier le fichier `/etc/nftables.conf` et y mettre la configuration effectuée auparavant :
+
+```
+table nat filter {
+  chain postrouting {
+    type nat hook postrouting priority 100;
+    oifname "eth0" masquerade
+  }
+}
+```
+
 ---
 
 
@@ -375,6 +396,8 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 ---
 
 **Réponse :**
+
+`sudo nft flush ruleset`
 
 ---
 
