@@ -215,7 +215,9 @@ ping 192.168.200.3
 ```
 ---
 
-**LIVRABLE : capture d'écran de votre tentative de ping.**  
+**LIVRABLE : capture d'écran de votre tentative de ping.**
+
+![ping attempt](livrables/ping_attempt.png)
 
 ---
 
