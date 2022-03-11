@@ -297,6 +297,7 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 ---
 
 **Réponse :**
+Elle permet de créer une nouvelle table appelée "nat"
 
 ---
 
@@ -308,6 +309,12 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 ---
 
 **Réponse :**
+nft add chain : ajoute une nouvelle chaîne à une table
+nat : la chaîne est ajoutée à la table "nat" qu'on vient de créer
+postrouting : le nom de la chaîne qu'on crée est "postrouting"
+type nat : la chaîne est de type NAT (translation d'adresse)
+hook postrouting : la chaîne s'applique aux packets à la fin de leur traitement par netfilter
+priority 100 : 
 
 ---
 
