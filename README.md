@@ -308,7 +308,9 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 
 ---
 
-**Réponse :**
+**Réponse :** 
+
+*Ajoute une nouvelle table appelée "nat"*
 
 ---
 
@@ -320,6 +322,19 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 ---
 
 **Réponse :**
+
+*Crée une nouvelle chaine nomée "postrouting" pour la table "nat". 
+Le paramètre type permet de spécifier si il s'agit d'une route, 
+d'un filtre ou d'un nat. dans notre cas, il s'agit d'un nat.* 
+
+*Le paramètre "hook" permet de déterminer de quelle manière les paquets 
+doivent être traîtés par le kernel. Dans notre cas, nous les traîtons 
+comme des paquets "ip" en après le routage. Les autres options aurait été 
+de traîter les paquets comme "arp", "bridge" ou "netdev".* 
+
+*Le paramètre "priority" permet d'ordonner les chaines en fonction de leur 
+opération. Dans notre cas, la priorité 100 est appliquée, car il s'agît 
+d'un nat en postrouting.*
 
 ---
 
