@@ -129,18 +129,18 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 **LIVRABLE : Remplir le tableau**
 
-| Adresse IP source | Adresse IP destination | Type      | Port src  | Port dst | Action |
-| *                 |  *                     | any       | *         | *        | Drop   |    |
-| 192.168.100.0/24  |  Interface WAN         | UDP / TCP |  53       | 53       | Acccept|
-| 192.168.100.0/24  |  Interface WAN         | ICMP      |   7       |  7       | Accept |
-| 192.168.100.0/24  |  192.168.200.0/24      | ICMP      |   7       |  7       | Accept |
-| 192.168.200.0/24  |  192.168.100.0/24      | ICMP      |   7       |  7       | Accept |
-| 192.168.100.0/24  |  Interface WAN         | HTTP      |  80/8080  | 80/8080  | Accept |
-| 192.168.100.0/24  |  Interface WAN         | HTTPS     | 443       | 443      | Accept |
-| Interface WAN     |  192.168.200.0/24      | HTTP      |  80       | 80       | Accept |
-| 192.168.100.0/24  |  192.168.200.0/24      | HTTP      |  80       | 80       | Accept |
-| 192.168.100.0/24  |  192.168.200.0/24      | SSH       |  22       | 22       | Accept |
-| 192.168.100.0/24  |  192.168.100.2/24      | SSH       |  22       | 22       | Accept |
+| Adresse IP source | Adresse IP destination | Type      | Port src  | Port dst | Action  |
+| *                 |  *                     | any       | *         | *        | Drop    |
+| 192.168.100.0/24  |  Interface WAN         | UDP / TCP |  53       | 53       | Acccept |
+| 192.168.100.0/24  |  Interface WAN         | ICMP      |   7       |  7       | Accept  |
+| 192.168.100.0/24  |  192.168.200.0/24      | ICMP      |   7       |  7       | Accept  |
+| 192.168.200.0/24  |  192.168.100.0/24      | ICMP      |   7       |  7       | Accept  |
+| 192.168.100.0/24  |  Interface WAN         | HTTP      |  80/8080  | 80/8080  | Accept  |
+| 192.168.100.0/24  |  Interface WAN         | HTTPS     | 443       | 443      | Accept  |
+| Interface WAN     |  192.168.200.0/24      | HTTP      |  80       | 80       | Accept  |
+| 192.168.100.0/24  |  192.168.200.0/24      | HTTP      |  80       | 80       | Accept  |
+| 192.168.100.0/24  |  192.168.200.0/24      | SSH       |  22       | 22       | Accept  |
+| 192.168.100.0/24  |  192.168.100.2/24      | SSH       |  22       | 22       | Accept  |
 
 ---
 
