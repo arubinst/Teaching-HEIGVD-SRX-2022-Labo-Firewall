@@ -265,11 +265,11 @@ ping 192.168.100.3
 **LIVRABLES : captures d'écran des routes des deux machines et de votre nouvelle tentative de ping.**
 
 ![serverDMZ_route](figures/serverDMZ_route.png) 
-![ping_server_to_client](figures/ping_server_to_client.png)
+![ping_server_to_client](figures/ping_server_to_client.png)<br>
 *serveur DMZ vers le client*
 
 ![client_route](figures/client_route.png) 
-![ping_client_to_server](figures/ping_client_to_server.png)
+![ping_client_to_server](figures/ping_client_to_server.png)<br>
 *client vers le serveur DMZ*
 ---
 
