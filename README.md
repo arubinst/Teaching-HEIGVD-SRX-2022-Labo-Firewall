@@ -222,7 +222,7 @@ ping 192.168.200.3
 ---
 
 **LIVRABLE : capture d'écran de votre tentative de ping.** 
-![Plan d'adressage](figures/ping_blocked.png) 
+![Ping blocked](figures/ping_blocked.png) 
 
 
 ---
@@ -263,6 +263,7 @@ ping 192.168.100.3
 ---
 
 **LIVRABLES : captures d'écran des routes des deux machines et de votre nouvelle tentative de ping.**
+![Ping pass](figures/ping_pass.png) 
 
 ---
 
