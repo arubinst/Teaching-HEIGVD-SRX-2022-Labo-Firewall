@@ -129,15 +129,18 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 **LIVRABLE : Remplir le tableau**
 
-| Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
-| :---:             | :---:                  | :---:| :------: | :------: | :----: |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
+| Adresse IP source | Adresse IP destination | Type    | Port src | Port dst | Action |
+| :---:             | :---:                  | :-----: | :------: | :------: | :----: |
+| *                 | *                      | any     | *        | *        | Drop   |
+| 192.168.100.0/24  | interface WAN          | TCP/UDP | 53       | 53       | Accept |
+| 192.168.100.0/24  | interface WAN          | ICMP    | -        | -        | Accept |
+| 192.168.100.0/24  | 192.168.200.0/24       | ICMP    | -        | -        | Accept |
+| 192.168.200.0/24  | 192.168.100.0/24       | ICMP    | -        | -        | Accept |
+| 192.168.100.0/24  | interface WAN          | TCP     | *        | 80, 8080 | Accept |
+| 192.168.100.0/24  | interface WAN          | TCP     | *        | 443      | Accept |
+| interface WAN     | 192.168.200.3          | TCP     | *        | 80       | Accept |
+| 192.168.100.0/24  | 192.168.200.3          | TCP     | *        | 80       | Accept |
+| 192.168.100.0/24  | 192.168.200.3          | TCP     | *        | 22       | Accept |
 
 ---
 
