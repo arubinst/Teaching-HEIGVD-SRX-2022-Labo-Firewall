@@ -130,6 +130,7 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 **LIVRABLE : Remplir le tableau**
 
 | Adresse IP source | Adresse IP destination | Type      | Port src  | Port dst | Action  |
+|-------------------|------------------------|-----------|-----------|----------|---------|
 | *                 |  *                     | any       | *         | *        | Drop    |
 | 192.168.100.0/24  |  Interface WAN         | UDP / TCP |  53       | 53       | Acccept |
 | 192.168.100.0/24  |  Interface WAN         | ICMP      |   7       |  7       | Accept  |
