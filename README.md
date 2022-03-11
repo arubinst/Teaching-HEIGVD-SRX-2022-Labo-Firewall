@@ -347,7 +347,8 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-**Réponse :**
+**Réponse :** `nft list ruleset > /etc/nftables.conf`
+Au redémmarage, `nft -f /etc/nftables.conf`
 
 ---
 
