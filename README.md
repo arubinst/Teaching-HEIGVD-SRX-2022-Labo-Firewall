@@ -221,7 +221,9 @@ ping 192.168.200.3
 ```
 ---
 
-**LIVRABLE : capture d'écran de votre tentative de ping.**  
+**LIVRABLE : capture d'écran de votre tentative de ping.** 
+![Plan d'adressage](figures/ping_blocked.png) 
+
 
 ---
 
