@@ -392,6 +392,15 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 ---
 
 **Réponse :**
+mehdi:
+Pour sauvegarder:
+nft list ruleset > nftables.conf
+Pour restaurer:
+nft -f nftables.conf
+
+Pour que le fichier soit chargé à chaque démarrage de la machine, le mettre 
+dans(pour Debian):
+/etc/nftables.conf
 
 ---
 
@@ -407,6 +416,8 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 ---
 
 **Réponse :**
+Mehdi:
+nft list ruleset
 
 ---
 
@@ -419,6 +430,9 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 ---
 
 **Réponse :**
+Mehdi:
+Pour tout effacer:
+nft flush ruleset
 
 ---
 
@@ -431,6 +445,8 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 ---
 
 **Réponse :**
+Mehdi:
+nft flush chain <nom_table> <nom_chaine>
 
 ---
 
