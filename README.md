@@ -444,9 +444,9 @@ nft add table ip filter
 
 # Input chain creation - Delivered to local system
 nft 'add chain ip filter input { type filter hook input priority 0; policy drop;}'
-nft add rule ip filter input ct state established, related accept
+# nft add rule ip filter input ct state established, related accept -- does not seem to do anything
 
-# Traceroute not working without allowing ping to gateway
+# Traceroute not working without allowing ping to firewall interfaces
 nft add rule ip filter input ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 icmp type echo-request accept
 nft add rule ip filter input ip saddr 192.168.200.0/24 ip daddr 192.168.200.2 icmp type echo-request accept
 
