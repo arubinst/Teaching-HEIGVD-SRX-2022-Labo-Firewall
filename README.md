@@ -287,6 +287,8 @@ Si votre ping passe mais que la réponse contient un _Redirect Host_, ceci indiq
 **LIVRABLE : capture d'écran de votre ping vers l'Internet. Un ping qui ne passe pas ou des réponses contenant des _Redirect Host_ sont acceptés.**
 
 ---
+![Server Ping Internet](figures/SRX-Lab02-ServerPingInternet.png)
+![Client Ping Internet](figures/SRX-Lab02-ClientPingInternet.png)
 
 ### Configuration réseau du firewall
 
@@ -310,7 +312,9 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 
 **Réponse :** 
 
-*Ajoute une nouvelle table appelée "nat"*
+*Ajoute une nouvelle table appelée "nat". Une table dans nft est un ensemble de
+chaînes, règles et autre objets qui va permettre de filtrer une famille, qui
+correspond à un type type d'adresse tel que ipv4, ipv6, nat, arp, etc.*
 
 ---
 
@@ -324,7 +328,7 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 **Réponse :**
 
 *Crée une nouvelle chaine nomée "postrouting" pour la table "nat". 
-Le paramètre type permet de spécifier si il s'agit d'une route, 
+Le paramètre type permet de spécifier s'il s'agit d'une route, 
 d'un filtre ou d'un nat. dans notre cas, il s'agit d'un nat.* 
 
 *Le paramètre "hook" permet de déterminer de quelle manière les paquets 
@@ -332,9 +336,23 @@ doivent être traîtés par le kernel. Dans notre cas, nous les traîtons
 comme des paquets "ip" en après le routage. Les autres options aurait été 
 de traîter les paquets comme "arp", "bridge" ou "netdev".* 
 
+TODO, correction:
+* Le paramètre "hook" indique à quel étape du traitement le paquet doit être
+  traité par cette règle. Il est possible de traiter un paquet juste après avoir
+  été traité par le driver de la carte réseau (ingress), avant le routing
+  (prerouting), à destination du système local (input), a destination d'autres
+  système (forward), dont l'origine est le système local mais à destination d'un
+  système extérieur (output) ainsi que après que le routing ait été effectué
+  (postrouting).
+
 *Le paramètre "priority" permet d'ordonner les chaines en fonction de leur 
 opération. Dans notre cas, la priorité 100 est appliquée, car il s'agît 
 d'un nat en postrouting.*
+
+TODO, correction:
+* Le paramètre "priority" permet d'assigner une priorité aux règles afin
+  qu'elles soient appliquées dans un certain ordre. La priorité avec la valeur
+  la plus basse sera executée en première.
 
 ---
 
@@ -346,6 +364,9 @@ service ssh start
 ```
 
 Vérifiez que la connexion à l'Internet est maintenant possible depuis les deux autres machines ou qu'elle n'utilise plus de reditection. Pas besoin de capture d'écran mais assurez vous que les pings passent sans besoin de redirection de host avant de continuer.
+
+Note: Nous avons validé le fonctionnement des pings depuis le client ainsi que
+le serveur à destination de 8.8.8.8.
 
 
 # Manipulations
