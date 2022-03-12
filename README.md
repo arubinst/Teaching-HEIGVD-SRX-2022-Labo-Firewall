@@ -495,44 +495,39 @@ ping LAN -> WAN:
 ping DMZ -> LAN:
 
 ```
-# Bloque tout par defaut
-nft 'add chain filter INPUT {type filter hook input priority 0; policy drop;}'
-nft 'add chain filter FORWARD {type filter hook forward priority 0; policy drop;}'
-nft 'add chain filter OUTPUT {type filter hook output priority 0; policy drop;}'
+table ip filter {
+	chain INPUT {
+		type filter hook input priority filter; policy drop;
+		ct state established,related accept
+		
+		# allows ping LAN -> FW
+		ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 icmp type echo-request accept
 
-# Accepte les paquets d'une connexion deja etablie ou les reponses a une requete
-nft add rule filter INPUT ct state established,related accept
-nft add rule filter OUTPUT ct state established,related accept
-nft add rule filter FORWARD ct state established,related accept
+		# allows ping DMZ -> FW
+		ip saddr 192.168.200.0/24 ip daddr 192.168.200.2 icmp type echo-request accept
+		
+	}
 
-# Autorise ICMP de LAN à DMZ
-nft add rule filter FORWARD ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24
-icmp type echo-request accept
+	chain FORWARD {
+		type filter hook forward priority filter; policy drop;
 
-# Autorise ICMP de DMZ à LAN
-nft add rule filter FORWARD ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24
-icmp type echo-request accept
+		# allows ping LAN -> DMZ
+		ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 icmp type echo-request accept
+		ct state established,related accept
 
-TODO: bonne pratique ?
-1) autoriser interface vers interface (+:simple et correspond au routing
-physique, -: fonctionne plus si on modifie physiquement les connexions)
-2) autoriser sous réseau vers interace
-3) autoriser sous réseau vers tout (pour wan)
+		# allows ping DMZ -> LAN
+		ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-request accept
 
-variante 1
-# Autorise de ICMP de LAN à WAN
-nft add rule filter FORWARD iifname "eth1" oifname "eth0" icmp type echo-request
-accept
+		# allows ping LAN -> WAN
+		ip saddr 192.168.100.0/24 oifname "eth0" icmp type echo-request accept
 
-variante 2
-# Autorise de ICMP de LAN à WAN
-nft add rule filter FORWARD ip saddr 192.168.200.0/24 oifname "eth0" icmp type echo-request
-accept
+	}
 
-variante 3
-# Autorise de ICMP de LAN à WAN
-nft add rule filter FORWARD ip saddr 192.168.200.0/24 icmp type echo-request
-accept
+	chain OUTPUT {
+		type filter hook output priority filter; policy drop;
+		ct state established,related accept
+	}
+}
 
 
 ```
@@ -616,6 +611,8 @@ ping www.google.com
 
 ---
 
+![j. Ping LAN -> WAN](figures/SRX-Lab02-j_pingwwwgooglecom.png)
+
 * Créer et appliquer la règle adéquate pour que la **condition 1 du cahier des charges** soit respectée.
 
 Commandes nftables :
@@ -624,6 +621,11 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+```
+```
+Mehdi:
+nft add rule filter FORWARD ip saddr 192.168.100.0/24 tcp dport 53 accept
+nft add rule filter FORWARD ip saddr 192.168.100.0/24 udp dport 53 accept
 ```
 
 ---
@@ -639,6 +641,8 @@ LIVRABLE : Commandes nftables
 
 ---
 
+![k. Ping LAN -> WAN](figures/SRX-Lab02-k_pingwwwgooglecom.png)
+
 <ol type="a" start="12">
   <li>Remarques (sur le message du premier ping)?
   </li>                                  
@@ -648,6 +652,12 @@ LIVRABLE : Commandes nftables
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
+Mehdi:
+Lorsque l'on tente d'atteindre une adresse telle que www.google.com, le système doit d'abord
+résoudre le nom pour obtenir son adresse ip. Avant d'autoriser les requêtes à 
+destination du port 53 en TCP et UDP, on peut
+constater qu'il y a un échec de résolution de nom. 
+
 
 ---
 
