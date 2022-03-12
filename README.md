@@ -781,6 +781,8 @@ ssh root@192.168.200.3
 
 ---
 
+![n. SSH LAN->DMZ](figures/SRX-Lab02-n_sshLANDMZ.png)
+
 <ol type="a" start="15">
   <li>Expliquer l'utilité de <b>ssh</b> sur un serveur.
   </li>                                  
@@ -790,6 +792,12 @@ ssh root@192.168.200.3
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
+
+SSH permet de contrôler des machines à distance et ce de manière sécurisée grâce
+au chiffrement et une gestion de clés privées / publiques. SSH généralement
+utilisée pour accéder au terminal sur une machine distante, mais permet
+également de créer un tunnel dans lequel faire passer d'autres protocol de
+manière sécurisée.
 
 ---
 
@@ -803,6 +811,11 @@ ssh root@192.168.200.3
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
+
+SSH étant un protocole énormément utilisé, il y a constemment des attaques sur
+le port 22 des machines exposées à internet. Lorsque cela est possible, il est
+donc préférable de resteindre l'accès au port 22 au réseau interne d'une
+entreprises ou à quelques machines choisies afin de limiter les attaques.
 
 ---
 
@@ -820,3 +833,94 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 **LIVRABLE : capture d'écran avec toutes vos règles.**
 
 ---
+
+Mehdi:
+
+```
+table ip nat {
+	chain PREROUTING {
+		type nat hook prerouting priority dstnat; policy accept;
+	}
+
+	chain INPUT {
+		type nat hook input priority 100; policy accept;
+	}
+
+	chain POSTROUTING {
+		type nat hook postrouting priority srcnat; policy accept;
+		ip daddr 127.0.0.11 counter packets 0 bytes 0 jump DOCKER_POSTROUTING
+	}
+
+	chain OUTPUT {
+		type nat hook output priority -100; policy accept;
+		ip daddr 127.0.0.11 counter packets 0 bytes 0 jump DOCKER_OUTPUT
+	}
+
+	chain DOCKER_OUTPUT {
+		ip daddr 127.0.0.11 tcp dport 53 counter packets 0 bytes 0 dnat to 127.0.0.11:36509
+		ip daddr 127.0.0.11 udp dport 53 counter packets 0 bytes 0 dnat to 127.0.0.11:58033
+	}
+
+	chain DOCKER_POSTROUTING {
+		ip saddr 127.0.0.11 tcp sport 36509 counter packets 0 bytes 0 snat to :53
+		ip saddr 127.0.0.11 udp sport 58033 counter packets 0 bytes 0 snat to :53
+	}
+
+	chain postrouting {
+		type nat hook postrouting priority srcnat; policy accept;
+		oifname "eth0" masquerade
+	}
+}
+table ip filter {
+	chain INPUT {
+		type filter hook input priority filter; policy drop;
+		ct state established,related accept
+
+        # allows ping LAN -> FW
+		ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 icmp type echo-request accept
+
+        # allows ping DMZ -> FW
+		ip saddr 192.168.200.0/24 ip daddr 192.168.200.2 icmp type echo-request accept
+        
+        # allows ssh LAN -> FW
+		ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 tcp dport 22 accept
+	}
+
+	chain FORWARD {
+		type filter hook forward priority filter; policy drop;
+		ct state established,related accept
+
+        # allows ping LAN -> DMZ
+		ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 icmp type echo-request accept
+
+        # allows ping DMZ -> LAN
+		ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-request accept
+
+        # allows ping LAN -> WAN
+		ip saddr 192.168.100.0/24 oifname "eth0" icmp type echo-request accept
+        
+        # allows DNS LAN -> WAN
+		ip saddr 192.168.100.0/24 tcp dport 53 accept
+		ip saddr 192.168.100.0/24 udp dport 53 accept
+
+        # allows HTTP, HTTPS LAN -> WAN
+		ip saddr 192.168.100.0/24 oifname "eth0" tcp dport 80 accept
+		ip saddr 192.168.100.0/24 oifname "eth0" tcp dport 8080 accept
+		ip saddr 192.168.100.0/24 oifname "eth0" tcp dport 443 accept
+
+        # allows HTTP WAN -> web serv in DMZ
+		iifname "eth0" ip daddr 192.168.200.3 tcp dport 80 accept
+
+        # allows HTTP LAN -> web serv in DMZ
+		ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 80 accept
+
+        # allows SSH LAN -> web serv in DMZ
+		ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 22 accept
+	}
+
+	chain OUTPUT {
+		type filter hook output priority filter; policy drop;
+		ct state established,related accept
+	}
+}
+```
