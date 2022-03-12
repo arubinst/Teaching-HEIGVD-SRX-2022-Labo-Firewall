@@ -416,7 +416,9 @@ dans(pour Debian):
 ---
 
 **Réponse :**
+
 Mehdi:
+
 nft list ruleset
 
 ---
@@ -430,8 +432,11 @@ nft list ruleset
 ---
 
 **Réponse :**
+
 Mehdi:
+
 Pour tout effacer:
+
 nft flush ruleset
 
 ---
@@ -445,7 +450,9 @@ nft flush ruleset
 ---
 
 **Réponse :**
+
 Mehdi:
+
 nft flush chain <nom_table> <nom_chaine>
 
 ---
