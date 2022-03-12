@@ -721,6 +721,10 @@ LIVRABLE : Commandes nftables
 * Créer et appliquer les règles adéquates avec des commandes nftables pour que la **condition 5 du cahier des charges** soit respectée.
 
 Commandes nftables :
+Mehdi:
+nft add rule filter FORWARD ip saddr 192.168.100.0/24 tcp dport 80 accept
+nft add rule filter FORWARD ip saddr 192.168.100.0/24 tcp dport 8080 accept
+nft add rule filter FORWARD ip saddr 192.168.100.0/24 tcp dport 443 accept
 
 ---
 
@@ -739,6 +743,13 @@ LIVRABLE : Commandes nftables
 **LIVRABLE : capture d'écran.**
 
 ---
+
+![m. Wget LAN -> serveur DMZ](figures/SRX-Lab02-m_wgetnc.png)
+
+Note: wget ne fonctionne pas car il n'y a pas de serveur à
+l'écoute sur le port 80. Nous avons réalisé un test en mettant netcat sur écoute
+sur le port 80 du serveur dans la DMZ puis en tentant une connexion depuis le
+client en LAN. La connexion a pu être effectuée, validant ainsi notre règle.
 
 
 ## Règles pour le protocole ssh
