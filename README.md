@@ -402,6 +402,10 @@ Pour que le fichier soit chargé à chaque démarrage de la machine, le mettre
 dans(pour Debian):
 /etc/nftables.conf
 
+Guilain:
+Copier les règles dans le fichier nftables.conf dans etc/ 
+(effacer ce qui s'y trouvait, en particulier le flush rulset)
+
 ---
 
 
@@ -531,6 +535,37 @@ table ip filter {
 
 
 ```
+Guilain: 
+```
+chain INPUT { # handle 4
+    type filter hook input priority filter; policy accept;
+    ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 tcp dport 22 accept # handle 19
+    drop # handle 31
+}
+
+chain OUTPUT { # handle 5
+    type filter hook output priority filter; policy accept;
+    drop # handle 30
+}
+
+chain FORWARD { # handle 8
+    type filter hook forward priority filter; policy accept;
+    ip saddr 192.168.100.0/24 udp dport 53 accept # handle 10
+    ip saddr 192.168.100.0/24 tcp dport 53 accept # handle 11
+    ip saddr 192.168.100.0/24 icmp type { echo-reply, echo-request } accept # handle 12
+    ip daddr 192.168.100.0/24 icmp type echo-reply accept # handle 25
+    ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type { echo-reply, echo-request } accept # handle 13
+    ip saddr 192.168.100.0/24 tcp dport 80 accept # handle 14
+    ip saddr 192.168.100.0/24 tcp dport 8080 accept # handle 15
+    ip saddr 192.168.100.0/24 tcp dport 443 accept # handle 16
+    ip daddr 192.168.100.0/24 tcp flags ack accept # handle 28
+    ip daddr 192.168.200.0/24 tcp dport 80 accept # handle 17
+    ip saddr 192.168.200.0/24 tcp flags ack accept # handle 29
+    ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 tcp dport 22 accept # handle 18
+    drop # handle 21
+}
+
+```
 
 ### Questions
 
@@ -550,7 +585,7 @@ Vérifiez aussi la route entre votre client et le service `8.8.8.8`. Elle devrai
 traceroute 8.8.8.8
 ``` 	            
 
-
+```
 ---
 **LIVRABLE : capture d'écran du traceroute et de votre ping vers l'Internet. Il ne devrait pas y avoir des _Redirect Host_ dans les réponses au ping !**
 
@@ -570,6 +605,7 @@ utilise des paquets UDP par défaut, quine sont pas autorisé par notre firewall
 Une alternative consiste à utiliser 'traceroute -I 8.8.8.8' qui utilise  le
 protocol ICMP. La commande fonctionne alors car ICMP est autorisé
 
+```
 <ol type="a" start="9">
   <li>Testez ensuite toutes les règles, depuis le Client_in_LAN puis depuis le serveur Web (Server_in_DMZ) et remplir le tableau suivant :
   </li>                                  
