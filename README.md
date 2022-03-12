@@ -453,7 +453,13 @@ nft flush ruleset
 
 Mehdi:
 
-nft flush chain <nom_table> <nom_chaine>
+nft delete chain <nom_table> <nom_chain> 
+
+Egalement pour effacer uniquement une règle:
+Afficher le numéro de règle (handle) avec:
+nft list ruleset -a
+puis effacer la règle voulue:
+nft delete rule <nom_table> <nom_chain> handle <numero_handle>
 
 ---
 
@@ -480,7 +486,56 @@ Commandes nftables :
 ```bash
 LIVRABLE : Commandes nftables
 ```
+
 ---
+
+Mehdi:
+ping LAN -> DMZ:
+ping LAN -> WAN:
+ping DMZ -> LAN:
+
+```
+# Bloque tout par defaut
+nft 'add chain filter INPUT {type filter hook input priority 0; policy drop;}'
+nft 'add chain filter FORWARD {type filter hook forward priority 0; policy drop;}'
+nft 'add chain filter OUTPUT {type filter hook output priority 0; policy drop;}'
+
+# Accepte les paquets d'une connexion deja etablie ou les reponses a une requete
+nft add rule filter INPUT ct state established,related accept
+nft add rule filter OUTPUT ct state established,related accept
+nft add rule filter FORWARD ct state established,related accept
+
+# Autorise ICMP de LAN à DMZ
+nft add rule filter FORWARD ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24
+icmp type echo-request accept
+
+# Autorise ICMP de DMZ à LAN
+nft add rule filter FORWARD ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24
+icmp type echo-request accept
+
+TODO: bonne pratique ?
+1) autoriser interface vers interface (+:simple et correspond au routing
+physique, -: fonctionne plus si on modifie physiquement les connexions)
+2) autoriser sous réseau vers interace
+3) autoriser sous réseau vers tout (pour wan)
+
+variante 1
+# Autorise de ICMP de LAN à WAN
+nft add rule filter FORWARD iifname "eth1" oifname "eth0" icmp type echo-request
+accept
+
+variante 2
+# Autorise de ICMP de LAN à WAN
+nft add rule filter FORWARD ip saddr 192.168.200.0/24 oifname "eth0" icmp type echo-request
+accept
+
+variante 3
+# Autorise de ICMP de LAN à WAN
+nft add rule filter FORWARD ip saddr 192.168.200.0/24 icmp type echo-request
+accept
+
+
+```
 
 ### Questions
 
@@ -506,26 +561,40 @@ traceroute 8.8.8.8
 
 ---
 
+![h. Ping LAN -> WAN](figures/SRX-Lab02-h_pingLANWAN.png)
+
+![h. Traceroute avec I LAN -> WAN](figures/SRX-Lab02-h_tracerouteLANWAN.png)
+
+![h. Traceroute sans I LAN -> WAN](figures/SRX-Lab02-h_traceroutedefLANWAN.png)
+
+Note à propos de traceroute: 
+La commande traceroute 8.8.8.8 n'arrive pas à determiner les différents
+intermédiaires et retourne des lignes comportant des * au lieu de mettre les ip
+des machines. Après quelques recherches, nous avons trouvé que traceroute
+utilise des paquets UDP par défaut, quine sont pas autorisé par notre firewall.
+Une alternative consiste à utiliser 'traceroute -I 8.8.8.8' qui utilise  le
+protocol ICMP. La commande fonctionne alors car ICMP est autorisé
+
 <ol type="a" start="9">
   <li>Testez ensuite toutes les règles, depuis le Client_in_LAN puis depuis le serveur Web (Server_in_DMZ) et remplir le tableau suivant :
   </li>                                  
 </ol>
 
-
+Mehdi: 
 | De Client\_in\_LAN à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Client LAN           |       |                              |
-| Serveur WAN          |       |                              |
+| Interface DMZ du FW  | KO    | Client pas autorisé à ping interface DMZ du FW
+| Interface LAN du FW  | OK    | Client autorisé à ping interface LAN du FW |
+| Client LAN           | ??    | A tester avec un 2eme client |
+| Serveur WAN          | OK    | Autorisé dans forward        |
 
 
 | De Server\_in\_DMZ à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Serveur DMZ          |       |                              |
-| Serveur WAN          |       |                              |
+| Interface DMZ du FW  | OK    | Autorisé dans INPUT          |
+| Interface LAN du FW  | KO    | Pas autorisé                 |
+| Serveur DMZ          | ??    | A tester avec autre serv     |
+| Serveur WAN          | KO    | Pas autorisé                 |
 
 
 ## Règles pour le protocole DNS
