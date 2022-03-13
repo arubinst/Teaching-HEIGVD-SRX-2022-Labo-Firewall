@@ -306,8 +306,9 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 
 ---
 
-**Réponse :**
-
+**Réponse :** La commande utilisée permet de créer une table qui va contenir des maps, chains, sets, flowtables et stateful objects.
+Une table permet de filtrer un seul type de `famille` (ip, ip6, inet, etc...), ici on en a précisé aucune donc on va utiliser la famille `ip` par défaut.
+Donc il faut une table pour chaque famille que l'on souhaite filtrer. Le `nat` à la fin de la commande est le nom que l'on donne à la table que nous avons créé.
 ---
 
 <ol type="a" start="3">
@@ -317,8 +318,15 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 
 ---
 
-**Réponse :**
-
+**Réponse :** Cette commande permet d'ajouter une `chain` à une table, ici on ajoute la
+chaine dans la table `nat` que nous avons créé avec la commande précédente. Le premier
+`postrouting` est le nom que nous donnons à notre `chain`. La suite de la commande permet de créer une
+`base chain`. Ici le type choisi est le type nat et nous allons rattacher notre chain au hook `postrouting` 
+et pour finir nous allons mettre une priorité de 100. Donc toutes `chains` ayant une priorité plus petite sera exécutée avant cette `chain`.
+Le type permet de choisir le type de `base chain`, il y a trois type de `base chain` en tout, le `filter` qui permet de filtrer les paquets,
+`route` qui permet de rediriger les paquets et `nat`qui permet de faire en sorte qu'uniquement le premier paquet d'une communication passe par la `chain`.
+Le hook va permettre de savoir à quel moment doit être appliqué les règles contenues dans la `chain`, par exemple si c'est au moment où le paquet vient d'arriver (prerouting) ou alors
+si c'est au moment où il part (postrouting) etc...
 ---
 
 
