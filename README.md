@@ -752,6 +752,10 @@ Mehdi:
 nft add rule filter FORWARD ip saddr 192.168.100.0/24 tcp dport 80 accept
 nft add rule filter FORWARD ip saddr 192.168.100.0/24 tcp dport 8080 accept
 nft add rule filter FORWARD ip saddr 192.168.100.0/24 tcp dport 443 accept
+
+TODO variantes:
+Bonne pratique ?
+Mieux de spécifier l'interface de sortie WAN "eth0" ? 
 ```
 
 ---
@@ -874,6 +878,10 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 Mehdi:
 
 ```
+TODO question: laisser règles docker ?
+- semblent nécessaire dans les clients pour dns fonctionnel, peut etre enlevé
+  sur FW
+
 table ip nat {
     chain PREROUTING {
         type nat hook prerouting priority dstnat; policy accept;
@@ -991,5 +999,4 @@ sans passer par le firewall.
 
 Afin de valider la configuration et pour tester les accès à nos machines depuis
 l'extérieur, il faut résoudre ce problème d'isolation et de routage.
-
 
