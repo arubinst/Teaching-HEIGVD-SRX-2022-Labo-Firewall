@@ -220,7 +220,7 @@ ping 192.168.200.3
 ---
 
 **LIVRABLE : capture d'écran de votre tentative de ping.**  
-![Plan d'adressage](figures/TentativePing.PNG)
+![Tentative de ping](figures/TentativePing.PNG)
 ---
 
 En effet, la communication entre les clients dans le LAN et les serveurs dans la DMZ doit passer à travers le Firewall. Dans certaines configurations, il est probable que le ping arrive à passer par le bridge par défaut. Ceci est une limitation de Docker. **Si votre ping passe**, vous pouvez accompagner votre capture du ping avec une capture d'une commande traceroute qui montre que le ping ne passe pas actuellement par le Firewall mais qu'il a emprunté un autre chemin.
@@ -261,13 +261,13 @@ ping 192.168.100.3
 **LIVRABLES : captures d'écran des routes des deux machines et de votre nouvelle tentative de ping.**
 
 Route du client :
-![Plan d'adressage](figures/RouteClientLan.PNG)
+![Routes du client LAN](figures/RouteClientLan.PNG)
 
 Route du serveur :
-![Plan d'adressage](figures/RouteServerDMZ.PNG)
+![Routes du serveur DMZ](figures/RouteServerDMZ.PNG)
 
 Tentative de ping réussie:
-![Plan d'adressage](figures/TentativePingReussi.PNG)
+![Tentative de ping réussie](figures/TentativePingReussi.PNG)
 ---
 
 La communication est maintenant possible entre les deux machines. Pourtant, si vous essayez de communiquer depuis le client ou le serveur vers l'Internet, ça ne devrait pas encore fonctionner sans une manipulation supplémentaire au niveau du firewall ou sans un service de redirection ICMP. Vous pouvez le vérifier avec un ping depuis le client ou le serveur vers une adresse Internet.
@@ -283,7 +283,7 @@ Si votre ping passe mais que la réponse contient un _Redirect Host_, ceci indiq
 ---
 
 **LIVRABLE : capture d'écran de votre ping vers l'Internet. Un ping qui ne passe pas ou des réponses contenant des _Redirect Host_ sont acceptés.**
-
+![Tentative de ping réussie](figures/PingVersInternet.PNG)
 ---
 
 ### Configuration réseau du firewall
