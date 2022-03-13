@@ -116,8 +116,8 @@ Pour établir la table de filtrage, voici les **conditions à respecter** dans l
 # Regles de filtrage
 
 <ol type="a" start="1">
-  <li>En suivant la méthodologie vue en classe, établir la table de filtrage avec précision en spécifiant la source et la destination, le type de trafic (TCP/UDP/ICMP/any), les ports sources et destinations ainsi que l'action désirée (<b>Accept</b> ou <b>Drop</b>, éventuellement <b>Reject</b>).
-  </li>                                  
+<li>En suivant la méthodologie vue en classe, établir la table de filtrage avec précision en spécifiant la source et la destination, le type de trafic (TCP/UDP/ICMP/any), les ports sources et destinations ainsi que l'action désirée (<b>Accept</b> ou <b>Drop</b>, éventuellement <b>Reject</b>).
+</li>                                  
 </ol>
 
 _Pour l'autorisation d'accès (**Accept**), il s'agit d'être le plus précis possible lors de la définition de la source et la destination : si l'accès ne concerne qu'une seule machine (ou un groupe), il faut préciser son adresse IP ou son nom (si vous ne pouvez pas encore la déterminer), et non la zone.
@@ -144,8 +144,8 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 | 192.168.100.0/24  | 192.168.100.2          | TCP  | *        | 22       | ACCEPT | SSH LAN -> FW |
 |                   |                        |      |          |          |        |
 
-* Les réponses sont autorisées en entrées lorsqu'elles ont un lien avec une
-  requête sortant ou font partie d'une connexion établie.(RELATED, ESTABLISHED)
+* Les réponses sont autorisées en input, forward et output lorsqu'elles ont un lien avec une
+requête ou font partie d'une connexion établie.(RELATED, ESTABLISHED)
 
 ---
 
@@ -304,8 +304,8 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 
 
 <ol type="a" start="2">
-  <li>Quelle est l'utilité de la première commande ?
-  </li>                                  
+<li>Quelle est l'utilité de la première commande ?
+</li>                                  
 </ol>
 
 ---
@@ -319,8 +319,8 @@ correspond à un type type d'adresse tel que ipv4, ipv6, nat, arp, etc.*
 ---
 
 <ol type="a" start="3">
-  <li>Quelle est l'utilité de la deuxième commande ? Expliquer chacun des paramètres.
-  </li>                                  
+<li>Quelle est l'utilité de la deuxième commande ? Expliquer chacun des paramètres.
+</li>                                  
 </ol>
 
 ---
@@ -338,12 +338,12 @@ de traîter les paquets comme "arp", "bridge" ou "netdev".*
 
 TODO, correction:
 * Le paramètre "hook" indique à quel étape du traitement le paquet doit être
-  traité par cette règle. Il est possible de traiter un paquet juste après avoir
-  été traité par le driver de la carte réseau (ingress), avant le routing
-  (prerouting), à destination du système local (input), a destination d'autres
-  système (forward), dont l'origine est le système local mais à destination d'un
-  système extérieur (output) ainsi que après que le routing ait été effectué
-  (postrouting).
+traité par cette règle. Il est possible de traiter un paquet juste après avoir
+été traité par le driver de la carte réseau (ingress), avant le routing
+(prerouting), à destination du système local (input), a destination d'autres
+système (forward), dont l'origine est le système local mais à destination d'un
+système extérieur (output) ainsi que après que le routing ait été effectué
+(postrouting).
 
 *Le paramètre "priority" permet d'ordonner les chaines en fonction de leur 
 opération. Dans notre cas, la priorité 100 est appliquée, car il s'agît 
@@ -351,8 +351,8 @@ d'un nat en postrouting.*
 
 TODO, correction:
 * Le paramètre "priority" permet d'assigner une priorité aux règles afin
-  qu'elles soient appliquées dans un certain ordre. La priorité avec la valeur
-  la plus basse sera executée en première.
+qu'elles soient appliquées dans un certain ordre. La priorité avec la valeur
+la plus basse sera executée en première.
 
 ---
 
@@ -385,8 +385,8 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 **Important** : Les règles de filtrage définies avec `nftables` ne sont pas persistantes (par défaut, elles sont perdues après chaque redémarrage de la machine firewall). Il existe pourtant de manières de sauvegarder votre config.
 
 <ol type="a" start="4">
-  <li>Faire une recherche et expliquer une méthode de rendre la config de votre firewall persistente.
-  </li>                                  
+<li>Faire une recherche et expliquer une méthode de rendre la config de votre firewall persistente.
+</li>                                  
 </ol>
 
 ---
@@ -413,8 +413,8 @@ Copier les règles dans le fichier nftables.conf dans etc/
 
 
 <ol type="a" start="5">
-  <li>Quelle commande affiche toutes les règles de filtrage en vigueur ?
-  </li>                                  
+<li>Quelle commande affiche toutes les règles de filtrage en vigueur ?
+</li>                                  
 </ol>
 
 ---
@@ -425,12 +425,16 @@ Mehdi:
 
 nft list ruleset
 
+On peut ajouter un -a pour afficher le numéro (handle) des règles (assigné
+automatiquement). Ce numéro (handle) permet de manipuler les règles
+individuellement.
+
 ---
 
 
 <ol type="a" start="6">
-  <li>Quelle commande est utilisée pour effacer toutes les règles de filtrage en vigueur ?
-  </li>                                  
+<li>Quelle commande est utilisée pour effacer toutes les règles de filtrage en vigueur ?
+</li>                                  
 </ol>
 
 ---
@@ -447,8 +451,8 @@ nft flush ruleset
 
 
 <ol type="a" start="7">
-  <li>Quelle commande est utilisée pour effacer les chaines ?
-  </li>                                  
+<li>Quelle commande est utilisée pour effacer les chaines ?
+</li>                                  
 </ol>
 
 ---
@@ -494,47 +498,73 @@ LIVRABLE : Commandes nftables
 ---
 
 Mehdi:
-ping LAN -> DMZ:
-ping LAN -> WAN:
-ping DMZ -> LAN:
 
+```
+
+Fichier de configuration nftables.conf
+
+table ip filter {
+    chain INPUT {
+        type filter hook input priority filter; policy drop;
+        ct state established,related accept
+        
+        # allows ping LAN -> FW
+        ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 icmp type echo-request accept
+
+        # allows ping DMZ -> FW
+        ip saddr 192.168.200.0/24 ip daddr 192.168.200.2 icmp type echo-request accept
+        
+    }
+
+    chain FORWARD {
+        type filter hook forward priority filter; policy drop;
+        ct state established,related accept
+
+        # allows ping LAN -> DMZ
+        ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 icmp type echo-request accept
+
+        # allows ping DMZ -> LAN
+        ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-request accept
+
+        # allows ping LAN -> WAN
+        ip saddr 192.168.100.0/24 oifname "eth0" icmp type echo-request accept
+
+    }
+
+    chain OUTPUT {
+        type filter hook output priority filter; policy drop;
+        ct state established,related accept
+    }
+}
+```
+
+Pour rester concis, nous avons copié le fichier de configuration tel quel. Pour
+les convertir en commande, il suffit d'ajouter la ligne suivant devant la règle
+en question: 
+
+```
+nft add rule <nom_table> <nom_chaine> <règle>
+```
+
+Exemple:
+Extrait du fichier nftables.conf:
 ```
 table ip filter {
-	chain INPUT {
-		type filter hook input priority filter; policy drop;
-		ct state established,related accept
-		
-		# allows ping LAN -> FW
-		ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 icmp type echo-request accept
-
-		# allows ping DMZ -> FW
-		ip saddr 192.168.200.0/24 ip daddr 192.168.200.2 icmp type echo-request accept
-		
-	}
-
-	chain FORWARD {
-		type filter hook forward priority filter; policy drop;
-
-		# allows ping LAN -> DMZ
-		ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 icmp type echo-request accept
-		ct state established,related accept
-
-		# allows ping DMZ -> LAN
-		ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-request accept
-
-		# allows ping LAN -> WAN
-		ip saddr 192.168.100.0/24 oifname "eth0" icmp type echo-request accept
-
-	}
-
-	chain OUTPUT {
-		type filter hook output priority filter; policy drop;
-		ct state established,related accept
-	}
+    chain INPUT {
+        ct state established,related accept
+    }
+    ...
 }
 
+```
+Conversion en règle utilisable depuis le terminal:
 
 ```
+nft add rule filter INPUT ct state established,related accept
+```
+
+
+
 Guilain: 
 ```
 chain INPUT { # handle 4
@@ -570,8 +600,8 @@ chain FORWARD { # handle 8
 ### Questions
 
 <ol type="a" start="8">
-  <li>Afin de tester la connexion entre le client (Client_in_LAN) et le WAN, tapez la commande suivante depuis le client :
-  </li>                                  
+<li>Afin de tester la connexion entre le client (Client_in_LAN) et le WAN, tapez la commande suivante depuis le client :
+</li>                                  
 </ol>
 
 ```bash
@@ -585,7 +615,6 @@ Vérifiez aussi la route entre votre client et le service `8.8.8.8`. Elle devrai
 traceroute 8.8.8.8
 ``` 	            
 
-```
 ---
 **LIVRABLE : capture d'écran du traceroute et de votre ping vers l'Internet. Il ne devrait pas y avoir des _Redirect Host_ dans les réponses au ping !**
 
@@ -605,10 +634,9 @@ utilise des paquets UDP par défaut, quine sont pas autorisé par notre firewall
 Une alternative consiste à utiliser 'traceroute -I 8.8.8.8' qui utilise  le
 protocol ICMP. La commande fonctionne alors car ICMP est autorisé
 
-```
 <ol type="a" start="9">
-  <li>Testez ensuite toutes les règles, depuis le Client_in_LAN puis depuis le serveur Web (Server_in_DMZ) et remplir le tableau suivant :
-  </li>                                  
+<li>Testez ensuite toutes les règles, depuis le Client_in_LAN puis depuis le serveur Web (Server_in_DMZ) et remplir le tableau suivant :
+</li>                                  
 </ol>
 
 Mehdi: 
@@ -624,15 +652,15 @@ Mehdi:
 | :---                 | :---: | :---                         |
 | Interface DMZ du FW  | OK    | Autorisé dans INPUT          |
 | Interface LAN du FW  | KO    | Pas autorisé                 |
-| Serveur DMZ          | ??    | A tester avec autre serv     |
+| Serveur DMZ          | ??    | A tester avec autre serveur  |
 | Serveur WAN          | KO    | Pas autorisé                 |
 
 
 ## Règles pour le protocole DNS
 
 <ol type="a" start="10">
-  <li>Si un ping est effectué sur un serveur externe en utilisant en argument un nom DNS, le client ne pourra pas le résoudre. Le démontrer à l'aide d'une capture, par exemple avec la commande suivante :
-  </li>                                  
+<li>Si un ping est effectué sur un serveur externe en utilisant en argument un nom DNS, le client ne pourra pas le résoudre. Le démontrer à l'aide d'une capture, par exemple avec la commande suivante :
+</li>                                  
 </ol>
 
 ```bash
@@ -667,8 +695,8 @@ nft add rule filter FORWARD ip saddr 192.168.100.0/24 udp dport 53 accept
 ---
 
 <ol type="a" start="11">
-  <li>Tester en réitérant la commande ping sur le serveur de test (Google ou autre) :
-  </li>                                  
+<li>Tester en réitérant la commande ping sur le serveur de test (Google ou autre) :
+</li>                                  
 </ol>
 
 ---
@@ -680,19 +708,23 @@ nft add rule filter FORWARD ip saddr 192.168.100.0/24 udp dport 53 accept
 ![k. Ping LAN -> WAN](figures/SRX-Lab02-k_pingwwwgooglecom.png)
 
 <ol type="a" start="12">
-  <li>Remarques (sur le message du premier ping)?
-  </li>                                  
+<li>Remarques (sur le message du premier ping)?
+</li>                                  
 </ol>
 
 ---
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
+
 Mehdi:
+
 Lorsque l'on tente d'atteindre une adresse telle que www.google.com, le système doit d'abord
-résoudre le nom pour obtenir son adresse ip. Avant d'autoriser les requêtes à 
-destination du port 53 en TCP et UDP, on peut
-constater qu'il y a un échec de résolution de nom. 
+résoudre le nom pour obtenir son adresse ip. Ceci est fait en contacter un
+serveur DNS. 
+
+Avant d'autoriser les requêtes à destination du port 53 en TCP et UDP, on peut
+constater qu'il y a un échec de résolution de nom, ce qui est normal.
 
 
 ---
@@ -714,28 +746,33 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+
+Mehdi:
+
+nft add rule filter FORWARD ip saddr 192.168.100.0/24 tcp dport 80 accept
+nft add rule filter FORWARD ip saddr 192.168.100.0/24 tcp dport 8080 accept
+nft add rule filter FORWARD ip saddr 192.168.100.0/24 tcp dport 443 accept
 ```
 
 ---
 
 * Créer et appliquer les règles adéquates avec des commandes nftables pour que la **condition 5 du cahier des charges** soit respectée.
 
-Commandes nftables :
-Mehdi:
-nft add rule filter FORWARD ip saddr 192.168.100.0/24 tcp dport 80 accept
-nft add rule filter FORWARD ip saddr 192.168.100.0/24 tcp dport 8080 accept
-nft add rule filter FORWARD ip saddr 192.168.100.0/24 tcp dport 443 accept
-
 ---
 
 ```bash
 LIVRABLE : Commandes nftables
+
+Mehdi
+
+nft add rule filter FORWARD iifname "eth0" ip daddr 192.168.200.3 tcp dport 80 accept
+nft add rule filter FORWARD ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 80 accept
 ```
 ---
 
 <ol type="a" start="13">
-  <li>Tester l’accès à ce serveur depuis le LAN utilisant utilisant wget (ne pas oublier les captures d'écran).
-  </li>                                  
+<li>Tester l’accès à ce serveur depuis le LAN utilisant utilisant wget (ne pas oublier les captures d'écran).
+</li>                                  
 </ol>
 
 ---
@@ -744,19 +781,13 @@ LIVRABLE : Commandes nftables
 
 ---
 
-![m. Wget LAN -> serveur DMZ](figures/SRX-Lab02-m_wgetnc.png)
-
-Note: wget ne fonctionne pas car il n'y a pas de serveur à
-l'écoute sur le port 80. Nous avons réalisé un test en mettant netcat sur écoute
-sur le port 80 du serveur dans la DMZ puis en tentant une connexion depuis le
-client en LAN. La connexion a pu être effectuée, validant ainsi notre règle.
-
+![m. Wget LAN -> serveur DMZ](figures/SRX-Lab02-m_wget.png)
 
 ## Règles pour le protocole ssh
 
 <ol type="a" start="14">
-  <li>Créer et appliquer la règle adéquate pour que les <b>conditions 6 et 7 du cahier des charges</b> soient respectées.
-  </li>                                  
+<li>Créer et appliquer la règle adéquate pour que les <b>conditions 6 et 7 du cahier des charges</b> soient respectées.
+</li>                                  
 </ol>
 
 Commandes nftables :
@@ -765,6 +796,12 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+# allows ssh LAN -> FW
+nft add rule filter INPUT ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 tcp dport 22 accept
+
+# allows SSH LAN -> web serv in DMZ
+nft add rule filter FORWARD ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 22 accept
+
 ```
 
 ---
@@ -784,8 +821,8 @@ ssh root@192.168.200.3
 ![n. SSH LAN->DMZ](figures/SRX-Lab02-n_sshLANDMZ.png)
 
 <ol type="a" start="15">
-  <li>Expliquer l'utilité de <b>ssh</b> sur un serveur.
-  </li>                                  
+<li>Expliquer l'utilité de <b>ssh</b> sur un serveur.
+</li>                                  
 </ol>
 
 ---
@@ -794,16 +831,16 @@ ssh root@192.168.200.3
 **LIVRABLE : Votre réponse ici...**
 
 SSH permet de contrôler des machines à distance et ce de manière sécurisée grâce
-au chiffrement et une gestion de clés privées / publiques. SSH généralement
-utilisée pour accéder au terminal sur une machine distante, mais permet
+au chiffrement et une gestion de clés privées / publiques. SSH est généralement
+utilisé pour accéder au terminal sur une machine distante, mais permet
 également de créer un tunnel dans lequel faire passer d'autres protocol de
 manière sécurisée.
 
 ---
 
 <ol type="a" start="16">
-  <li>En général, à quoi faut-il particulièrement faire attention lors de l'écriture des règles du pare-feu pour ce type de connexion ?
-  </li>                                  
+<li>En général, à quoi faut-il particulièrement faire attention lors de l'écriture des règles du pare-feu pour ce type de connexion ?
+</li>                                  
 </ol>
 
 
@@ -824,8 +861,8 @@ entreprises ou à quelques machines choisies afin de limiter les attaques.
 A présent, vous devriez avoir le matériel nécessaire afin de reproduire la table de filtrage que vous avez conçue au début de ce laboratoire.
 
 <ol type="a" start="17">
-  <li>Insérer la capture d’écran avec toutes vos règles nftables
-  </li>                                  
+<li>Insérer la capture d’écran avec toutes vos règles nftables
+</li>                                  
 </ol>
 
 ---
@@ -838,89 +875,121 @@ Mehdi:
 
 ```
 table ip nat {
-	chain PREROUTING {
-		type nat hook prerouting priority dstnat; policy accept;
-	}
+    chain PREROUTING {
+        type nat hook prerouting priority dstnat; policy accept;
+    }
 
-	chain INPUT {
-		type nat hook input priority 100; policy accept;
-	}
+    chain INPUT {
+        type nat hook input priority 100; policy accept;
+    }
 
-	chain POSTROUTING {
-		type nat hook postrouting priority srcnat; policy accept;
-		ip daddr 127.0.0.11 counter packets 0 bytes 0 jump DOCKER_POSTROUTING
-	}
+    chain POSTROUTING {
+        type nat hook postrouting priority srcnat; policy accept;
+        ip daddr 127.0.0.11 counter packets 0 bytes 0 jump DOCKER_POSTROUTING
+    }
 
-	chain OUTPUT {
-		type nat hook output priority -100; policy accept;
-		ip daddr 127.0.0.11 counter packets 0 bytes 0 jump DOCKER_OUTPUT
-	}
+    chain OUTPUT {
+        type nat hook output priority -100; policy accept;
+        ip daddr 127.0.0.11 counter packets 0 bytes 0 jump DOCKER_OUTPUT
+    }
 
-	chain DOCKER_OUTPUT {
-		ip daddr 127.0.0.11 tcp dport 53 counter packets 0 bytes 0 dnat to 127.0.0.11:36509
-		ip daddr 127.0.0.11 udp dport 53 counter packets 0 bytes 0 dnat to 127.0.0.11:58033
-	}
+    chain DOCKER_OUTPUT {
+        ip daddr 127.0.0.11 tcp dport 53 counter packets 0 bytes 0 dnat to 127.0.0.11:36509
+        ip daddr 127.0.0.11 udp dport 53 counter packets 0 bytes 0 dnat to 127.0.0.11:58033
+    }
 
-	chain DOCKER_POSTROUTING {
-		ip saddr 127.0.0.11 tcp sport 36509 counter packets 0 bytes 0 snat to :53
-		ip saddr 127.0.0.11 udp sport 58033 counter packets 0 bytes 0 snat to :53
-	}
+    chain DOCKER_POSTROUTING {
+        ip saddr 127.0.0.11 tcp sport 36509 counter packets 0 bytes 0 snat to :53
+        ip saddr 127.0.0.11 udp sport 58033 counter packets 0 bytes 0 snat to :53
+    }
 
-	chain postrouting {
-		type nat hook postrouting priority srcnat; policy accept;
-		oifname "eth0" masquerade
-	}
+    chain postrouting {
+        type nat hook postrouting priority srcnat; policy accept;
+        oifname "eth0" masquerade
+    }
 }
 table ip filter {
-	chain INPUT {
-		type filter hook input priority filter; policy drop;
-		ct state established,related accept
+    chain INPUT {
+        type filter hook input priority filter; policy drop;
+        ct state established,related accept
 
         # allows ping LAN -> FW
-		ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 icmp type echo-request accept
+        ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 icmp type echo-request accept
 
         # allows ping DMZ -> FW
-		ip saddr 192.168.200.0/24 ip daddr 192.168.200.2 icmp type echo-request accept
+        ip saddr 192.168.200.0/24 ip daddr 192.168.200.2 icmp type echo-request accept
         
         # allows ssh LAN -> FW
-		ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 tcp dport 22 accept
-	}
+        ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 tcp dport 22 accept
+    }
 
-	chain FORWARD {
-		type filter hook forward priority filter; policy drop;
-		ct state established,related accept
+    chain FORWARD {
+        type filter hook forward priority filter; policy drop;
+        ct state established,related accept
 
         # allows ping LAN -> DMZ
-		ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 icmp type echo-request accept
+        ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 icmp type echo-request accept
 
         # allows ping DMZ -> LAN
-		ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-request accept
+        ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-request accept
 
         # allows ping LAN -> WAN
-		ip saddr 192.168.100.0/24 oifname "eth0" icmp type echo-request accept
+        ip saddr 192.168.100.0/24 oifname "eth0" icmp type echo-request accept
         
         # allows DNS LAN -> WAN
-		ip saddr 192.168.100.0/24 tcp dport 53 accept
-		ip saddr 192.168.100.0/24 udp dport 53 accept
+        ip saddr 192.168.100.0/24 tcp dport 53 accept
+        ip saddr 192.168.100.0/24 udp dport 53 accept
 
         # allows HTTP, HTTPS LAN -> WAN
-		ip saddr 192.168.100.0/24 oifname "eth0" tcp dport 80 accept
-		ip saddr 192.168.100.0/24 oifname "eth0" tcp dport 8080 accept
-		ip saddr 192.168.100.0/24 oifname "eth0" tcp dport 443 accept
+        ip saddr 192.168.100.0/24 oifname "eth0" tcp dport 80 accept
+        ip saddr 192.168.100.0/24 oifname "eth0" tcp dport 8080 accept
+        ip saddr 192.168.100.0/24 oifname "eth0" tcp dport 443 accept
 
         # allows HTTP WAN -> web serv in DMZ
-		iifname "eth0" ip daddr 192.168.200.3 tcp dport 80 accept
+        iifname "eth0" ip daddr 192.168.200.3 tcp dport 80 accept
 
         # allows HTTP LAN -> web serv in DMZ
-		ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 80 accept
+        ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 80 accept
 
         # allows SSH LAN -> web serv in DMZ
-		ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 22 accept
-	}
+        ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 22 accept
+    }
 
-	chain OUTPUT {
-		type filter hook output priority filter; policy drop;
-		ct state established,related accept
-	}
+    chain OUTPUT {
+        type filter hook output priority filter; policy drop;
+        ct state established,related accept
+    }
 }
+
+
+
 ```
+
+## Audit
+Afin de valider notre configuration, nous avons réalisé un audit rapide du
+réseau grâce à Nmap.
+
+### Detection de service sur serveur web dans DMZ
+Scan réalisé sur la machine hôte, donc depuis l'extérieur du réseau
+```
+nmap -sV 192.168.200.3
+```
+![Service detection](figures/SRX-Lab02-nmap_servDMZ.png)
+
+On peut constater que seuls les ports 22 (SSH) et 80 (html) sont ouverts.
+
+Nous constatons cependant que le port 22 nous apparait ouvert depuis
+l'extérieur du sous-réseau alors qu'il devrait être accessible uniquement depuis
+le sous-réseau 192.168.100.0/24 (LAN). 
+
+
+Après analyse du problème, nous pensons que cela est du à un
+problème d'isolation dans la configuration de docker et non dans la
+configuration de notre firewall. Depuis la machine hôte, nous sommes en mesure
+de communiquer directement avec les machines à l'intérieur du sous-réseau et ce
+sans passer par le firewall.
+
+Afin de valider la configuration et pour tester les accès à nos machines depuis
+l'extérieur, il faut résoudre ce problème d'isolation et de routage.
+
+

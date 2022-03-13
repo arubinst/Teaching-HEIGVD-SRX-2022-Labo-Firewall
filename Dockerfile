@@ -1,6 +1,6 @@
 FROM ubuntu
 
-RUN apt-get update && apt-get install net-tools nftables iptables iputils-ping iproute2 wget netcat nginx ssh nano traceroute -y
+RUN apt-get update && apt-get install net-tools nftables iptables iputils-ping iproute2 wget netcat nginx ssh nano traceroute vim -y
 
 # Modify `sshd_config`
 RUN sed -i s/#PermitRootLogin.*/PermitRootLogin\ yes/ /etc/ssh/sshd_config
