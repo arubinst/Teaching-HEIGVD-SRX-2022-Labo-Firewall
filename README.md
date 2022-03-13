@@ -501,18 +501,18 @@ traceroute 8.8.8.8
 
 | De Client\_in\_LAN à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Client LAN           |       |                              |
-| Serveur WAN          |       |                              |
+| Interface DMZ du FW  |  KO   |                              |
+| Interface LAN du FW  |  OK   |                              |
+| Client LAN           |  OK   |                              |
+| Serveur WAN          |  OK   |                              |
 
 
 | De Server\_in\_DMZ à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Serveur DMZ          |       |                              |
-| Serveur WAN          |       |                              |
+| Interface DMZ du FW  |   OK  |                              |
+| Interface LAN du FW  |   KO  |                              |
+| Serveur DMZ          |   OK  |                              |
+| Serveur WAN          |   KO  |                              |
 
 
 ## Règles pour le protocole DNS
