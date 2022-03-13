@@ -361,8 +361,10 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-**Réponse :**
-
+**Réponse :** Il est possible de sauvegarder les règles dans un fichier. Pour se faire il faut faire une redirection
+de la commande `nft list table` dans un fichier : `nft list table > config`.
+Ensuite il ne reste qu'à importer les règles : `nft -f config`. Il est aussi possible de 
+sauvegarder uniquement une table en précisant la table : `nft list table nat > config`.
 ---
 
 
@@ -376,7 +378,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-**Réponse :**
+**Réponse :** La commande `nft list ruleset`.
 
 ---
 
@@ -388,7 +390,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-**Réponse :**
+**Réponse :** `nft flush table <name>`
 
 ---
 
@@ -400,7 +402,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-**Réponse :**
+**Réponse :** `nft delete chain <table name> <chain name>`
 
 ---
 
@@ -437,15 +439,16 @@ LIVRABLE : Commandes nftables
 </ol>
 
 ```bash
-ping 8.8.8.8
-``` 	            
+ping 8.8.8.8 
+```
+	            
 Faire une capture du ping.
 
 Vérifiez aussi la route entre votre client et le service `8.8.8.8`. Elle devrait partir de votre client et traverser votre Firewall :
 
 ```bash
 traceroute 8.8.8.8
-``` 	            
+```       
 
 
 ---
