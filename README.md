@@ -376,6 +376,7 @@ Il est possible de sauvegarder les règles dans un fichier. Pour se faire il fau
 de la commande `nft list table` dans un fichier : `nft list table > config`.
 Ensuite il ne reste qu'à importer les règles : `nft -f config`. Il est aussi possible de 
 sauvegarder uniquement une table en précisant la table : `nft list table nat > config`.
+
 ---
 
 
