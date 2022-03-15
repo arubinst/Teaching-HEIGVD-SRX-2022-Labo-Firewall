@@ -223,6 +223,7 @@ ping 192.168.200.3
 
 **LIVRABLE : capture d'écran de votre tentative de ping.**  
 
+![Ping vers serveur échec](figures/SRX_L1_ping-not-working-ok.png)
 ---
 
 En effet, la communication entre les clients dans le LAN et les serveurs dans la DMZ doit passer à travers le Firewall. Dans certaines configurations, il est probable que le ping arrive à passer par le bridge par défaut. Ceci est une limitation de Docker. **Si votre ping passe**, vous pouvez accompagner votre capture du ping avec une capture d'une commande traceroute qui montre que le ping ne passe pas actuellement par le Firewall mais qu'il a emprunté un autre chemin.
@@ -262,6 +263,9 @@ ping 192.168.100.3
 
 **LIVRABLES : captures d'écran des routes des deux machines et de votre nouvelle tentative de ping.**
 
+![Routes et ping depuis LAN](figures/SRX_L1_routes-and-ping-from-lan-ok.png)
+![Routes et ping depuis DMZ](figures/SRX_L1_routes-and-ping-from-dmz-ok.png)
+
 ---
 
 La communication est maintenant possible entre les deux machines. Pourtant, si vous essayez de communiquer depuis le client ou le serveur vers l'Internet, ça ne devrait pas encore fonctionner sans une manipulation supplémentaire au niveau du firewall ou sans un service de redirection ICMP. Vous pouvez le vérifier avec un ping depuis le client ou le serveur vers une adresse Internet.
@@ -277,6 +281,8 @@ Si votre ping passe mais que la réponse contient un _Redirect Host_, ceci indiq
 ---
 
 **LIVRABLE : capture d'écran de votre ping vers l'Internet. Un ping qui ne passe pas ou des réponses contenant des _Redirect Host_ sont acceptés.**
+
+![Ping vers WAN depuis LAN](figures/SRX_L1_ping-not-working-to-internet-ok.png)
 
 ---
 
@@ -491,6 +497,9 @@ traceroute 8.8.8.8
 ---
 **LIVRABLE : capture d'écran du traceroute et de votre ping vers l'Internet. Il ne devrait pas y avoir des _Redirect Host_ dans les réponses au ping !**
 
+![Ping vers WAN](figures/SRX_L1_LAN-to-WAN-ping-OK.png)
+![Traceroute vers WAN](figures/SRX_L1_LAN-to-WAN-traceroute-OK.png)
+
 ---
 
 <ol type="a" start="9">
@@ -532,6 +541,8 @@ ping www.google.com
 
 **LIVRABLE : capture d'écran de votre ping.**
 
+![DNS bloqué](figures/SRX_L1_DNS-not-working-OK.png)
+
 ---
 
 * Créer et appliquer la règle adéquate pour que la **condition 1 du cahier des charges** soit respectée.
@@ -542,6 +553,9 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+
+nft add rule ip filter forward ip saddr 192.168.100.0/24 tcp dport 53 accept
+nft add rule ip filter forward ip saddr 192.168.100.0/24 udp dport 53 accept
 ```
 
 ---
@@ -555,6 +569,8 @@ LIVRABLE : Commandes nftables
 
 **LIVRABLE : capture d'écran de votre ping.**
 
+![DNS passe vers le WAN](figures/SRX_L1_DNS-working-OK.png)
+
 ---
 
 <ol type="a" start="12">
@@ -566,6 +582,8 @@ LIVRABLE : Commandes nftables
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
+
+À COMPLÉTER
 
 ---
 
@@ -586,6 +604,8 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+
+nft add rule ip filter forward ip saddr 192.168.100.0/24 oif eth0 tcp dport vmap {80: accept, 8080: accept, 443: accept}
 ```
 
 ---
@@ -598,6 +618,9 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+
+nft add rule ip filter forward iif eth0 ip daddr 192.168.200.3 tcp dport 80 accept
+nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 80 accept
 ```
 ---
 
@@ -609,6 +632,10 @@ LIVRABLE : Commandes nftables
 ---
 
 **LIVRABLE : capture d'écran.**
+
+![wget vers WAN](figures/SRX_L1_HTTP-HTTPS-working-OK.png)
+
+![wget vers DMZ](figures/SRX_L1_HTTP-lan-to-dmz-OK.png)
 
 ---
 
@@ -626,6 +653,9 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+
+nft add rule ip filter input ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 tcp dport 22 accept
+nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 22 accept 
 ```
 
 ---
@@ -640,6 +670,8 @@ ssh root@192.168.200.3
 
 **LIVRABLE : capture d'écran de votre connexion ssh.**
 
+![ssh fonctionnel](figures/SRX_L1_SSH-working-OK.png)
+
 ---
 
 <ol type="a" start="15">
@@ -651,6 +683,9 @@ ssh root@192.168.200.3
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
+
+Permet d'accéder à un serveur à distance et l'administrer depuis le réseau interne ou hors de celui-ci. Évite de devoir se déplacer vers la baie de serveurs et se brancher directement sur la machine.
+
 
 ---
 
@@ -664,6 +699,8 @@ ssh root@192.168.200.3
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
+
+Il faut faire attention à être le plus restrictif possible. Par exemple, quand on souhaite permettre le ssh vers du LAN au serveur sur la DMZ (192.168.200.3), dans la règle on spécifie l'adresse IP du serveur concernée en mettant `ip daddr 192.168.200.3` et non pas `ip daddr 192.168.200.0/24` qui permettrait de tenter une connexion en SSH sur toutes les machines du réseau 192.168.200.0.
 
 ---
 
