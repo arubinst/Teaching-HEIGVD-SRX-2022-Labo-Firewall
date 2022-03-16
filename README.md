@@ -280,6 +280,8 @@ Si votre ping passe mais que la réponse contient un _Redirect Host_, ceci indiq
 
 **LIVRABLE : capture d'écran de votre ping vers l'Internet. Un ping qui ne passe pas ou des réponses contenant des _Redirect Host_ sont acceptés.**
 
+![ping 8.8.8.8](livrables/ping_8888_attempt.png)
+
 ---
 
 ### Configuration réseau du firewall
