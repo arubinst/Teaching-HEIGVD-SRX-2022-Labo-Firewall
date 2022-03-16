@@ -309,12 +309,18 @@ Elle permet de créer une nouvelle table appelée "nat"
 ---
 
 **Réponse :**
-nft add chain : ajoute une nouvelle chaîne à une table
-nat : la chaîne est ajoutée à la table "nat" qu'on vient de créer
-postrouting : le nom de la chaîne qu'on crée est "postrouting"
-type nat : la chaîne est de type NAT (translation d'adresse)
-hook postrouting : la chaîne s'applique aux packets à la fin de leur traitement par netfilter
-priority 100 : 
+
+`nft add chain` : ajoute une nouvelle chaîne à une table
+
+`nat` : la chaîne est ajoutée à la table "nat" qu'on vient de créer
+
+`postrouting` : le nom de la chaîne qu'on crée est "postrouting"
+
+`type nat` : la chaîne est de type NAT (translation d'adresse)
+
+`hook postrouting` : la chaîne s'applique aux packets à la fin de leur traitement par netfilter
+
+`priority 100` : netfilters applique les chaînes d'un hook donné dans l'ordre de leur niveau de priorité (du plus petit au plus grand). Ce paramètre permet donc de contrôler quand cette chaîne sera appliquée par rapport à d'autres.
 
 ---
 
@@ -427,14 +433,14 @@ LIVRABLE : Commandes nftables
 
 ```bash
 ping 8.8.8.8
-``` 	            
+```          
 Faire une capture du ping.
 
 Vérifiez aussi la route entre votre client et le service `8.8.8.8`. Elle devrait partir de votre client et traverser votre Firewall :
 
 ```bash
 traceroute 8.8.8.8
-``` 	            
+``
 
 
 ---
