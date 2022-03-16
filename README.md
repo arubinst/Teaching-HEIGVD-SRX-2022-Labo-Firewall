@@ -302,8 +302,6 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
   </li>                                  
 </ol>
 
----
-
 **Réponse :**
 Elle permet de créer une nouvelle table appelée "nat"
 
@@ -313,8 +311,6 @@ Elle permet de créer une nouvelle table appelée "nat"
   <li>Quelle est l'utilité de la deuxième commande ? Expliquer chacun des paramètres.
   </li>                                  
 </ol>
-
----
 
 **Réponse :**
 
