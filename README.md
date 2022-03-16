@@ -373,9 +373,8 @@ On peut écrire la configuration dans le fichier /etc/nftables.conf, qui est ex�
   </li>                                  
 </ol>
 
----
 
-**Réponse :** nft list tables
+**Réponse :** `nft list ruleset`
 
 ---
 
@@ -385,12 +384,11 @@ On peut écrire la configuration dans le fichier /etc/nftables.conf, qui est ex�
   </li>                                  
 </ol>
 
----
 
 **Réponse :**
 
-nft flush ruleset
-nft flush table filter
+`nft flush ruleset`
+`nft flush table filter`
 
 ---
 
@@ -400,11 +398,10 @@ nft flush table filter
   </li>                                  
 </ol>
 
----
 
 **Réponse :**
 
-nft delete chain [family] <table_name> <chain_name>
+`nft delete chain [family] <table_name> <chain_name>`
 
 ---
 
