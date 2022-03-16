@@ -53,7 +53,7 @@ Ce texte se réfère au laboratoire « Pare-feu » à suivre dans le cadre du co
 
 ## Echéance
 
-Ce travail devra être rendu le dimanche après la fin de la 2ème séance de laboratoire, soit au plus tard, **le 18 Mars 2022, à 23h59.**
+Ce travail devra être rendu le dimanche après la fin de la 2ème séance de laboratoire, soit au plus tard, **le 20 Mars 2022, à 23h59.**
 
 # Réseaux cible
 
