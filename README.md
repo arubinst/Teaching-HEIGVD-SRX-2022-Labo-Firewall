@@ -448,7 +448,7 @@ Vérifiez aussi la route entre votre client et le service `8.8.8.8`. Elle devrai
 
 ```bash
 traceroute 8.8.8.8
-``
+```
 
 
 ---
