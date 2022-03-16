@@ -365,7 +365,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 ---
 
 **Réponse :**
-
+On peut écrire la configuration dans le fichier /etc/nftables.conf, qui est exécuté à chaque démarrage
 ---
 
 
@@ -379,7 +379,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-**Réponse :**
+**Réponse :** nft list tables
 
 ---
 
@@ -393,6 +393,9 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 **Réponse :**
 
+nft flush ruleset
+nft flush table filter
+
 ---
 
 
@@ -404,6 +407,8 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 ---
 
 **Réponse :**
+
+nft delete chain [family] <table_name> <chain_name>
 
 ---
 
