@@ -445,7 +445,16 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+nft add table filter
+nft 'add chain ip filter input { type filter hook input priority 0 ; policy drop; }'
+nft 'add chain ip filter output { type filter hook output priority 0 ; policy drop; }'
+nft 'add chain ip filter forward { type filter hook forward priority 0 ; policy drop; }'
+nft add rule filter forward icmp type echo-request ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24  accept
+nft add rule filter forward icmp type echo-reply ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24  accept
+nft add rule filter forward icmp type echo-reply ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24  accept
+nft add rule filter forward icmp type echo-request ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24  accept
+nft add rule filter forward icmp type echo-request ip saddr 192.168.100.0/24 ip daddr 172.20.10.0/24  accept
+nft add rule filter forward icmp type echo-reply ip saddr 192.168.100.0/24 ip daddr 172.20.10.0/24  accept
 ```
 ---
 
