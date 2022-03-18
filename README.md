@@ -695,7 +695,7 @@ Permet d'accéder à un serveur à distance et l'administrer depuis le réseau i
 
 **LIVRABLE : Votre réponse ici...**
 
-Il faut faire attention à être le plus restrictif possible. Par exemple, quand on souhaite permettre le ssh vers du LAN au serveur sur la DMZ (192.168.200.3), dans la règle on spécifie l'adresse IP du serveur concernée en mettant `ip daddr 192.168.200.3` et non pas `ip daddr 192.168.200.0/24` qui permettrait de tenter une connexion en SSH sur toutes les machines du réseau 192.168.200.0.
+Il faut faire attention à être le plus restrictif possible. Par exemple, quand on souhaite permettre le ssh du LAN au serveur sur la DMZ (192.168.200.3), dans la règle on spécifie l'adresse IP du serveur concernée en mettant `ip daddr 192.168.200.3` et non pas `ip daddr 192.168.200.0/24` qui permettrait de tenter une connexion en SSH sur toutes les machines du réseau 192.168.200.0.
 
 ---
 
