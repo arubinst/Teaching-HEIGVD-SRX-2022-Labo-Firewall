@@ -441,8 +441,6 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
-
 # Table creation
 nft add table ip filter
 
@@ -506,7 +504,7 @@ traceroute 8.8.8.8
 
 
 | De Client\_in\_LAN à | OK/KO | Commentaires et explications |
-| :---                 | :---: | :---                         |
+| :----                 | :---: | :---                         |
 | Interface DMZ du FW  |  KO   | Comportement normal, l'interface du firewall cible n'est pas dans le même sous-réseau, il est possible de passer à travers, mais pas de la ping. |
 | Interface LAN du FW  |  OK   | Comportement normal, l'interface est dans le sous-réseau, c'est la passerelle du client. |
 | Client LAN           |  OK   | Comportement normal, il est possible de se ping soi-même. |
@@ -549,8 +547,6 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
-
 nft add rule ip filter forward ip saddr 192.168.100.0/24 tcp dport 53 accept
 nft add rule ip filter forward ip saddr 192.168.100.0/24 udp dport 53 accept
 ```
@@ -578,8 +574,6 @@ nft add rule ip filter forward ip saddr 192.168.100.0/24 udp dport 53 accept
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
-
 Maintenant que nous avons autorisé le traffic sortant du LAN vers le WAN avec comme port de destination 53, la résolution de noms peut se faire sans encombre. Lors d'un ping avec un nom de domaine, ce dernier peut être résolu correctement et l'adresse IP associée récupérée. Sur cette capture, nous voyons l'adresse publique associée à www.google.com.
 
 ---
@@ -600,8 +594,6 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
-
 nft add rule ip filter forward ip saddr 192.168.100.0/24 oif eth0 tcp dport vmap {80: accept, 8080: accept, 443: accept}
 ```
 
@@ -614,8 +606,6 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
-
 nft add rule ip filter forward iif eth0 ip daddr 192.168.200.3 tcp dport 80 accept
 nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 80 accept
 ```
@@ -647,8 +637,6 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
-
 nft add rule ip filter input ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 tcp dport 22 accept
 nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 22 accept 
 ```
@@ -677,8 +665,6 @@ ssh root@192.168.200.3
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
-
 Permet d'accéder à un serveur à distance et l'administrer depuis le réseau interne ou hors de celui-ci. Évite de devoir se déplacer vers la baie de serveurs et se brancher directement sur la machine.
 
 
@@ -692,8 +678,6 @@ Permet d'accéder à un serveur à distance et l'administrer depuis le réseau i
 
 ---
 **Réponse**
-
-**LIVRABLE : Votre réponse ici...**
 
 Il faut faire attention à être le plus restrictif possible. Par exemple, quand on souhaite permettre le ssh du LAN au serveur sur la DMZ (192.168.200.3), dans la règle on spécifie l'adresse IP du serveur concernée en mettant `ip daddr 192.168.200.3` et non pas `ip daddr 192.168.200.0/24` qui permettrait de tenter une connexion en SSH sur toutes les machines du réseau 192.168.200.0.
 
