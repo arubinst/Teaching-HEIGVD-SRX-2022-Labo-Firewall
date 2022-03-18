@@ -129,15 +129,21 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 **LIVRABLE : Remplir le tableau**
 
-| Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
-| :---:             | :---:                  | :---:| :------: | :------: | :----: |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
+|   Adresse IP source    |  Adresse IP destination  |   Prot   | Port src | Port dst | Action |      Remark       |
+|:----------------------:|:------------------------:|:--------:|:--------:|:--------:|:------:|:-----------------:|
+|           *            |            *             |    *     |    *     |    *     | Block  |    Base Policy    |
+| 192.168.100.0/24 (LAN) |          (WAN)           |   TCP    |    *     |    53    | Allow  |        DNS        |
+| 192.168.100.0/24 (LAN) |          (WAN)           |   UDP    |    *     |    53    | Allow  |        DNS        |
+| 192.168.100.0/24 (LAN) |          (WAN)           |   TCP    |    *     |    80    | Allow  |       HTTP        |
+| 192.168.100.0/24 (LAN) |  192.168.200.0/24 (DMZ)  |   TCP    |    *     |    80    | Allow  |       HTTP        |
+| WAN (par interface ?)  |  192.168.200.0/24 (DMZ)  |   TPC    |    *     |    80    | Allow  |       HTTP        |
+| 192.168.100.0/24 (LAN) |          (WAN)           |   TCP    |    *     |   8080   | Allow  |     HTTP Alt      |
+| 192.168.100.0/24 (LAN) |          (WAN)           |   TCP    |    *     |   443    | Allow  |       HTTPS       |
+| 192.168.100.0/24 (LAN) |  192.168.200.0/24 (DMZ)  |   ICMP   |    -     |    -     | Allow  | **Request+Reply** |
+| 192.168.200.0/24 (DMZ) |  192.168.100.0/24 (LAN)  |   ICMP   |    -     |    -     | Allow  | **Request+Reply** |
+| 192.168.100.0/24 (LAN) |          (WAN)           |   ICMP   |    -     |    -     | Allow  | **Request+Reply** |
+| 192.168.100.0/24 (LAN) |  192.168.200.0/24 (DMZ)  |   TCP    |    *     |    22    | Allow  |        SSH        |
+| 192.168.100.0/24 (LAN) |      192.168.100.2       |   TCP    |    *     |    22    | Allow  |        SSH        |
 
 ---
 
@@ -300,7 +306,7 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 
 ---
 
-**Réponse :** Crée une nouvelle table de type ip nommée `nat`
+**Réponse :** La première commande crée une nouvelle table nommée "nat" en utilisant par défaut la famille "ip". 
 
 ---
 
@@ -311,7 +317,7 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 
 ---
 
-**Réponse :** Crée une nouvelle chaîne dans la table nat nommée postrouting. La chaîne est de type nat et 'attrape' les paquets après qu'ils aient été routés par le kernel.
+**Réponse :** La seconde commande crée une table nommée "postrouting". Cette chaîne est de type NAT, ce qui veut dire que seul le premier paquet de chaque stream est filtré par cette chaîne. Les paquets sont reçus après routing du kernel. Ils ont une priorité 100, ce qui est assez faible.
 
 ---
 
@@ -322,7 +328,7 @@ Cette autre commande démarre le service SSH du serveur :
 service ssh start
 ```
 
-Vérifiez que la connexion à l'Internet est maintenant possible depuis les deux autres machines ou qu'elle n'utilise plus de reditection. Pas besoin de capture d'écran mais assurez vous que les pings passent sans besoin de redirection de host avant de continuer.
+Vérifiez que la connexion à l'Internet est maintenant possible depuis les deux autres machines ou qu'elle n'utilise plus de redirection. Pas besoin de capture d'écran, mais assurez-vous que les pings passent sans besoin de redirection de host avant de continuer.
 
 
 # Manipulations
@@ -462,7 +468,7 @@ traceroute 8.8.8.8
   </li>                                  
 </ol>
 
-
+TODO
 | De Client\_in\_LAN à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
 | Interface DMZ du FW  |       |                              |
