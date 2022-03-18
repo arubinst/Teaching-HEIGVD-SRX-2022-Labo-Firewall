@@ -428,7 +428,7 @@ nft add chain filter icmp-forward
 
 # Ajout des règles
 
-nft 'add rule filter forward ct state related,etablished accept'
+nft 'add rule filter forward ct state related,established accept'
 
 nft add rule filter forward ip protocol tcp goto tcp-forward
 nft add rule filter forward ip protocol udp goto udp-forward
@@ -537,6 +537,7 @@ nft add rule filter tcp-forward tcp dport 53 ip saddr 192.168.100.0/24 meta oifn
 **Réponse**
 
 ???
+Question TODO : pourquoi le premier ping ne fonctionnait pas et que voulait dire le message d'erreur ?
 
 ---
 
