@@ -580,7 +580,7 @@ nft add rule ip filter forward ip saddr 192.168.100.0/24 udp dport 53 accept
 
 **LIVRABLE : Votre réponse ici...**
 
-À COMPLÉTER
+Maintenant que nous avons autorisé le traffic sortant du LAN vers le WAN avec comme port de destination 53, la résolution de noms peut se faire sans encombre. Lors d'un ping avec un nom de domaine, ce dernier peut être résolu correctement et l'adresse IP associée récupérée. Sur cette capture, nous voyons l'adresse publique associée à www.google.com.
 
 ---
 
