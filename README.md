@@ -321,7 +321,7 @@ Cette commande permet de créer une nouvelle table appelée _nat_.
 
 **Réponse :**
 
-Cette commande crée une nouvelle chaine à la table _nat_ crée précédamment.
+Cette commande crée une nouvelle chaine à la table _nat_ créée précédemment.
 
 - _nat_: Nom de la table concernée
 - _postrouting_: Nom de la chaine
