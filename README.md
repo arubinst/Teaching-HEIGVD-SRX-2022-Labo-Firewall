@@ -363,7 +363,7 @@ Au redémmarage, `nft -f /etc/nftables.conf`
 
 ---
 
-**Réponse :**
+**Réponse :** `nft list ruleset`
 
 ---
 
@@ -375,7 +375,7 @@ Au redémmarage, `nft -f /etc/nftables.conf`
 
 ---
 
-**Réponse :**
+**Réponse :** `nft flush ruleset`
 
 ---
 
@@ -387,7 +387,7 @@ Au redémmarage, `nft -f /etc/nftables.conf`
 
 ---
 
-**Réponse :**
+**Réponse :** `nft delete chain [family] <table_name> <chain_name>`
 
 ---
 
@@ -412,7 +412,24 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+# Création des tables / chaînes
+
+nft add table filter
+nft 'add chain filter forward { type filter hook forward priority 0; policy drop; }'
+nft add chain filter tcp-forward
+nft add chain filter udp-forward
+nft add chain filter icmp-forward
+
+# Ajout des règles
+
+nft 'add rule filter forward ct state related,etablished accept'
+
+nft add rule filter forward ip protocol tcp goto tcp-forward
+nft add rule filter forward ip protocol udp goto udp-forward
+nft add rule filter forward ip protocol icmp goto icmp-forward
+
+nft add rule filter icmp-forward ip saddr 192.168.100.0/24 accept
+nft add rule filter icmp-forward ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 accept
 ```
 ---
 
