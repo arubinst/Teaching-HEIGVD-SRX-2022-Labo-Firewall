@@ -129,21 +129,21 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 **LIVRABLE : Remplir le tableau**
 
-| Adresse IP source | Adresse IP destination |  Prot  | Port src |  Port dst  | Action  |     Remark      |
-|:-----------------:|:----------------------:|:------:|:--------:|:----------:|:-------:|:---------------:|
-|         *         |           *            |   *    |    *     |     *      |  Block  |   Base Policy   |
-|        LAN        |          WAN           |  TCP   |    *     |     53     |  Allow  |       DNS       |
-|        LAN        |          WAN           |  UDP   |    *     |     53     |  Allow  |       DNS       |
-|        LAN        |          WAN           |  TCP   |    *     |     80     |  Allow  |      HTTP       |
-|        LAN        |          DMZ           |  TCP   |    *     |     80     |  Allow  |      HTTP       |
-|        WAN        |          DMZ           |  TPC   |    *     |     80     |  Allow  |      HTTP       |
-|        LAN        |          WAN           |  TCP   |    *     |    8080    |  Allow  |    HTTP Alt     |
-|        LAN        |          WAN           |  TCP   |    *     |    443     |  Allow  |      HTTPS      |
-|        LAN        |          DMZ           |  ICMP  |    -     |     -      |  Allow  |  Request+Reply  |
-|        DMZ        |          LAN           |  ICMP  |    -     |     -      |  Allow  |  Request+Reply  |
-|        LAN        |          WAN           |  ICMP  |    -     |     -      |  Allow  |  Request+Reply  |
-|        LAN        |          DMZ           |  TCP   |    *     |     22     |  Allow  |       SSH       |
-|        LAN        |           FW           |  TCP   |    *     |     22     |  Allow  |       SSH       |
+|   Adresse IP source    |  Adresse IP destination  |   Prot   | Port src | Port dst | Action |      Remark       |
+|:----------------------:|:------------------------:|:--------:|:--------:|:--------:|:------:|:-----------------:|
+|           *            |            *             |    *     |    *     |    *     | Block  |    Base Policy    |
+| 192.168.100.0/24 (LAN) |          (WAN)           |   TCP    |    *     |    53    | Allow  |        DNS        |
+| 192.168.100.0/24 (LAN) |          (WAN)           |   UDP    |    *     |    53    | Allow  |        DNS        |
+| 192.168.100.0/24 (LAN) |          (WAN)           |   TCP    |    *     |    80    | Allow  |       HTTP        |
+| 192.168.100.0/24 (LAN) |  192.168.200.0/24 (DMZ)  |   TCP    |    *     |    80    | Allow  |       HTTP        |
+| WAN (par interface ?)  |  192.168.200.0/24 (DMZ)  |   TPC    |    *     |    80    | Allow  |       HTTP        |
+| 192.168.100.0/24 (LAN) |          (WAN)           |   TCP    |    *     |   8080   | Allow  |     HTTP Alt      |
+| 192.168.100.0/24 (LAN) |          (WAN)           |   TCP    |    *     |   443    | Allow  |       HTTPS       |
+| 192.168.100.0/24 (LAN) |  192.168.200.0/24 (DMZ)  |   ICMP   |    -     |    -     | Allow  | **Request+Reply** |
+| 192.168.200.0/24 (DMZ) |  192.168.100.0/24 (LAN)  |   ICMP   |    -     |    -     | Allow  | **Request+Reply** |
+| 192.168.100.0/24 (LAN) |          (WAN)           |   ICMP   |    -     |    -     | Allow  | **Request+Reply** |
+| 192.168.100.0/24 (LAN) |  192.168.200.0/24 (DMZ)  |   TCP    |    *     |    22    | Allow  |        SSH        |
+| 192.168.100.0/24 (LAN) |      192.168.100.2       |   TCP    |    *     |    22    | Allow  |        SSH        |
 
 ---
 
