@@ -570,12 +570,13 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+nft 'add rule filter tcp-forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 80 accept'
+nft 'add rule filter tcp-forward meta iifname "eth0" ip daddr 192.168.200.3 tcp dport 80 accept'
 ```
 ---
 
 <ol type="a" start="13">
-  <li>Tester l’accès à ce serveur depuis le LAN utilisant utilisant wget (ne pas oublier les captures d'écran).
+  <li>Tester l’accès à ce serveur depuis le LAN utilisant wget (ne pas oublier les captures d'écran).
   </li>                                  
 </ol>
 
@@ -597,8 +598,12 @@ Commandes nftables :
 
 ---
 
+# TODO: FIX !!!!
+
 ```bash
-LIVRABLE : Commandes nftables
+nft add rule filter tcp-forward ip daddr 192.168.200.0/24 tcp dport 22 accept
+nft 'add chain filter input { type filter hook input priority 0; policy drop; }'
+nft add rule filter input ip saddr 192.168.100.0/24 ip protocol tcp tcp dport 22 accept
 ```
 
 ---
