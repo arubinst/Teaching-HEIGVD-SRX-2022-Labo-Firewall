@@ -362,7 +362,8 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 ---
 
 **Réponse :**
-On ajoute simplement les règles dans le fichier "/etc/nftables.conf" ce fichier est lu lors du démarrage du service nft.
+On ajoute simplement les règles dans un fichier "/etc/nftables.conf" ensuite grace a la commande ```bash
+nft -f /etc/nftables.conf``` la config est reprise par nft.
 
 On remarque qu'un fichier est déja existant avec le Shebang suivant :
 ```bash
