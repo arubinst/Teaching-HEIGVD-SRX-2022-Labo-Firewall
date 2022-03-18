@@ -129,15 +129,18 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 **LIVRABLE : Remplir le tableau**
 
-| Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
-| :---:             | :---:                  | :---:| :------: | :------: | :----: |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
+| Adresse IP source | Adresse IP destination | Type    | Port src | Port dst | Action |
+| :---:             | :---:                  | :-----: | :------: | :------: | :----: |
+| *                 | *                      | any     | *        | *        | Drop   |
+| 192.168.100.0/24  | interface WAN          | TCP/UDP | 53       | 53       | Accept |
+| 192.168.100.0/24  | interface WAN          | ICMP    | -        | -        | Accept |
+| 192.168.100.0/24  | 192.168.200.0/24       | ICMP    | -        | -        | Accept |
+| 192.168.200.0/24  | 192.168.100.0/24       | ICMP    | -        | -        | Accept |
+| 192.168.100.0/24  | interface WAN          | TCP     | *        | 80, 8080 | Accept |
+| 192.168.100.0/24  | interface WAN          | TCP     | *        | 443      | Accept |
+| interface WAN     | 192.168.200.3          | TCP     | *        | 80       | Accept |
+| 192.168.100.0/24  | 192.168.200.3          | TCP     | *        | 80       | Accept |
+| 192.168.100.0/24  | 192.168.200.3          | TCP     | *        | 22       | Accept |
 
 ---
 
@@ -217,6 +220,8 @@ ping 192.168.200.3
 
 **LIVRABLE : capture d'écran de votre tentative de ping.**  
 
+![img](https://github.com/theomi/Teaching-HEIGVD-SRX-2022-Labo-Firewall/blob/main/Livrables/img/ping_tentatives.png)
+
 ---
 
 En effet, la communication entre les clients dans le LAN et les serveurs dans la DMZ doit passer à travers le Firewall. Dans certaines configurations, il est probable que le ping arrive à passer par le bridge par défaut. Ceci est une limitation de Docker. **Si votre ping passe**, vous pouvez accompagner votre capture du ping avec une capture d'une commande traceroute qui montre que le ping ne passe pas actuellement par le Firewall mais qu'il a emprunté un autre chemin.
@@ -256,6 +261,13 @@ ping 192.168.100.3
 
 **LIVRABLES : captures d'écran des routes des deux machines et de votre nouvelle tentative de ping.**
 
+DMZ to lan Traceroute
+
+![img](https://github.com/theomi/Teaching-HEIGVD-SRX-2022-Labo-Firewall/blob/main/Livrables/img/DMZ_to_Lan.png)
+
+LAN to DMZ traceroute
+![img](https://github.com/theomi/Teaching-HEIGVD-SRX-2022-Labo-Firewall/blob/main/Livrables/img/LAN_to_DMZ.png)
+
 ---
 
 La communication est maintenant possible entre les deux machines. Pourtant, si vous essayez de communiquer depuis le client ou le serveur vers l'Internet, ça ne devrait pas encore fonctionner sans une manipulation supplémentaire au niveau du firewall ou sans un service de redirection ICMP. Vous pouvez le vérifier avec un ping depuis le client ou le serveur vers une adresse Internet.
@@ -271,6 +283,8 @@ Si votre ping passe mais que la réponse contient un _Redirect Host_, ceci indiq
 ---
 
 **LIVRABLE : capture d'écran de votre ping vers l'Internet. Un ping qui ne passe pas ou des réponses contenant des _Redirect Host_ sont acceptés.**
+![img](https://github.com/theomi/Teaching-HEIGVD-SRX-2022-Labo-Firewall/blob/main/Livrables/img/ping_wan.png)
+
 
 ---
 
@@ -296,6 +310,8 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 
 **Réponse :**
 
+On créé une table qu'on appelle table associée a la famille ip (par défaut). Une table est un conteneur de chains, sets, maps, elle doit être associée a une famille (dans notre cas ip(v4)).
+
 ---
 
 <ol type="a" start="3">
@@ -306,6 +322,10 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 ---
 
 **Réponse :**
+
+On ajoute une chain de type nat a notre table nommée "nat" , on indique que cette chain sera traité en "postrouting" donc après routage du packet, et on lui assigne une priorité (100).
+
+Donc toutes les règles qu'on ajoutera dans cette chain dépendront implicitement de ces paramètres de chain
 
 ---
 
@@ -342,6 +362,31 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 ---
 
 **Réponse :**
+On ajoute simplement les règles dans un fichier "/etc/nftables.conf" ensuite grace a la commande ```bash
+nft -f /etc/nftables.conf``` la config est reprise par nft.
+
+On remarque qu'un fichier est déja existant avec le Shebang suivant :
+```bash
+#!/usr/sbin/nft -f
+```
+suivi de la commande :
+
+```bash
+flush ruleset
+```
+
+donc quand on a fini d'ajouter une table / chain / rule : on rajoute la table modifée dans ce fichier.
+
+Exemple:
+On vient de modifier la table "nat" on souhaite la rendre persistente :
+```bash
+nft list table nat >> /etc/nftables.conf 
+```
+
+Ou plus directement si on a crée différentes règles dans différentes tables on peut procéder ainsi :
+```bash
+nft list ruleset > /etc/nftables.conf
+```
 
 ---
 
@@ -357,6 +402,9 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 ---
 
 **Réponse :**
+```bash
+nft list ruleset
+```
 
 ---
 
@@ -369,6 +417,9 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 ---
 
 **Réponse :**
+```bash
+flush ruleset
+```
 
 ---
 
@@ -381,6 +432,15 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 ---
 
 **Réponse :**
+
+pour flush :
+```bash
+nft flush chain mytable mychain
+```
+pour delete :
+```bash
+nft delete chain mytable mychain
+```
 
 ---
 
