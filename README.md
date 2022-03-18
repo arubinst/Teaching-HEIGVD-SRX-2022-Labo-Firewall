@@ -306,7 +306,7 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 
 ---
 
-**Réponse :** Crée une nouvelle table de type ip nommée `nat`
+**Réponse :** La première commande crée une nouvelle table nommée "nat" en utilisant par défaut la famille "ip". 
 
 ---
 
@@ -317,7 +317,7 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 
 ---
 
-**Réponse :** Crée une nouvelle chaîne dans la table nat nommée postrouting. La chaîne est de type nat et 'attrape' les paquets après qu'ils aient été routés par le kernel.
+**Réponse :** La seconde commande crée une table nommée "postrouting". Cette chaîne est de type NAT, ce qui veut dire que seul le premier paquet de chaque stream est filtré par cette chaîne. Les paquets sont reçus après routing du kernel. Ils ont une priorité 100, ce qui est assez faible.
 
 ---
 
@@ -328,7 +328,7 @@ Cette autre commande démarre le service SSH du serveur :
 service ssh start
 ```
 
-Vérifiez que la connexion à l'Internet est maintenant possible depuis les deux autres machines ou qu'elle n'utilise plus de reditection. Pas besoin de capture d'écran mais assurez vous que les pings passent sans besoin de redirection de host avant de continuer.
+Vérifiez que la connexion à l'Internet est maintenant possible depuis les deux autres machines ou qu'elle n'utilise plus de redirection. Pas besoin de capture d'écran, mais assurez-vous que les pings passent sans besoin de redirection de host avant de continuer.
 
 
 # Manipulations
