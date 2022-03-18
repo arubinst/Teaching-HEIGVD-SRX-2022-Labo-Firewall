@@ -534,11 +534,8 @@ nft add rule filter tcp-forward tcp dport 53 ip saddr 192.168.100.0/24 meta oifn
 </ol>
 
 ---
-**Réponse**
-
-???
-Question TODO : pourquoi le premier ping ne fonctionnait pas et que voulait dire le message d'erreur ?
-
+**Réponse** :  
+Le premier ping ne fonctionnait pas, car le firewall n'était pas encore configuré pour laisser passer ICMP. Il n'y a pas de message d'erreur affiché. La politique de base étant "DROP", le paquet est bloqué sans réponse. Le ping fait donc un timeout sans jamais recevoir de réponse.
 ---
 
 
