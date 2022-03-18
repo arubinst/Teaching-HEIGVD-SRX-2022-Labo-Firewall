@@ -644,7 +644,7 @@ Mehdi:
 | :---                 | :---: | :---                         |
 | Interface DMZ du FW  | KO    | Client pas autorisé à ping interface DMZ du FW
 | Interface LAN du FW  | OK    | Client autorisé à ping interface LAN du FW |
-| Client LAN           | ??    | A tester avec un 2eme client |
+| Client LAN           | OK    | Testé avec un 2ème client |
 | Serveur WAN          | OK    | Autorisé dans forward        |
 
 
@@ -652,7 +652,7 @@ Mehdi:
 | :---                 | :---: | :---                         |
 | Interface DMZ du FW  | OK    | Autorisé dans INPUT          |
 | Interface LAN du FW  | KO    | Pas autorisé                 |
-| Serveur DMZ          | ??    | A tester avec autre serveur  |
+| Serveur DMZ          | OK    | testé avec un 2eme serveur dans DMZ |
 | Serveur WAN          | KO    | Pas autorisé                 |
 
 
