@@ -133,10 +133,10 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 | :---:             | :---:                  | :---:| :------: | :------: | :----: |
 | 192.168.100.0/24  |             *          |UDP/TCP|    *   |     53    |  Accept|
 | 192.168.200.0/24  |             *          |UDP/TCP|    *   |     53    |  Accept|
+|          *        |    192.168.100.0/24    |UDP/TCP|   53   |      *    |  Accept|
+|          *        |    192.168.200.0/24    |UDP/TCP|   53   |      *    |  Accept|
 | 192.168.100.0/24  |             *          | ICMP:echo-request | - |  - | Accept |
 |        *          |    192.168.100.0/24    | ICMP:echo-reply   | - |  - | Accept |
-| 192.168.100.0/24  |    192.168.200.0/24    | ICMP:echo-request | - |  - | Accept |
-| 192.168.200.0/24  |    192.168.100.0/24    | ICMP:echo-reply   | - |  - | Accept |
 | 192.168.200.0/24  |    192.168.100.0/24    | ICMP:echo-request | - |  - | Accept |
 | 192.168.100.0/24  |    192.168.200.0/24    | ICMP:echo-reply   | - |  - | Accept |
 | 192.168.100.0/24  |            *           | TCP  |     *    |    80    | Accept |
@@ -314,6 +314,7 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 ---
 
 **Réponse :**
+Elle crée une table nommée : `nat`
 
 ---
 
@@ -325,6 +326,10 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 ---
 
 **Réponse :**
+Elle ajoute une chaine dans la table nat, nommée : `postrouting`
+- `type nat` : type de la chaine est nat qui supporte les familles : ip, ip6, inet et les hooks de types : prerouting, postrouting, input, output
+- `hook postrouting`: le hook est de type `postrouting`: la chaine sera déclanchée après que la "routing decision" ait été prise
+- `priority 100` : Elle a une priorité de 100, elle sera moins prioritaire qu'un numéro plus petit. Elle est donc peu prioritaire
 
 ---
 
