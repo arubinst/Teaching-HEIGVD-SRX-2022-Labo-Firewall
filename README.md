@@ -598,8 +598,6 @@ Commandes nftables :
 
 ---
 
-# TODO: FIX !!!!
-
 ```bash
 nft add rule filter tcp-forward ip daddr 192.168.200.0/24 tcp dport 22 accept
 nft 'add chain filter input { type filter hook input priority 0; policy drop; }'
@@ -616,7 +614,7 @@ ssh root@192.168.200.3
 
 ---
 
-**LIVRABLE : capture d'écran de votre connexion ssh.**
+![](./screenshots/ssh_dmz.png)
 
 ---
 
@@ -628,7 +626,7 @@ ssh root@192.168.200.3
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+Cela permet de gérer le serveur à distance sans devoir s'y connecter physiquement.
 
 ---
 
@@ -641,7 +639,7 @@ ssh root@192.168.200.3
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+Il faut faire attention à ce qu'il ne soit pas possible de forger un paquet, par ex en changeant le port source, de permettre à un attaquant de passer le pare-feu du WAN. Si on autorise tous les paquets entrant ayant le port source TCP 80 à aller en DMZ, on pourrait laisser passer par accident un attaquant qui pourrait se connecter en SSH à nos serveurs.
 
 ---
 
@@ -656,6 +654,6 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 
 ---
 
-**LIVRABLE : capture d'écran avec toutes vos règles.**
+![](./screenshots/rules.png)
 
 ---
