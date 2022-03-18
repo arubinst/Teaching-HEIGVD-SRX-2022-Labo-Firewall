@@ -129,15 +129,21 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 **LIVRABLE : Remplir le tableau**
 
-| Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
-| :---:             | :---:                  | :---:| :------: | :------: | :----: |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
+| Adresse IP source | Adresse IP destination |  Prot  | Port src |  Port dst  | Action  |     Remark      |
+|:-----------------:|:----------------------:|:------:|:--------:|:----------:|:-------:|:---------------:|
+|         *         |           *            |   *    |    *     |     *      |  Block  |   Base Policy   |
+|        LAN        |          WAN           |  TCP   |    *     |     53     |  Allow  |       DNS       |
+|        LAN        |          WAN           |  UDP   |    *     |     53     |  Allow  |       DNS       |
+|        LAN        |          WAN           |  TCP   |    *     |     80     |  Allow  |      HTTP       |
+|        LAN        |          DMZ           |  TCP   |    *     |     80     |  Allow  |      HTTP       |
+|        WAN        |          DMZ           |  TPC   |    *     |     80     |  Allow  |      HTTP       |
+|        LAN        |          WAN           |  TCP   |    *     |    8080    |  Allow  |    HTTP Alt     |
+|        LAN        |          WAN           |  TCP   |    *     |    443     |  Allow  |      HTTPS      |
+|        LAN        |          DMZ           |  ICMP  |    -     |     -      |  Allow  |  Request+Reply  |
+|        DMZ        |          LAN           |  ICMP  |    -     |     -      |  Allow  |  Request+Reply  |
+|        LAN        |          WAN           |  ICMP  |    -     |     -      |  Allow  |  Request+Reply  |
+|        LAN        |          DMZ           |  TCP   |    *     |     22     |  Allow  |       SSH       |
+|        LAN        |           FW           |  TCP   |    *     |     22     |  Allow  |       SSH       |
 
 ---
 
