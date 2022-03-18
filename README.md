@@ -428,8 +428,8 @@ nft add rule filter forward ip protocol tcp goto tcp-forward
 nft add rule filter forward ip protocol udp goto udp-forward
 nft add rule filter forward ip protocol icmp goto icmp-forward
 
-nft add rule filter icmp-forward ip saddr 192.168.100.0/24 accept
-nft add rule filter icmp-forward ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 accept
+nft 'add rule filter icmp-forward ip saddr 192.168.100.0/24 icmp type { echo-request, echo-reply } accept'
+nft 'add rule filter icmp-forward ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type { echo-request, echo-reply } accept'
 ```
 ---
 
@@ -443,14 +443,14 @@ nft add rule filter icmp-forward ip saddr 192.168.200.0/24 ip daddr 192.168.100.
 ```bash
 ping 8.8.8.8
 ``` 	            
-Faire une capture du ping.
+![](./screenshots/ping_client_internet.png)
 
 Vérifiez aussi la route entre votre client et le service `8.8.8.8`. Elle devrait partir de votre client et traverser votre Firewall :
 
 ```bash
 traceroute 8.8.8.8
 ``` 	            
-
+![](./screenshots/traceroute_client_internet.png)
 
 ---
 **LIVRABLE : capture d'écran du traceroute et de votre ping vers l'Internet. Il ne devrait pas y avoir des _Redirect Host_ dans les réponses au ping !**
@@ -494,7 +494,7 @@ ping www.google.com
 
 ---
 
-**LIVRABLE : capture d'écran de votre ping.**
+![](./screenshots/nslookup_google.png)
 
 ---
 
@@ -505,7 +505,8 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+nft add rule filter udp-forward udp dport 53 ip saddr 192.168.100.0/24 meta oifname "eth0" accept
+nft add rule filter tcp-forward tcp dport 53 ip saddr 192.168.100.0/24 meta oifname "eth0" accept
 ```
 
 ---
@@ -517,7 +518,7 @@ LIVRABLE : Commandes nftables
 
 ---
 
-**LIVRABLE : capture d'écran de votre ping.**
+![](./screenshots/ping_debian.png)
 
 ---
 
@@ -529,7 +530,7 @@ LIVRABLE : Commandes nftables
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+???
 
 ---
 
@@ -549,7 +550,8 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+nft 'add rule filter tcp-forward tcp dport {80, 8080} meta oifname "eth0" accept'
+nft add rule filter tcp-forward tcp dport 443 meta oifname "eth0" accept
 ```
 
 ---
