@@ -282,7 +282,7 @@ Si votre ping passe mais que la réponse contient un _Redirect Host_, ceci indiq
 
 **LIVRABLE : capture d'écran de votre ping vers l'Internet. Un ping qui ne passe pas ou des réponses contenant des _Redirect Host_ sont acceptés.**
 
-![Ping vers WAN depuis LAN](figures/SRX_L1_ping-not-working-to-internet-ok.png)
+![Ping vers WAN depuis LAN](figures/SRX_L1_ping-not-working-to-internet-ok_v2.png)
 
 ---
 
@@ -443,8 +443,6 @@ Commandes nftables :
 ```bash
 LIVRABLE : Commandes nftables
 
-# Thanks Wiki ... don't forget to disable your VPN (╯°□°)╯︵ ┻━┻
-
 # Table creation
 nft add table ip filter
 
@@ -497,8 +495,7 @@ traceroute 8.8.8.8
 ---
 **LIVRABLE : capture d'écran du traceroute et de votre ping vers l'Internet. Il ne devrait pas y avoir des _Redirect Host_ dans les réponses au ping !**
 
-![Ping vers WAN](figures/SRX_L1_LAN-to-WAN-ping-OK.png)
-![Traceroute vers WAN](figures/SRX_L1_LAN-to-WAN-traceroute-OK.png)
+![Ping vers WAN](figures/SRX_L1_LAN-to-WAN-ping-traceroute-OK.png)
 
 ---
 
@@ -633,9 +630,7 @@ nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 
 
 **LIVRABLE : capture d'écran.**
 
-![wget vers WAN](figures/SRX_L1_HTTP-HTTPS-working-OK.png)
-
-![wget vers DMZ](figures/SRX_L1_HTTP-lan-to-dmz-OK.png)
+![wget vers WAN](figures/SRX_L1_HTTP-HTTPS-LAN-toWAN-toDMZ-working-OK.png)
 
 ---
 
@@ -716,5 +711,5 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 ---
 
 **LIVRABLE : capture d'écran avec toutes vos règles.**
-
+![Set de règles entier](figures/SRX_L1_ruleset-ok.png)
 ---
