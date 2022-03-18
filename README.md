@@ -507,18 +507,18 @@ traceroute 8.8.8.8
 
 | De Client\_in\_LAN à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |  KO   |                              |
-| Interface LAN du FW  |  OK   |                              |
-| Client LAN           |  OK   |                              |
-| Serveur WAN          |  OK   |                              |
+| Interface DMZ du FW  |  KO   | Comportement normal, l'interface du firewall cible n'est pas dans le même sous-réseau, il est possible de passer à travers, mais pas de la ping. |
+| Interface LAN du FW  |  OK   | Comportement normal, l'interface est dans le sous-réseau, c'est la passerelle du client. |
+| Client LAN           |  OK   | Comportement normal, il est possible de se ping soi-même. |
+| Serveur WAN          |  OK   | Comportemant normal, les règles spécifiées avant permettent aux paquets ICMP de sortir dans le WAN.  |
 
 
 | De Server\_in\_DMZ à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |   OK  |                              |
-| Interface LAN du FW  |   KO  |                              |
-| Serveur DMZ          |   OK  |                              |
-| Serveur WAN          |   KO  |                              |
+| Interface DMZ du FW  |   OK  | Comportement normal, l'interface est dans le sous-réseau, c'est la passerelle du serveur. |
+| Interface LAN du FW  |   KO  |  Comportement normal, l'interface du firewall cible n'est pas dans le même sous-réseau, il est possible de passer à travers, mais pas de la ping. |
+| Serveur DMZ          |   OK  |  Comportement normal, il est possible de se ping soi-même.|
+| Serveur WAN          |   KO  |  Comportemant normal, car les règles n'autorisent pas la DMZ à démarrer une conversation ICMP avec le WAN. |
 
 
 ## Règles pour le protocole DNS
