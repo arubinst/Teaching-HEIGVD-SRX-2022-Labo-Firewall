@@ -382,16 +382,15 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 ---
 
 **Réponse :**
-mehdi:
+
 Pour sauvegarder:
 nft list ruleset > /etc/nftables.conf
 
-Pour restaurer:
-nft -f nftables.conf
+Sous Debian, le fichier /etc/nftables.conf est automatiquement chargé au
+démarrage de la machine par nftables.
 
-Pour que le fichier soit chargé à chaque démarrage de la machine, le mettre 
-dans(pour Debian):
-/etc/nftables.conf
+Pour charger un fichier de configuration dans nftables:
+nft -f nftables.conf
 
 ---
 
@@ -407,8 +406,6 @@ dans(pour Debian):
 ---
 
 **Réponse :**
-
-Mehdi:
 
 nft list ruleset
 
@@ -428,8 +425,6 @@ individuellement.
 
 **Réponse :**
 
-Mehdi:
-
 Pour tout effacer:
 
 nft flush ruleset
@@ -446,14 +441,13 @@ nft flush ruleset
 
 **Réponse :**
 
-Mehdi:
-
 nft delete chain <nom_table> <nom_chain> 
 
 Egalement pour effacer uniquement une règle:
 Afficher le numéro de règle (handle) avec:
 nft list ruleset -a
 puis effacer la règle voulue:
+
 nft delete rule <nom_table> <nom_chain> handle <numero_handle>
 
 ---
@@ -695,19 +689,18 @@ protocol ICMP. La commande fonctionne alors car ICMP est autorisé
 Mehdi: 
 | De Client\_in\_LAN à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  | KO    | Client pas autorisé à ping interface DMZ du FW
-| Interface LAN du FW  | OK    | Client autorisé à ping interface LAN du FW |
-| Client LAN           | OK    | Testé avec un 2ème client |
-| Serveur WAN          | OK    | Autorisé dans forward        |
+| Interface DMZ du FW  | OK    | Explicitement autorisé dans la chaine INPUT |
+| Interface LAN du FW  | OK    | Explicitement autorisé dans la chaine INPUT |
+| Client LAN           | OK    | Ping à soit même OK. Egalement testé avec un 2ème client OK |
+| Serveur WAN          | OK    | Explicitement autorisé dans chaine FORWARD |
 
 
 | De Server\_in\_DMZ à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  | OK    | Autorisé dans INPUT          |
-| Interface LAN du FW  | KO    | Pas autorisé                 |
-| Serveur DMZ          | OK    | testé avec un 2eme serveur dans DMZ |
+| Interface DMZ du FW  | OK    | Explicitement autorisé dans chaine INPUT |
+| Interface LAN du FW  | OK    | Explicitement autorisé dans INPUT |
+| Serveur DMZ          | OK    | Ping à soit même OK. Egalement testé avec un 2ème serveur OK |
 | Serveur WAN          | KO    | Pas autorisé                 |
-
 
 ## Règles pour le protocole DNS
 
@@ -1012,6 +1005,13 @@ table ip filter {
 
 ## Conclusion
 ### Config stateless VS statefull
+Nous avons testé deux configurations différentes: une stateless et une
+statefull. La configuration stateless est bien plus complexe à mettre en place
+et semble moins sécurisée car il faut accepter du traffic entrant.
+
+Nous gardons donc la configuration stateful qui fait gagner du temps dans les
+règles d'écriture et génère moins d'erreurs de configurations.
+
 ### Filtrage supplémentaire
 https://blog.samuel.domains/blog/security/nftables-hardening-rules-and-good-practices
 
