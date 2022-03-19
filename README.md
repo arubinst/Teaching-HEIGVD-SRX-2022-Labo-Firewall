@@ -611,39 +611,6 @@ table ip filter {
 }
 ```
 
-
-Guilain: 
-```
-chain INPUT { # handle 4
-    type filter hook input priority filter; policy accept;
-    ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 tcp dport 22 accept # handle 19
-    drop # handle 31
-}
-
-chain OUTPUT { # handle 5
-    type filter hook output priority filter; policy accept;
-    drop # handle 30
-}
-
-chain FORWARD { # handle 8
-    type filter hook forward priority filter; policy accept;
-    ip saddr 192.168.100.0/24 udp dport 53 accept # handle 10
-    ip saddr 192.168.100.0/24 tcp dport 53 accept # handle 11
-    ip saddr 192.168.100.0/24 icmp type { echo-reply, echo-request } accept # handle 12
-    ip daddr 192.168.100.0/24 icmp type echo-reply accept # handle 25
-    ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type { echo-reply, echo-request } accept # handle 13
-    ip saddr 192.168.100.0/24 tcp dport 80 accept # handle 14
-    ip saddr 192.168.100.0/24 tcp dport 8080 accept # handle 15
-    ip saddr 192.168.100.0/24 tcp dport 443 accept # handle 16
-    ip daddr 192.168.100.0/24 tcp flags ack accept # handle 28
-    ip daddr 192.168.200.0/24 tcp dport 80 accept # handle 17
-    ip saddr 192.168.200.0/24 tcp flags ack accept # handle 29
-    ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 tcp dport 22 accept # handle 18
-    drop # handle 21
-}
-
-```
-
 ### Questions
 
 <ol type="a" start="8">
@@ -1001,6 +968,45 @@ table ip filter {
 }
 
 
+```
+
+Version stateless:
+```
+table ip nat {
+	chain postrouting {
+		type nat hook postrouting priority srcnat; policy accept;
+		oifname "eth0" masquerade
+	}
+}
+table inet filter {
+	chain input {
+		type filter hook input priority filter; policy drop;
+		ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 tcp dport 22 accept
+		ip saddr 192.168.100.0/24 ip saddr 192.168.200.0/24 icmp type echo-request accept
+	}
+
+	chain forward {
+		type filter hook forward priority filter; policy drop;
+		ip saddr 192.168.100.0/24 udp dport 53 accept
+		ip daddr 192.168.100.0/24 udp sport 53 accept
+		ip saddr 192.168.100.0/24 tcp dport 53 accept
+		ip saddr 192.168.100.0/24 icmp type { echo-reply, echo-request } accept
+		ip daddr 192.168.100.0/24 icmp type echo-reply accept
+		ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type { echo-reply, echo-request } accept
+		ip saddr 192.168.100.0/24 tcp dport 80 accept
+		ip saddr 192.168.100.0/24 tcp dport 8080 accept
+		ip saddr 192.168.100.0/24 tcp dport 443 accept
+		ip daddr 192.168.100.0/24 tcp flags ack accept
+		ip daddr 192.168.200.0/24 tcp dport 80 accept
+		ip saddr 192.168.200.0/24 tcp flags ack accept
+		ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 tcp dport 22 accept
+	}
+
+	chain output {
+		type filter hook output priority filter; policy drop;
+		ip daddr 192.168.100.0/24 ip daddr 192.168.200.0/24 icmp type echo-reply accept
+	}
+}
 ```
 
 ## Conclusion
