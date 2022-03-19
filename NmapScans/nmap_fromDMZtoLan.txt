@@ -1,0 +1,10 @@
+Starting Nmap 7.80 ( https://nmap.org ) at 2022-03-19 07:03 UTC
+Nmap scan report for 192.168.100.2
+Host is up (0.000018s latency).
+All 1000 scanned ports on 192.168.100.2 are filtered
+
+Nmap scan report for 192.168.100.3
+Host is up (0.00011s latency).
+All 1000 scanned ports on 192.168.100.3 are filtered
+
+Nmap done: 256 IP addresses (2 hosts up) scanned in 58.22 seconds

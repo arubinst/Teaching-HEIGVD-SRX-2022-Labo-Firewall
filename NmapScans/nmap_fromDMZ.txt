@@ -1,0 +1,19 @@
+Starting Nmap 7.80 ( https://nmap.org ) at 2022-03-19 06:59 UTC
+Nmap scan report for 192.168.200.1
+Host is up (0.000069s latency).
+All 1000 scanned ports on 192.168.200.1 are filtered
+MAC Address: 02:42:AB:0A:67:EB (Unknown)
+
+Nmap scan report for Firewall.2dmz (192.168.200.2)
+Host is up (0.000022s latency).
+All 1000 scanned ports on Firewall.2dmz (192.168.200.2) are filtered
+MAC Address: 02:42:C0:A8:C8:02 (Unknown)
+
+Nmap scan report for 6e711655ae6e (192.168.200.3)
+Host is up (0.0000090s latency).
+Not shown: 998 closed ports
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+
+Nmap done: 256 IP addresses (3 hosts up) scanned in 56.34 seconds

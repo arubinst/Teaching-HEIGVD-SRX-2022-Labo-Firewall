@@ -1,0 +1,10 @@
+Starting Nmap 7.80 ( https://nmap.org ) at 2022-03-18 08:47 UTC
+Nmap scan report for 192.168.200.3
+Host is up (0.000087s latency).
+Not shown: 997 filtered ports
+PORT   STATE  SERVICE
+22/tcp open   ssh
+53/tcp closed domain
+80/tcp open   http
+
+Nmap done: 256 IP addresses (1 host up) scanned in 9.05 seconds
