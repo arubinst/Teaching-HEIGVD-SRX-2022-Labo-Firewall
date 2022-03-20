@@ -547,8 +547,8 @@ Commandes nftables :
 ---
 
 ```bash
-nft add rule ip filter forward ip saddr 192.168.100.0/24 tcp dport 53 accept
-nft add rule ip filter forward ip saddr 192.168.100.0/24 udp dport 53 accept
+nft add rule ip filter forward ip saddr 192.168.100.0/24 oif eth0 tcp dport 53 accept
+nft add rule ip filter forward ip saddr 192.168.100.0/24 oif eth0 udp dport 53 accept
 ```
 
 ---
