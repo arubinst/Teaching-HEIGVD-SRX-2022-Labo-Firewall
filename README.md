@@ -445,16 +445,24 @@ Commandes nftables :
 ---
 
 ```bash
+# on crée une table filter qui contiendra les chaines/règles à appliquer
 nft add table filter
+
+# On crée trois chaines, une input et output afin de pouvoir gérer le traffic ayant comme cible le firewall
+# et on crée une chaine forward pour tout autre traffic (cible DMZ, LAN ou WAN)
 nft 'add chain ip filter input { type filter hook input priority 0 ; policy drop; }'
 nft 'add chain ip filter output { type filter hook output priority 0 ; policy drop; }'
 nft 'add chain ip filter forward { type filter hook forward priority 0 ; policy drop; }'
-nft add rule filter forward icmp type echo-request ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24  accept
-nft add rule filter forward icmp type echo-reply ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24  accept
-nft add rule filter forward icmp type echo-reply ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24  accept
-nft add rule filter forward icmp type echo-request ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24  accept
-nft add rule filter forward icmp type echo-request ip saddr 192.168.100.0/24 ip daddr 172.20.10.0/24  accept
-nft add rule filter forward icmp type echo-reply ip saddr 192.168.100.0/24 ip daddr 172.20.10.0/24  accept
+
+# on crée deux règles, une pour les request icmp et une autre pour les reply icmp afin de permettre les échanges.
+# ici il s'agit des deux règles pour autoriser le ping depuis la DMZ :
+nft add rule filter forward icmp type echo-request ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 accept
+nft add rule filter forward icmp type echo-reply ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 accept
+
+# comme les clients LAN on le droit de ping le WAN et la DMZ on peut se permettre de laisser passer toutes request ICMP ayant
+# comme adresse source une adresse du LAN et laisser passer tout reply ayant comme adresse de destination une adresse du LAN.
+nft add rule filter forward icmp type echo-request ip saddr 192.168.100.0/24 accept
+nft add rule filter forward icmp type echo-reply ip daddr 192.168.100.0/24 accept
 ```
 ---
 
@@ -480,6 +488,9 @@ traceroute 8.8.8.8
 
 ---
 **LIVRABLE : capture d'écran du traceroute et de votre ping vers l'Internet. Il ne devrait pas y avoir des _Redirect Host_ dans les réponses au ping !**
+![Ping sur le WAN fonctionnel](figures/PingVersInternetFonctionnel.PNG)
+
+Ajouter le traceroute ici
 
 ---
 
