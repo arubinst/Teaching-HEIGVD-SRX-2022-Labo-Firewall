@@ -488,6 +488,7 @@ traceroute 8.8.8.8
 
 ---
 **LIVRABLE : capture d'écran du traceroute et de votre ping vers l'Internet. Il ne devrait pas y avoir des _Redirect Host_ dans les réponses au ping !**
+
 ![Ping sur le WAN fonctionnel](figures/PingVersInternetFonctionnel.PNG)
 
 Ajouter le traceroute ici
@@ -533,6 +534,7 @@ ping www.google.com
 
 **LIVRABLE : capture d'écran de votre ping.**
 
+![Résolution DNS non fonctionnel](figures/PingDNSNonFonctionnel.PNG)
 ---
 
 * Créer et appliquer la règle adéquate pour que la **condition 1 du cahier des charges** soit respectée.
@@ -543,6 +545,12 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+# ajout d'une règle qui permet d'accepter les paquets qui font parties d'une connection
+nft add rule filter forward ct state established,related accept
+
+# ajout des deux règles permettant d'accepter les paquets tcp et udp qui viennent du réseaux LAN
+nft add rule filter forward tcp dport 53 ip saddr 192.168.100.0/24 accept
+nft add rule filter forward udp dport 53 ip saddr 192.168.100.0/24 accept
 ```
 
 ---
@@ -556,6 +564,7 @@ LIVRABLE : Commandes nftables
 
 **LIVRABLE : capture d'écran de votre ping.**
 
+![Résolution DNS fonctionnel](figures/PingDNSFonctionnel.PNG)
 ---
 
 <ol type="a" start="12">
@@ -567,6 +576,10 @@ LIVRABLE : Commandes nftables
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
+
+Comme nous n'arrivons pas envoyer une requête de résolution DNS car le firewall ne les acceptait pas encore à ce moment,
+un message d'erreur est affiché après un certains temps pour justement nous dire que la résolution DNS rencontre un problème.
+
 
 ---
 
