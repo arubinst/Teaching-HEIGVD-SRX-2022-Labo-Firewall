@@ -138,9 +138,9 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 | 192.168.200.0/24  |  192.168.100.0/24      | ICMP      |   7       |  7       | Accept  |
 | 192.168.100.0/24  |  Interface WAN         | HTTP      |  80/8080  | 80/8080  | Accept  |
 | 192.168.100.0/24  |  Interface WAN         | HTTPS     | 443       | 443      | Accept  |
-| Interface WAN     |  192.168.200.0/24      | HTTP      |  80       | 80       | Accept  |
-| 192.168.100.0/24  |  192.168.200.0/24      | HTTP      |  80       | 80       | Accept  |
-| 192.168.100.0/24  |  192.168.200.0/24      | SSH       |  22       | 22       | Accept  |
+| Interface WAN     |  192.168.200.3/24      | HTTP      |  80       | 80       | Accept  |
+| 192.168.100.0/24  |  192.168.200.3/24      | HTTP      |  80       | 80       | Accept  |
+| 192.168.100.0/24  |  192.168.200.3/24      | SSH       |  22       | 22       | Accept  |
 | 192.168.100.0/24  |  192.168.100.2/24      | SSH       |  22       | 22       | Accept  |
 
 ---
@@ -600,6 +600,13 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+
+# règle permettant d'accepter les paquets venant du réseau LAN et ayant comme destination les ports 80 ou 8080
+# grâce à la règle qui accepte les paquets faisant parties d'une connection il n'y a rien d'autre à faire
+nft add rule filter forward tcp dport { 80, 8080 } ip saddr 192.168.100.0/24 accept
+
+# règle permettant d'accepter les paquets venant du réseau LAN et ayant comme destination le port 443.
+nft add rule filter forward tcp dport 443 ip saddr 192.168.100.0/24 accept
 ```
 
 ---
@@ -612,6 +619,10 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+
+# Comme le LAN et le WAN ont accès au serveur, on peut uniquement préciser le port et l'adresse de destination
+# on précise directement l'adresse du serveur afin que les autres services de la DMZ ne soient pas exposés sur le port 80. 
+nft add rule filter forward tcp dport 80 ip daddr 192.168.200.3/24 accept
 ```
 ---
 
@@ -623,6 +634,17 @@ LIVRABLE : Commandes nftables
 ---
 
 **LIVRABLE : capture d'écran.**
+
+Connexion HTTP :
+
+![Connexion HTTP](figures/connexionHTTP.PNG)
+
+Connexion HTTPS :
+
+![Connexion HTTPS](figures/connexionHTTPS.PNG)
+
+Connexion HTTP sur le serveur DMZ :
+![Connexion HTTP DMZ](figures/connexionHTTPDMZ.PNG)
 
 ---
 
