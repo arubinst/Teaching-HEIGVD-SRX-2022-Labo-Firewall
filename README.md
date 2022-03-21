@@ -502,18 +502,18 @@ Ajouter le traceroute ici
 
 | De Client\_in\_LAN à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Client LAN           |       |                              |
-| Serveur WAN          |       |                              |
+| Interface DMZ du FW  | KO    | Car comme nous ciblons directement le firewall, le paquet ne passera pas dans la chain "forward" mais par la chaine "input" qui, par défaut drop tous les paquets |
+| Interface LAN du FW  | KO    | Même commentaire que pour le ping vers Interface DMZ du FW |
+| Client LAN           | OK    | On s'auto ping donc on ne passe pas par le firewall, il n'y aura donc aucun problème |
+| Serveur WAN          | OK    | Le paquet va passer par le firewall mais cette fois-ci il utilisera la chaine "forward" car on ne cible pas le firewall lui-même et donc il va appliquer les règles qui se trouvent dedans, donc il va laisser passer le paquet ICMP car le LAN à le droit de communiquer avec le WAN |
 
 
 | De Server\_in\_DMZ à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Serveur DMZ          |       |                              |
-| Serveur WAN          |       |                              |
+| Interface DMZ du FW  | KO    | Même commentaire que pour le ping du client_in_lan vers Interface DMZ du FW |
+| Interface LAN du FW  | KO    | Même commentaire que pour le ping du client_in_lan vers Interface DMZ du FW |
+| Serveur DMZ          | OK    | On s'auto ping donc on ne passe pas par le firewall, il n'y aura donc aucun problème |
+| Serveur WAN          | KO    | Le paquet va passer par le firewall mais cette fois-ci il utilisera la chaine "forward" car on ne cible pas le firewall lui-même. Cependant le paquet va être drop car selon nos règles le WAN n'a pas le droit de ping des machines sur le WAN |
 
 
 ## Règles pour le protocole DNS
