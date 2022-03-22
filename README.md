@@ -140,8 +140,8 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 | 192.168.100.0/24  |  Interface WAN         | HTTPS     | 443       | 443      | Accept  |
 | Interface WAN     |  192.168.200.3/24      | HTTP      |  80       | 80       | Accept  |
 | 192.168.100.0/24  |  192.168.200.3/24      | HTTP      |  80       | 80       | Accept  |
-| 192.168.100.0/24  |  192.168.200.3/24      | SSH       |  22       | 22       | Accept  |
-| 192.168.100.0/24  |  192.168.100.2/24      | SSH       |  22       | 22       | Accept  |
+| 192.168.100.3/24  |  192.168.200.3/24      | SSH       |  22       | 22       | Accept  |
+| 192.168.100.3/24  |  192.168.100.2/24      | SSH       |  22       | 22       | Accept  |
 
 ---
 
@@ -662,6 +662,15 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+
+# règle permettant au client de se connecter au serveur de la DMZ via SSH.
+nft add rule filter forward tcp dport 22 ip saddr 192.168.100.3/24 ip daddr 192.168.200.3/24 accept
+
+# règle permettant au client de se connecter au firewall via SSH. Comme la cible est le firewall il ne faut pas utiliser
+# la chaine forward mais input. Il faut aussi faire dans le sens inverse en rajoutant une règle dans la chaine output.
+nft add rule filter input tcp dport 22 ip saddr 192.168.100.3/24 ip daddr 192.168.100.2/24 accept
+nft add rule filter output tcp sport 22 ip saddr 192.168.100.2/24 ip daddr 192.168.100.3/24 accept
+
 ```
 
 ---
@@ -676,6 +685,14 @@ ssh root@192.168.200.3
 
 **LIVRABLE : capture d'écran de votre connexion ssh.**
 
+Connexion SSH au serveur de la DMZ :
+
+![Connexion SSH DMZ](figures/ConnexionSSH.PNG)
+
+Connexion SSH au firewall :
+
+![Connexion SSH FireWall](figures/ConnexionSSHFireawall.PNG)
+
 ---
 
 <ol type="a" start="15">
@@ -687,6 +704,9 @@ ssh root@192.168.200.3
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
+
+Cela permet de se connecter de manière sécurisée et à distance à un serveur comme si on était sur place. C'est donc très pratique
+si le serveur n'est pas en local.
 
 ---
 
@@ -700,6 +720,10 @@ ssh root@192.168.200.3
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
+
+Etre bien sûr qu'il n'y pas n'importe qui ait accès à ce port (éviter par exemple de le laisser accessible pour le WAN) 
+et que le serveur sur lequel on se connecte possède un logiciel à jour pour les connexions SSH.
+
 
 ---
 
@@ -715,5 +739,13 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 ---
 
 **LIVRABLE : capture d'écran avec toutes vos règles.**
+
+Règles de la table nat :
+
+![Règles firewall table NAT](figures/ListeRegleFirewallNAT.PNG)
+
+Règles de la table filter :
+
+![Règles firewall table filter](figures/ListeRegleFirewall.PNG)
 
 ---
