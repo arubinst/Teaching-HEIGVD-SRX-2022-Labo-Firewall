@@ -748,4 +748,6 @@ Règles de la table filter :
 
 ![Règles firewall table filter](figures/ListeRegleFirewall.PNG)
 
+ERREUR DANS LA CAPTURE D ECRAN Y A UN "tcp dport 80" EN TROP FAUT REFAIRE LA CAPTURE.
+
 ---
