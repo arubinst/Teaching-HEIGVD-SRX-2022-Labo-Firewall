@@ -131,13 +131,22 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 | Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
 | :---:             | :---:                  | :---:| :------: | :------: | :----: |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
+| 192.168.100.0/24  | interface WAN          | ICMP |     *    |     *    | Accept |
+| interface WAN     | 192.168.100.0/24       | ICMP |     *    |     *    | Drop   |
+| 192.168.100.0/24  | interface WAN          | ANY  |     *    |    53    | Accept |
+| interface WAN     | 192.168.100.0/24       | ANY  |    53    |     *    | Accept |
+| 192.168.100.0/24  | interface WAN          | TCP  |     *    |    80    | Accept |
+| 192.168.100.0/24  | interface WAN          | TCP  |     *    |   8080   | Accept |
+| interface WAN     | 192.168.100.0/24       | TCP  |    80    |     *    | Accept |
+| interface WAN     | 192.168.100.0/24       | TCP  |   8080   |     *    | Accept |
+| 192.168.100.0/24  | 192.168.200.3          | TCP  |     *    |    80    | Accept |
+| interface WAN     | 192.168.200.3          | TCP  |     *    |    80    | Accept |
+| 192.168.200.3     | 192.168.100.0/24       | TCP  |    80    |     *    | Accept |
+| 192.168.200.3     | interface WAN          | TCP  |    80    |     *    | Accept |
+| 192.168.100.3     | 192.168.100.2          | TCP  |     *    |    22    | Accept |
+| 192.168.100.2     | 192.168.100.3          | TCP  |    22    |     *    | Accept |
+| 192.168.100.3     | 192.168.200.3          | TCP  |     *    |    22    | Accept |
+| 192.168.200.3     | 192.168.100.3          | TCP  |    22    |     *    | Accept |
 
 ---
 
