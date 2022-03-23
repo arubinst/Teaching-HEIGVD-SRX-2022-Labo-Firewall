@@ -422,7 +422,17 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+nft add rule firewall forward \
+ip saddr 192.168.100.0/24 icmp type echo-request accept \
+comment \"autorise le LAN à tout pinger\"
+
+nft add rule firewall forward \
+ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-request accept \
+comment \"autorise la DMZ à pinger le LAN\"
+
+nft add rule firewall forward \
+ct state established icmp type echo-reply accept \
+comment \"on autorise toutes les réponses à des requêtes de ping autorisées\"
 ```
 ---
 
