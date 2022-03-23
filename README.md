@@ -472,18 +472,18 @@ traceroute 8.8.8.8
 
 | De Client\_in\_LAN à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Client LAN           |       |                              |
-| Serveur WAN          |       |                              |
+| Interface DMZ du FW  | OK    | Nous avons autorisé le LAN à effectuer un ping sur n'importe quelle adresse |
+| Interface LAN du FW  | OK    | "                            |
+| Serveur DMZ          | OK    | "                            |
+| Serveur WAN          | OK    | "                            |
 
 
 | De Server\_in\_DMZ à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Serveur DMZ          |       |                              |
-| Serveur WAN          |       |                              |
+| Interface DMZ du FW  | OK    | Fonctionne car le serveur DMZ et l'interface réseau DMZ du firewall sont dans le même réseau |
+| Interface LAN du FW  | OK    | Fonctionne car nous avons autorisé le réseau DMZ à effectuer un ping sur le réseau LAN |
+| Client LAN           | OK    | "                            |
+| Serveur WAN          | KO    | Ne fonctionne pas car aucune règle dans le firewall n'autorise un ping depuis la DMZ vers le WAN |
 
 
 ## Règles pour le protocole DNS
