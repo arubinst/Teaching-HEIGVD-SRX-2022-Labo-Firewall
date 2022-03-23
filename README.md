@@ -500,7 +500,7 @@ ping www.google.com
 
 ---
 
-**LIVRABLE : capture d'écran de votre ping.**
+![ping www.google.com](livrables/ping_dns_attempt.png)
 
 ---
 
