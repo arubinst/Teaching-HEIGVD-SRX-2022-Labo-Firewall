@@ -538,7 +538,7 @@ comment \"autorise les réponses DNS \(TCP\)\"
 
 ---
 
-**LIVRABLE : capture d'écran de votre ping.**
+![ping www.google.com](livrables/ping_google.png)
 
 ---
 
