@@ -512,7 +512,21 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+nft add rule firewall forward \
+ip saddr 192.168.100.0/24 udp dport 53 accept \
+comment \"autorise le LAN à envoyer des requêtes DNS \(UDP\) sur le WAN\"
+
+nft add rule firewall forward \
+ip saddr 192.168.100.0/24 tcp dport 53 accept \
+comment \"autorise le LAN à envoyer des requêtes DNS \(TCP\) sur le WAN\"
+
+nft add rule firewall forward \
+ct state established udp sport 53 accept \
+comment \"autorise les réponses DNS \(UDP\)\"
+
+nft add rule firewall forward \
+ct state established tcp sport 53 accept \
+comment \"autorise les réponses DNS \(TCP\)\"
 ```
 
 ---
