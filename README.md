@@ -387,7 +387,6 @@ On peut écrire la configuration dans le fichier /etc/nftables.conf, qui est ex�
 **Réponse :**
 
 `nft flush ruleset`
-`nft flush table filter`
 
 ---
 
