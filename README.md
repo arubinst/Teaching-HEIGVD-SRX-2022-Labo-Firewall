@@ -53,7 +53,7 @@ Ce texte se réfère au laboratoire « Pare-feu » à suivre dans le cadre du co
 
 ## Echéance
 
-Ce travail devra être rendu le dimanche après la fin de la 2ème séance de laboratoire, soit au plus tard, **le 18 Mars 2022, à 23h59.**
+Ce travail devra être rendu le dimanche après la fin de la 2ème séance de laboratoire, soit au plus tard, **le 20 Mars 2022, à 23h59.**
 
 # Réseaux cible
 
@@ -215,7 +215,10 @@ ping 192.168.200.3
 ```
 ---
 
-**LIVRABLE : capture d'écran de votre tentative de ping.**  
+**LIVRABLE : capture d'écran de votre tentative de ping.**
+
+Fail du ping client vers le serveur
+![Fail Ping](figures/ping_fail.png)
 
 ---
 
@@ -256,6 +259,15 @@ ping 192.168.100.3
 
 **LIVRABLES : captures d'écran des routes des deux machines et de votre nouvelle tentative de ping.**
 
+ping du client depuis le serveur :
+![Ping DMZ](figures/ping_DMZ_to_client.png)
+
+Route du client :
+![Route client](figures/route_client.png)
+
+Route du serveur :
+![Route DMZ](figures/route_DMZ.png)
+
 ---
 
 La communication est maintenant possible entre les deux machines. Pourtant, si vous essayez de communiquer depuis le client ou le serveur vers l'Internet, ça ne devrait pas encore fonctionner sans une manipulation supplémentaire au niveau du firewall ou sans un service de redirection ICMP. Vous pouvez le vérifier avec un ping depuis le client ou le serveur vers une adresse Internet.
@@ -272,6 +284,8 @@ Si votre ping passe mais que la réponse contient un _Redirect Host_, ceci indiq
 
 **LIVRABLE : capture d'écran de votre ping vers l'Internet. Un ping qui ne passe pas ou des réponses contenant des _Redirect Host_ sont acceptés.**
 
+Fail du ping depuis le client vers internet :
+![Route DMZ](figures/client_ping_internet_fail.png)
 ---
 
 ### Configuration réseau du firewall
