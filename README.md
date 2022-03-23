@@ -358,10 +358,9 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
   </li>                                  
 </ol>
 
----
-
 **Réponse :**
 On peut écrire la configuration dans le fichier /etc/nftables.conf, qui est exécuté à chaque démarrage
+
 ---
 
 
@@ -402,9 +401,6 @@ On peut écrire la configuration dans le fichier /etc/nftables.conf, qui est ex�
 **Réponse :**
 
 `nft delete chain [family] <table_name> <chain_name>`
-
----
-
 
 ---
 
