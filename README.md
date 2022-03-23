@@ -359,7 +359,8 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 </ol>
 
 **Réponse :**
-On peut écrire la configuration dans le fichier /etc/nftables.conf, qui est exécuté à chaque démarrage
+On peut écrire la configuration dans le fichier /etc/nftables.conf, qui est exécuté à chaque démarrage.
+Pour sauvegarder la configuration courante (et la rendre persistente), il suffit de faire la commande `nft list ruleset > /etc/nftables.conf`.
 
 ---
 
