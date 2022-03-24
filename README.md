@@ -131,7 +131,7 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 | Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
 | :---:             | :---:                  | :---:| :------: | :------: | :----: |
-|                   |                        |      |          |          |        |
+|             *     |    *                   | any  |   *      |    *     |  drop  |
 |                   |                        |      |          |          |        |
 |                   |                        |      |          |          |        |
 |                   |                        |      |          |          |        |
@@ -308,7 +308,7 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 
 ---
 
-**Réponse :**
+**Réponse :** Cette commande crée nouvelle table nomée "nat"
 
 ---
 
@@ -321,6 +321,14 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 
 **Réponse :**
 
+| Paramètre | Explication |
+| :---:             | :---:                  |
+| nft add chain     | ajoute une nouvelle chaîne à une table|
+| nat               | c'est le nom de la table à laquelle ajouter la chaîne|
+|postrouting        | représente la nom de la chaîne |
+|type nat|type de la chaine NAT|
+|hook postrouting| la chaîne est appliquée à la fin du traitement des paquets|
+|priority 100| représente la prioté des opérations netfliter (du plus petits au plus grands). <br> 100 = NF_IP_PRI_NAT_SRC |
 ---
 
 
