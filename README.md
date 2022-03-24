@@ -224,7 +224,7 @@ ping 192.168.200.3
 ```
 ---
 
-[!Ping that doesn't work](./figures/pingDoesntWork.png) 
+![Ping that doesn't work](./figures/pingDoesntWork.png) 
 
 ---
 
@@ -263,7 +263,7 @@ ping 192.168.100.3
 
 ---
 
-[!Ping works](./figures/pingWorks.png) 
+![Ping works](./figures/pingWorks.png) 
 
 ---
 
@@ -279,7 +279,7 @@ Si votre ping passe mais que la réponse contient un _Redirect Host_, ceci indiq
 
 ---
 
-[!Ping Internet Doesn't work](./figures/pingInternetDoesntWork.png) 
+![Ping Internet Doesn't work](./figures/pingInternetDoesntWork.png) 
 
 ---
 
