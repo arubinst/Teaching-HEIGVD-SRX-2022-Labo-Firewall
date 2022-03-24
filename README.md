@@ -467,13 +467,6 @@ puis effacer la règle voulue:
 ```
 nft delete rule <nom_table> <nom_chain> handle <numero_handle>
 ```
-```
-
-
----
-
-
----
 
 ## Tests des connections et exemple de l'application d'une règle
 
