@@ -318,6 +318,7 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 - `add chain nat postrouting` permet d'ajouter une nouvelle chaîne qui s'appelle "postrouting" à la table "nat".
 - `type nat` indique que la chaîne est de de type NAT (pour effectuer la traduction d'adresses réseau). Ce type prendre en charge les familles ip, ip6 et inet.
 - `hook postrouting` précise que la chaîne est déclanchée après que les paquets ont été routé, juste avant qu'ils ne quittent le système local. 
+- `priority 100` indique la priorité de la chaîne. Plus le nombre est petit, plus il a de priorité.
 ---
 
 
