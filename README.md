@@ -139,10 +139,11 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 |        *          |    192.168.100.0/24    | ICMP:echo-reply   | - |  - | Accept |
 | 192.168.200.0/24  |    192.168.100.0/24    | ICMP:echo-request | - |  - | Accept |
 | 192.168.100.0/24  |    192.168.200.0/24    | ICMP:echo-reply   | - |  - | Accept |
-| 192.168.100.0/24  |            *           | TCP  |     *    |    80    | Accept |
-| 192.168.100.0/24  |            *           | TCP  |     *    |   443    | Accept |
+| 192.168.100.0/24  |            *           | TCP  |     *    |80, 443, 8080| Accept |
+|        *          |    192.168.100.0/24    | TCP  |80, 443, 8080|   *        | Accept |
 |       *           |    192.168.200.0/24    | TCP  |     *    |    80    | Accept |
 | 192.168.100.3     |    192.168.200.0/24    | TCP  |     *    |    22    | Accept |
+| 192.168.200.3     |    192.168.100.0/24    | TCP  |     22   |     *    | Accept |
 |        *          |          *             |   *  |     *    |     *    | Drop   |
 
 ---

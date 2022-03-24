@@ -33,3 +33,53 @@ nft add rule ip filter forward ip daddr { 192.168.100.0/24, 192.168.200.0/24 } u
 
 nft add rule ip filter forward ip saddr 192.168.100.0/24 icmp type echo-request accept
 nft add rule ip filter forward ip daddr 192.168.100.0/24 icmp type echo-reply accept
+
+nft add rule ip filter forward ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-request accept
+nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 icmp type echo-reply accept
+
+nft add rule ip filter forward ip saddr 192.168.100.0/24 tcp dport {80, 443, 8080} accept
+nft add rule ip filter forward ip daddr 192.168.100.0/24 tcp sport {80, 443, 8080} accept
+
+nft add rule ip filter forward ip daddr 192.168.200.0/24 tcp dport 80 accept
+
+nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 tcp dport 22 accept
+nft add rule ip filter forward ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 tcp sport 22 accept
+
+###################################
+
+## Firewall config nft
+
+table ip nat {
+        chain postrouting {
+                type nat hook postrouting priority srcnat; policy accept;
+                oifname "eth0" masquerade
+                oifname "eth0" masquerade
+        }
+}
+table ip filter {
+        chain input {
+                type filter hook input priority filter; policy drop;
+        }
+
+        chain forward {
+                type filter hook forward priority filter; policy drop;
+                ip saddr { 192.168.100.0/24, 192.168.200.0/24 } tcp dport 53 accept
+                ip saddr { 192.168.100.0/24, 192.168.200.0/24 } udp dport 53 accept
+                ip saddr 192.168.100.0/24 icmp type echo-request accept
+                ip daddr 192.168.100.0/24 icmp type echo-reply accept
+                ip daddr { 192.168.100.0/24, 192.168.200.0/24 } tcp sport 53 accept
+                ip daddr { 192.168.100.0/24, 192.168.200.0/24 } udp sport 53 accept
+                ip saddr { 192.168.100.0/24, 192.168.200.0/24 } tcp dport 53 accept
+                ip saddr { 192.168.100.0/24, 192.168.200.0/24 } udp dport 53 accept
+                ip daddr { 192.168.100.0/24, 192.168.200.0/24 } tcp sport 53 accept
+                ip daddr { 192.168.100.0/24, 192.168.200.0/24 } udp sport 53 accept
+                ip saddr 192.168.100.0/24 icmp type echo-request accept
+                ip daddr 192.168.100.0/24 icmp type echo-reply accept
+                ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-request accept
+                ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 icmp type echo-reply accept
+                ip saddr 192.168.100.0/24 tcp dport { 80, 443, 8080 } accept
+                ip daddr 192.168.100.0/24 tcp sport { 80, 443, 8080 } accept
+                ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 tcp dport 22 accept
+                ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 tcp sport 22 accept
+        }
+}
