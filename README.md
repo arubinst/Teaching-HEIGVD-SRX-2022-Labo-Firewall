@@ -131,7 +131,6 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 | Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action | Commentaire |
 | :---:             | :---:                  | :---:| :------: | :------: | :----: | :---------- |
-| *                 | *                      | *    | *        | *        | DROP   | Bloque tout par défaut |
 | 192.168.100.0/24  | *                      | UDP  | *        | 53       | ACCEPT | DNS LAN -> WAN |
 | 192.168.100.0/24  | *                      | TCP  | *        | 53       | ACCEPT | DNS LAN -> WAN |
 | 192.168.100.0/24  | *                      | ICMP | *        | *        | ACCEPT | PING LAN -> * |
@@ -142,10 +141,17 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 | *                 | 192.168.200.0/24       | TCP  | *        | 80       | ACCEPT | HTTP * -> DMZ |
 | 192.168.100.0/24  | 192.168.200.0/24       | TCP  | *        | 22       | ACCEPT | SSH LAN -> DMZ |
 | 192.168.100.0/24  | 192.168.100.2          | TCP  | *        | 22       | ACCEPT | SSH LAN -> FW |
+| *                 | *                      | *    | *        | *        | DROP   | Bloque tout par défaut |
 |                   |                        |      |          |          |        |
 
-* Les réponses sont autorisées en input, forward et output lorsqu'elles ont un lien avec une
+Note 1: Les réponses sont autorisées en input, forward et output lorsqu'elles ont un lien avec une
 requête ou font partie d'une connexion établie.(RELATED, ESTABLISHED)
+
+Note 2: Lorsque possible, nous avons restreint certains traffics à une interface
+spécifique du firewall. Par exemple ce qui doit aller sur le WAN passe par
+l'interface eth0. Les différents interfaces ne sont pas représentées sur ce
+tableau afin de garder des règles génériques mais seront implémentées dans nos
+règles.
 
 ---
 
@@ -384,13 +390,19 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 **Réponse :**
 
 Pour sauvegarder:
+
+```
 nft list ruleset > /etc/nftables.conf
+```
 
 Sous Debian, le fichier /etc/nftables.conf est automatiquement chargé au
 démarrage de la machine par nftables.
 
 Pour charger un fichier de configuration dans nftables:
+
+```
 nft -f nftables.conf
+```
 
 ---
 
@@ -407,7 +419,9 @@ nft -f nftables.conf
 
 **Réponse :**
 
+```
 nft list ruleset
+```
 
 On peut ajouter un -a pour afficher le numéro (handle) des règles (assigné
 automatiquement). Ce numéro (handle) permet de manipuler les règles
@@ -427,10 +441,10 @@ individuellement.
 
 Pour tout effacer:
 
+```
 nft flush ruleset
-
+```
 ---
-
 
 <ol type="a" start="7">
 <li>Quelle commande est utilisée pour effacer les chaines ?
@@ -441,14 +455,20 @@ nft flush ruleset
 
 **Réponse :**
 
+```
 nft delete chain <nom_table> <nom_chain> 
+```
 
 Egalement pour effacer uniquement une règle:
 Afficher le numéro de règle (handle) avec:
 nft list ruleset -a
 puis effacer la règle voulue:
 
+```
 nft delete rule <nom_table> <nom_chain> handle <numero_handle>
+```
+```
+
 
 ---
 
@@ -644,7 +664,7 @@ Note à propos de traceroute:
 La commande traceroute 8.8.8.8 n'arrive pas à determiner les différents
 intermédiaires et retourne des lignes comportant des * au lieu de mettre les ip
 des machines. Après quelques recherches, nous avons trouvé que traceroute
-utilise des paquets UDP par défaut, quine sont pas autorisé par notre firewall.
+utilise des paquets UDP par défaut, qui ne sont pas autorisé par notre firewall.
 Une alternative consiste à utiliser 'traceroute -I 8.8.8.8' qui utilise  le
 protocol ICMP. La commande fonctionne alors car ICMP est autorisé
 
@@ -861,9 +881,9 @@ manière sécurisée.
 
 **LIVRABLE : Votre réponse ici...**
 
-SSH étant un protocole énormément utilisé, il y a constemment des attaques sur
+SSH étant un protocole énormément utilisé, il y a constamment des attaques sur
 le port 22 des machines exposées à internet. Lorsque cela est possible, il est
-donc préférable de resteindre l'accès au port 22 au réseau interne d'une
+donc préférable de resteindre l'accès au port 22 au réseau d'une
 entreprises ou à quelques machines choisies afin de limiter les attaques.
 
 Il y a également d'autres mécanismes de sécurité intéressant qui peuvent y être
@@ -888,6 +908,10 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 
 ```
 Configuration Stateful
+Nous avons réalisé deux configuration pendant le laboratoire: une statefull, que
+nous conservons comme version définitive, et une stateless qui nous a permis
+d'expérimenter. Nous mettons aussi cette dernière ci-dessous à titre de
+comparaison.
 
 table ip nat {
 	chain postrouting {
@@ -1017,9 +1041,6 @@ et semble moins sécurisée car il faut accepter du traffic entrant.
 
 Nous gardons donc la configuration stateful qui fait gagner du temps dans les
 règles d'écriture et génère moins d'erreurs de configurations.
-
-### Filtrage supplémentaire
-https://blog.samuel.domains/blog/security/nftables-hardening-rules-and-good-practices
 
 ## Audit
 Afin de valider notre configuration, nous avons réalisé un audit rapide du
