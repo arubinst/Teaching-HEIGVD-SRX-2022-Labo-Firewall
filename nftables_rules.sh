@@ -1,5 +1,9 @@
 #!/usr/sbin/nft -f
 
+# --------------------- #
+# NAT                   #
+# --------------------- #
+
 # Ajout d'une table "nat"
 nft add table ip nat
 # Ajout d'une chaine "postrouting" de type nat (hook postrouting)
@@ -11,6 +15,11 @@ nft add rule nat postrouting meta oifname "eth0" masquerade
 
 # Ajout d'une table "filter" dans la famille inet (ip/ip6)
 nft add table ip filter
+
+
+# --------------------- #
+# PING                  #
+# --------------------- #
 
 # Ajout d'une chaîne contenant les règles pour accepter le ping
 nft 'add chain ip filter accept_ping { type filter hook forward  priority 100 ; policy drop ; }'
@@ -33,3 +42,13 @@ nft add rule ip filter accept_ping icmp type echo-reply meta iif eth0 ip daddr 1
 nft add rule ip filter accept_ping icmp type echo-request ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 accept
 
 nft add rule ip filter accept_ping icmp type echo-reply ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 accept
+
+# --------------------- #
+# DNS                   #
+# --------------------- #
+
+# Ajout d'une chaîne contenant les règles pour accepter dns
+nft 'add chain ip filter dns_wan { type filter hook forward  priority 100 ; policy drop ; }'
+
+nft add rule ip filter dns_wan meta oif eth0 ip saddr 192.168.100.0/24 tcp sport 53 tcp dport 53 accept
+nft add rule ip filter dns_wan meta oif eth0 ip saddr 192.168.100.0/24 udp sport 53 udp dport 53 accept 
