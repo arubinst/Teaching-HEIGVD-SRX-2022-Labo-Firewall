@@ -369,7 +369,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-**Réponse :**
+**Réponse :** Editer directment le fichier `nftables.conf` et ensuite faire la commande `nft list ruleset > /etc/nftables.conf`
 
 ---
 
@@ -384,7 +384,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-**Réponse :**
+**Réponse :** `nft list ruleset`
 
 ---
 
@@ -396,7 +396,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-**Réponse :**
+**Réponse :** `nft flush ruleset`
 
 ---
 
@@ -408,7 +408,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-**Réponse :**
+**Réponse :** `nft delete chain <table name> <chain name>`
 
 ---
 
@@ -459,7 +459,13 @@ traceroute 8.8.8.8
 ---
 **LIVRABLE : capture d'écran du traceroute et de votre ping vers l'Internet. Il ne devrait pas y avoir des _Redirect Host_ dans les réponses au ping !**
 
+Ping  du client vers 8.8.8.8
+![Route DMZ](figures/ping_internet_client.png)
+
+Traceroute depuis le client vers 8.8.8.8
+![Route DMZ](figures/traceroute_internet_client.png)
 ---
+
 
 <ol type="a" start="9">
   <li>Testez ensuite toutes les règles, depuis le Client_in_LAN puis depuis le serveur Web (Server_in_DMZ) et remplir le tableau suivant :
@@ -469,18 +475,18 @@ traceroute 8.8.8.8
 
 | De Client\_in\_LAN à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Client LAN           |       |                              |
-| Serveur WAN          |       |                              |
+| Interface DMZ du FW  |OK     |Les règles écrites précédement fonctionnent|
+| Interface LAN du FW  |OK     |Les règles écrites précédement fonctionnent|
+| Client LAN           |OK     |Les autos ping fonctionnent|
+| Serveur WAN          |OK     |Les règles écrites précédement fonctionnent|
 
 
 | De Server\_in\_DMZ à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Serveur DMZ          |       |                              |
-| Serveur WAN          |       |                              |
+| Interface DMZ du FW  |OK     |Les règles écrites précédement fonctionnent|
+| Interface LAN du FW  |OK     |Les règles écrites précédement fonctionnent|
+| Serveur DMZ          |OK     |Les autos ping fonctionnent|
+| Serveur WAN          |KO     |Aucune règle n'est spécifiée pour le trafic sortant|
 
 
 ## Règles pour le protocole DNS
@@ -496,9 +502,13 @@ ping www.google.com
 
 * Faire une capture du ping.
 
+
 ---
 
 **LIVRABLE : capture d'écran de votre ping.**
+
+Le client n'a pas de résolution DNS
+![Route DMZ](figures/Client_ping_DNS.png)
 
 ---
 
@@ -523,17 +533,23 @@ LIVRABLE : Commandes nftables
 
 **LIVRABLE : capture d'écran de votre ping.**
 
+Le client peut utiliser le DNS
+![Route DMZ](figures/Client_ping_DNS_ok.png)
+
+
 ---
 
 <ol type="a" start="12">
   <li>Remarques (sur le message du premier ping)?
-  </li>                                  
+  </li>                          
 </ol>
 
 ---
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
+
+Après le timeout, le message du client nous montre que le DNS n'a pas réussi à résoudre le nom de domaine. 
 
 ---
 
@@ -554,6 +570,30 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+
+nft add rule firewall forward \
+ip saddr 192.168.100.0/24 tcp dport 443 accept \
+comment \"authorize HTTPS request from LAN to WLAN\"
+
+nft add rule firewall forward \
+ip saddr 192.168.100.0/24 tcp dport 8080 accept \
+comment \"authorize HTTP request from LAN to WLAN using port 8080\"
+
+nft add rule firewall forward \
+ip saddr 192.168.100.0/24 tcp dport 80 accept \
+comment \"authorize HTTP request from LAN to WLAN using port 80\"
+
+nft add rule firewall forward \
+ct state established tcp sport 443 accept \
+comment \"authorize HTTPS response\"
+
+nft add rule firewall forward \
+ct state established tcp sport 8080 accept \
+comment \"authorize HTTP on port 8080 response\"
+
+nft add rule firewall forward \
+ct state established tcp sport 80 accept \
+comment \"authorize HTTP on port 80 response\"
 ```
 
 ---
@@ -577,6 +617,9 @@ LIVRABLE : Commandes nftables
 ---
 
 **LIVRABLE : capture d'écran.**
+
+wget depuis le client sur www.heig-vd.ch
+![Route DMZ](figures/client_wget_to_heig.png)
 
 ---
 
