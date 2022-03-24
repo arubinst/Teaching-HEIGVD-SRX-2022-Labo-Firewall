@@ -1,4 +1,15 @@
-# Ajout d'une table filter dans la famille inet (ip/ip6)
+#!/usr/sbin/nft -f
+
+# Ajout d'une table "nat"
+nft add table ip nat
+# Ajout d'une chaine "postrouting" de type nat (hook postrouting)
+nft 'add chain nat postrouting { type nat hook postrouting priority 100 ; }'
+
+# https://askubuntu.com/questions/466445/what-is-masquerade-in-the-context-of-iptables
+nft add rule nat postrouting meta oifname "eth0" masquerade
+
+
+# Ajout d'une table "filter" dans la famille inet (ip/ip6)
 nft add table ip filter
 
 # Ajout d'une chaîne contenant les règles pour accepter le ping
