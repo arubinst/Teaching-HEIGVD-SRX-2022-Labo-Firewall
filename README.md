@@ -532,6 +532,8 @@ ping www.google.com
 
 **LIVRABLE : capture d'écran de votre ping.**
 
+![ping_fail](https://github.com/theomi/Teaching-HEIGVD-SRX-2022-Labo-Firewall/blob/main/Livrables/img/dns_ping_fail.png)
+
 ---
 
 * Créer et appliquer la règle adéquate pour que la **condition 1 du cahier des charges** soit respectée.
