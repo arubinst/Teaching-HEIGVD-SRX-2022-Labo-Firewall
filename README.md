@@ -365,6 +365,13 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 **Réponse :**
 
+- Pour commencer, il faut copier la configuration affichée par la commande `nft list ruleset` dans le fichier `/etc/nftables.conf`.
+- Ensuite, il faut que le système exécute le script suivant au démarrage : 
+````bash
+ #!/bin/sh
+ /sbin/nft -f /etc/nftables.conf
+````
+Pour ce faire, il faudrait configurer soit systemd ou init.d, mais cela n'était pas le but du laboratoire.
 ---
 
 &rarr; Note : Puisque vous travaillez depuis un terminal natif de votre machin hôte, vous pouvez facilement copier/coller les règles dans un fichier local. Vous pouvez ensuite les utiliser pour reconfigurer votre firewall en cas de besoin.
