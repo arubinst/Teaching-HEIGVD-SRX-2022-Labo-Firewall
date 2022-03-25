@@ -42,11 +42,11 @@ comment \"autorise la DMZ à pinger le LAN\"
 #
 
 nft add rule firewall forward \
-ip saddr 192.168.100.0/24 udp dport 53 accept \
+ip saddr 192.168.100.0/24 ip daddr !=192.168.0.0/16 udp dport 53 accept \
 comment \"autorise le LAN à envoyer des requêtes DNS \(UDP\) sur le WAN\"
 
 nft add rule firewall forward \
-ip saddr 192.168.100.0/24 tcp dport 53 accept \
+ip saddr 192.168.100.0/24 ip daddr !=192.168.0.0/16 tcp dport 53 accept \
 comment \"autorise le LAN à envoyer des requêtes DNS \(TCP\) sur le WAN\"
 
 #
@@ -93,11 +93,6 @@ comment \"autorise le client du LAN à ouvrir des connexions TCP vers le serveur
 # création de la chaîne pour les règles d'input
 nft 'add chain firewall input {type filter hook input priority 0 ; policy drop ; }'
 
-# règle pour avoir un firewall stateful qui autorise les réponses à des connexions autorisées
-nft add rule firewall forward \
-ct state established accept \
-comment \"on autorise toutes les réponses à des requêtes que nous avons autorisées\"
-
 #
 # Règles pour SSH du client LAN vers le firewall
 #
@@ -106,6 +101,19 @@ nft add rule firewall input \
 ip saddr 192.168.100.3 ip daddr 192.168.100.2 tcp dport 22 accept \
 comment \"autorise le client du LAN à ouvrir des connexions TCP vers le firewall sur le port 22\"
 
+
+
+#############################################
+#### OUTPUT
+#############################################
+
+# création de la chaîne pour les règles d'output
+nft 'add chain firewall output {type filter hook output priority 0 ; policy drop ; }'
+
+# règle pour avoir un firewall stateful qui autorise les réponses à des connexions autorisées
+nft add rule firewall output \
+ct state established accept \
+comment \"on autorise toutes les réponses à des requêtes que nous avons autorisées\"
 
 
 
