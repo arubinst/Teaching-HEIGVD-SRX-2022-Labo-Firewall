@@ -49,7 +49,7 @@ La documentation contient aussi un excellent résumé pour "[apprendre nftables 
 
 ## Auteurs
 
-Ce texte se réfère au laboratoire « Pare-feu » à suivre dans le cadre du cours Sécurité des Réseaux, 2022, version 8.0.  Au cours du temps, il a été rédigé, modifié et amélioré par les co-auteurs suivants : Gilles-Etienne Vallat, Alexandre Délez, Olivia Manz, Patrick Mast, Christian Buchs, Sylvain Pasini, Vincent Pezzi, Yohan Martini, Ioana Carlson, Abraham Rubinstein et Frédéric Saam.
+Ce texte se réfère au laboratoire « Pare-feu » à suivre dans le cadre du cours Sécurité des Réseaux, 2022, version 8.0. Au cours du temps, il a été rédigé, modifié et amélioré par les co-auteurs suivants : Gilles-Etienne Vallat, Alexandre Délez, Olivia Manz, Patrick Mast, Christian Buchs, Sylvain Pasini, Vincent Pezzi, Yohan Martini, Ioana Carlson, Abraham Rubinstein et Frédéric Saam.
 
 ## Echéance
 
@@ -74,10 +74,10 @@ Par conséquent, nous distinguons clairement trois sous-réseaux :
 Ce réseau sera créé de manière virtuelle. Il sera simulé sur un seul ordinateur utilisant trois conteneurs Docker basés sur le système d’exploitation Ubuntu :
 
 - La première machine, Firewall, fait office de pare-feu. Elle comporte trois interfaces réseaux. Afin que ce poste puisse servir de pare-feu dans notre réseau, nftables sera utilisé.
-- La seconde machine, Client\_In\_LAN, fait office de client dans le réseau local (LAN).
-- La dernière machine, Server\_In\_DMZ, fait office de serveur Web en (DMZ).
+- La seconde machine, Client_In_LAN, fait office de client dans le réseau local (LAN).
+- La dernière machine, Server_In_DMZ, fait office de serveur Web en (DMZ).
 
-Nous allons utiliser les trois interfaces réseaux de la machine Firewall afin de pouvoir connecter le LAN et la DMZ à Internet (WAN). Les machines Client\_In\_LAN et Server\_In\_DMZ comportent chacune une interfaces réseau eth0.
+Nous allons utiliser les trois interfaces réseaux de la machine Firewall afin de pouvoir connecter le LAN et la DMZ à Internet (WAN). Les machines Client_In_LAN et Server_In_DMZ comportent chacune une interfaces réseau eth0.
 
 ## Plan d'adressage
 
@@ -96,22 +96,22 @@ Les adresses IP sont définies dans le schéma ci-dessous :
 
 Avant de configurer les règles, il est primordial de connaître les besoins de notre réseau. Ceci afin de laisser passer les flux légitimes lors de la rédaction des règles.
 
-Le but du **LAN** est de fournir aux utilisateurs de votre réseau un accès à Internet ; à certains services de base uniquement en empêchant les connexions provenant de l'extérieur. Il faudra tout de même laisser entrer les paquets répondants aux requêtes de notre LAN. Une seule machine est présente sur ce réseau. Il s’agit de la machine dont le nom est **Client\_In\_LAN**. (il est très facile de rajouter de machines supplémentaires sur le LAN utilisant Docker).
+Le but du **LAN** est de fournir aux utilisateurs de votre réseau un accès à Internet ; à certains services de base uniquement en empêchant les connexions provenant de l'extérieur. Il faudra tout de même laisser entrer les paquets répondants aux requêtes de notre LAN. Une seule machine est présente sur ce réseau. Il s’agit de la machine dont le nom est **Client_In_LAN**. (il est très facile de rajouter de machines supplémentaires sur le LAN utilisant Docker).
 
-La **DMZ** est un réseau réservé aux serveurs que l'on veut rendre accessibles depuis l'extérieur et l’intérieur de notre réseau. Par exemple, si nous voulons publier un site web que l'on héberge, il faut accepter des connexions sur le serveur web; dans ce cas, nous ne pouvons pas le placer dans le LAN, cela constituerait un risque. Nous accepterons donc les connexions entrantes dans la DMZ, mais seulement pour les services que l'on désire offrir. Le serveur Web situé dans la DMZ est simulé par la machine **Server\_In\_DMZ**.
+La **DMZ** est un réseau réservé aux serveurs que l'on veut rendre accessibles depuis l'extérieur et l’intérieur de notre réseau. Par exemple, si nous voulons publier un site web que l'on héberge, il faut accepter des connexions sur le serveur web; dans ce cas, nous ne pouvons pas le placer dans le LAN, cela constituerait un risque. Nous accepterons donc les connexions entrantes dans la DMZ, mais seulement pour les services que l'on désire offrir. Le serveur Web situé dans la DMZ est simulé par la machine **Server_In_DMZ**.
 
 Le **WAN** n'est que l'accès à Internet. Il est connecté au réseau de l'école ou à votre propre à travers le système de réseau fourni par Docker.
 
 Pour établir la table de filtrage, voici les **conditions à respecter** dans le cadre de ce laboratoire :
 
-1.	Les **serveurs DNS** utilisés par les postes dans le LAN sont situés sur le WAN. Les services DNS utilisent les ports UDP 53 et TCP 53.
-2.	Laisser passer les **PING** uniquement du LAN au WAN, du LAN à la DMZ et de la DMZ au LAN pour les tests. Le ping utilise le protocole ICMP (echo request et echo reply).
-3.	Les clients du **LAN** doivent pouvoir ouvrir des connexions HTTP pour accéder au web. Le protocole HTTP utilise les ports TCP 80 et typiquement aussi le 8080.
-4.	Les clients du **LAN** doivent pouvoir ouvrir des connexions HTTPS pour accéder au web. Le protocole HTTPS utilise le port TCP 443.
-5.	Le serveur **web en DMZ** doit être atteignable par le WAN et le LAN et n'utilise que le port 80.
-6.	Le serveur de la DMZ peut être commandé à distance par **ssh** depuis votre client du LAN **uniquement**. Le service ssh utilise le port TCP 22.
-7.	Le firewall peut être configuré à distance par **ssh** depuis votre client du LAN **uniquement**.
-8.	**Toute autre action est par défaut interdite**.
+1. Les **serveurs DNS** utilisés par les postes dans le LAN sont situés sur le WAN. Les services DNS utilisent les ports UDP 53 et TCP 53.
+2. Laisser passer les **PING** uniquement du LAN au WAN, du LAN à la DMZ et de la DMZ au LAN pour les tests. Le ping utilise le protocole ICMP (echo request et echo reply).
+3. Les clients du **LAN** doivent pouvoir ouvrir des connexions HTTP pour accéder au web. Le protocole HTTP utilise les ports TCP 80 et typiquement aussi le 8080.
+4. Les clients du **LAN** doivent pouvoir ouvrir des connexions HTTPS pour accéder au web. Le protocole HTTPS utilise le port TCP 443.
+5. Le serveur **web en DMZ** doit être atteignable par le WAN et le LAN et n'utilise que le port 80.
+6. Le serveur de la DMZ peut être commandé à distance par **ssh** depuis votre client du LAN **uniquement**. Le service ssh utilise le port TCP 22.
+7. Le firewall peut être configuré à distance par **ssh** depuis votre client du LAN **uniquement**.
+8. **Toute autre action est par défaut interdite**.
 
 # Regles de filtrage
 
@@ -129,22 +129,22 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 **LIVRABLE : Remplir le tableau**
 
-| Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
-| :---:             | :---:                  | :---:| :------: | :------: | :----: |
-| 192.168.100.0/24  |             *          |UDP/TCP|    *   |     53    |  Accept|
-| 192.168.200.0/24  |             *          |UDP/TCP|    *   |     53    |  Accept|
-|          *        |    192.168.100.0/24    |UDP/TCP|   53   |      *    |  Accept|
-|          *        |    192.168.200.0/24    |UDP/TCP|   53   |      *    |  Accept|
-| 192.168.100.0/24  |             *          | ICMP:echo-request | - |  - | Accept |
-|        *          |    192.168.100.0/24    | ICMP:echo-reply   | - |  - | Accept |
-| 192.168.200.0/24  |    192.168.100.0/24    | ICMP:echo-request | - |  - | Accept |
-| 192.168.100.0/24  |    192.168.200.0/24    | ICMP:echo-reply   | - |  - | Accept |
-| 192.168.100.0/24  |            *           | TCP  |     *    |80, 443, 8080| Accept |
-|        *          |    192.168.100.0/24    | TCP  |80, 443, 8080|   *        | Accept |
-|       *           |    192.168.200.0/24    | TCP  |     *    |    80    | Accept |
-| 192.168.100.3     |    192.168.200.0/24    | TCP  |     *    |    22    | Accept |
-| 192.168.200.3     |    192.168.100.0/24    | TCP  |     22   |     *    | Accept |
-|        *          |          *             |   *  |     *    |     *    | Drop   |
+| Adresse IP source | Adresse IP destination |       Type        |   Port src    |   Port dst    | Action |
+| :---------------: | :--------------------: | :---------------: | :-----------: | :-----------: | :----: |
+| 192.168.100.0/24  |           \*           |      UDP/TCP      |      \*       |      53       | Accept |
+| 192.168.200.0/24  |           \*           |      UDP/TCP      |      \*       |      53       | Accept |
+|        \*         |    192.168.100.0/24    |      UDP/TCP      |      53       |      \*       | Accept |
+|        \*         |    192.168.200.0/24    |      UDP/TCP      |      53       |      \*       | Accept |
+| 192.168.100.0/24  |           \*           | ICMP:echo-request |       -       |       -       | Accept |
+|        \*         |    192.168.100.0/24    |  ICMP:echo-reply  |       -       |       -       | Accept |
+| 192.168.200.0/24  |    192.168.100.0/24    | ICMP:echo-request |       -       |       -       | Accept |
+| 192.168.100.0/24  |    192.168.200.0/24    |  ICMP:echo-reply  |       -       |       -       | Accept |
+| 192.168.100.0/24  |           \*           |        TCP        |      \*       | 80, 443, 8080 | Accept |
+|        \*         |    192.168.100.0/24    |        TCP        | 80, 443, 8080 |      \*       | Accept |
+|        \*         |    192.168.200.0/24    |        TCP        |      \*       |      80       | Accept |
+|   192.168.100.3   |    192.168.200.0/24    |        TCP        |      \*       |      22       | Accept |
+|   192.168.200.3   |    192.168.100.0/24    |        TCP        |      22       |      \*       | Accept |
+|        \*         |           \*           |        \*         |      \*       |      \*       |  Drop  |
 
 ---
 
@@ -153,11 +153,13 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 Ce chapitre indique comment installer l'environnement. Il se base sur des outils gratuits, téléchargeables sur Internet.
 
 ## Matériel
+
 Il est possible d’utiliser les mêmes instructions sur une version de Windows ou un système Linux ou Mac OS X.
 
 Afin d'installer les différents logiciels présentés ici, il faut disposer d’un ordinateur (avec les droits administrateur).
 
 ## Installation de Docker
+
 Docker est un logiciel permettant de créer des conteneurs virtuels afin de simuler diverses configurations. Nous l'utiliserons pour exécuter les trois machines dont nous aurons besoin pour ce laboratoire. L’installation de Docker ne comporte pas de difficulté particulière. Une installation « par défaut » suffira. Il est possible d’utiliser une version que vous avez déjà installée ou une version téléchargée, mais la documentation pour ce laboratoire a été testée avec la version 3.2.2 de Docker Desktop pour Mac. Si vous rencontrez des problèmes, une mise à jour de Docker es peut-être la solution.
 
 Vous pouvez trouver Docker pour Windows et Mac OS [ici](https://www.docker.com/products/docker-desktop).
@@ -168,7 +170,6 @@ Pour Linux, referez-vous au gestionnaire de paquets de votre distribution.
 
 Vous avez probablement déjà installé Git pour d’autres cours ou projets. Si ce n’est pas le cas, vous pouvez prendre la bonne version pour votre OS [ici](https://git-scm.com/download/).
 
-
 ## Démarrage de l'environnement virtuel
 
 ### Ce laboratoire utilise docker-compose, un outil pour la gestion d'applications utilisant multiples conteneurs. Il va se charger de créer les réseaux `lan` et `dmz`, la machine Firewall, un serveur dans le réseau DMZ et une machine dans le réseau LAN et de tout interconnecter correctement.
@@ -178,6 +179,7 @@ Nous allons commencer par lancer docker-compose. Il suffit de taper la commande 
 ```bash
 docker-compose up --detach
 ```
+
 Le téléchargement et génération d'images prend peu de temps.
 
 Vous pouvez vérifier que les réseaux ont été créés avec la commande `docker network ls`. Un réseau `lan` et un réseau `dmz` devraient se trouver dans la liste.
@@ -193,8 +195,8 @@ docker ps
 Afin de simplifier vos manipulations, les conteneurs ont été configurées avec les noms suivants :
 
 - Firewall
-- Client\_in\_LAN
-- Server\_in\_DMZ
+- Client_in_LAN
+- Server_in_DMZ
 
 Pour accéder au terminal de l’une des machines, il suffit de taper :
 
@@ -210,21 +212,20 @@ docker exec -it Firewall /bin/bash
 
 Vous pouvez bien évidemment lancer des terminaux avec les trois machines en même temps !
 
-
 ## Configuration de base
 
 La plupart de paramètres sont déjà configurés correctement sur les trois machines. Il est pourtant nécessaire de rajouter quelques commandes afin de configurer correctement le réseau pour le labo.
 
-Vous pouvez commencer par vérifier que le ping n'est pas possible actuellement entre les machines. Depuis votre Client\_in\_LAN, essayez de faire un ping sur le Server\_in\_DMZ (cela ne devrait pas fonctionner !) :
+Vous pouvez commencer par vérifier que le ping n'est pas possible actuellement entre les machines. Depuis votre Client_in_LAN, essayez de faire un ping sur le Server_in_DMZ (cela ne devrait pas fonctionner !) :
 
 ```bash
 ping 192.168.200.3
 ```
+
 ---
 
-**LIVRABLE : capture d'écran de votre tentative de ping.** 
-![Ping blocked](figures/ping_blocked.png) 
-
+**LIVRABLE : capture d'écran de votre tentative de ping.**
+![Ping blocked](figures/ping_blocked.png)
 
 ---
 
@@ -265,14 +266,13 @@ ping 192.168.100.3
 
 **LIVRABLES : captures d'écran des routes des deux machines et de votre nouvelle tentative de ping.**
 
-![serverDMZ_route](figures/serverDMZ_route.png) 
+![serverDMZ_route](figures/serverDMZ_route.png)
 ![ping_server_to_client](figures/ping_server_to_client.png)<br>
-*serveur DMZ vers le client*
+_serveur DMZ vers le client_
 
-![client_route](figures/client_route.png) 
+![client_route](figures/client_route.png)
 ![ping_client_to_server](figures/ping_client_to_server.png)<br>
-*client vers le serveur DMZ*
-
+_client vers le serveur DMZ_
 
 ---
 
@@ -290,7 +290,7 @@ Si votre ping passe mais que la réponse contient un _Redirect Host_, ceci indiq
 
 **LIVRABLE : capture d'écran de votre ping vers l'Internet. Un ping qui ne passe pas ou des réponses contenant des _Redirect Host_ sont acceptés.**
 
-![Ping google blocked](figures/ping_google_blocked.png) 
+![Ping google blocked](figures/ping_google_blocked.png)
 
 ---
 
@@ -305,7 +305,6 @@ nft add rule nat postrouting meta oifname "eth0" masquerade
 ```
 
 La dernière commande `nftables` définit une règle dans le tableau NAT qui permet la redirection de ports et donc, l'accès à l'Internet pour les deux autres machines à travers l'interface eth0 qui est connectée au WAN.
-
 
 <ol type="a" start="2">
   <li>Quelle est l'utilité de la première commande ?
@@ -328,12 +327,12 @@ Elle crée une table nommée : `nat`
 
 **Réponse :**
 Elle ajoute une chaine dans la table nat, nommée : `postrouting`
+
 - `type nat` : type de la chaine est nat qui supporte les familles : ip, ip6, inet et les hooks de types : prerouting, postrouting, input, output
 - `hook postrouting`: le hook est de type `postrouting`: la chaine sera déclanchée après que la "routing decision" ait été prise
 - `priority 100` : Elle a une priorité de 100, elle sera moins prioritaire qu'un numéro plus petit. Elle est donc peu prioritaire
 
 ---
-
 
 Cette autre commande démarre le service SSH du serveur :
 
@@ -342,7 +341,6 @@ service ssh start
 ```
 
 Vérifiez que la connexion à l'Internet est maintenant possible depuis les deux autres machines ou qu'elle n'utilise plus de reditection. Pas besoin de capture d'écran mais assurez vous que les pings passent sans besoin de redirection de host avant de continuer.
-
 
 # Manipulations
 
@@ -353,7 +351,6 @@ Une règle permet d’autoriser ou d’interdire une connexion. `nftables` met �
 `nftables` vous permet la configuration de pare-feux avec et sans état. **Pour ce laboratoire, vous avez le choix d'utiliser le mode avec état, sans état ou une combinaison des deux**.
 
 Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la théorie et appuyez-vous sur des informations trouvées sur Internet pour traduire votre tableau de règles de filtrage en commandes `nftables`. Les règles prennent effet immédiatement après avoir appuyé sur &lt;enter>\. Vous pouvez donc les tester au fur et à mesure que vous les configurez.
-
 
 ## Sauvegarde et récupération des règles
 
@@ -370,9 +367,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-
 &rarr; Note : Puisque vous travaillez depuis un terminal natif de votre machin hôte, vous pouvez facilement copier/coller les règles dans un fichier local. Vous pouvez ensuite les utiliser pour reconfigurer votre firewall en cas de besoin.
-
 
 <ol type="a" start="5">
   <li>Quelle commande affiche toutes les règles de filtrage en vigueur ?
@@ -385,7 +380,6 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-
 <ol type="a" start="6">
   <li>Quelle commande est utilisée pour effacer toutes les règles de filtrage en vigueur ?
   </li>                                  
@@ -396,7 +390,6 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 **Réponse :**
 
 ---
-
 
 <ol type="a" start="7">
   <li>Quelle commande est utilisée pour effacer les chaines ?
@@ -409,7 +402,6 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-
 ---
 
 ## Tests des connections et exemple de l'application d'une règle
@@ -419,9 +411,10 @@ Pour chaque manipulation, il est important de **garder les règles déjà créé
 Pour commencer sur une base fonctionnelle, nous allons configurer le pare-feu pour accepter le **ping** dans certains cas. Cela va permettre de tester la connectivité du réseau.
 
 Le but est de configurer les règles pour que le pare-feu accepte
--	les ping depuis le LAN sur les machines de la DMZ,
--	les ping depuis le LAN sur le WAN,
--	les ping depuis la DMZ vers le LAN.
+
+- les ping depuis le LAN sur les machines de la DMZ,
+- les ping depuis le LAN sur le WAN,
+- les ping depuis la DMZ vers le LAN.
 
 Ceci correspond a la **condition 2** du cahier des charges.
 
@@ -432,6 +425,7 @@ Commandes nftables :
 ```bash
 LIVRABLE : Commandes nftables
 ```
+
 ---
 
 ### Questions
@@ -443,17 +437,18 @@ LIVRABLE : Commandes nftables
 
 ```bash
 ping 8.8.8.8
-``` 	            
+```
+
 Faire une capture du ping.
 
 Vérifiez aussi la route entre votre client et le service `8.8.8.8`. Elle devrait partir de votre client et traverser votre Firewall :
 
 ```bash
 traceroute 8.8.8.8
-``` 	            
-
+```
 
 ---
+
 **LIVRABLE : capture d'écran du traceroute et de votre ping vers l'Internet. Il ne devrait pas y avoir des _Redirect Host_ dans les réponses au ping !**
 
 ---
@@ -463,22 +458,19 @@ traceroute 8.8.8.8
   </li>                                  
 </ol>
 
+| De Client_in_LAN à  | OK/KO | Commentaires et explications |
+| :------------------ | :---: | :--------------------------- |
+| Interface DMZ du FW |       |                              |
+| Interface LAN du FW |       |                              |
+| Client LAN          |       |                              |
+| Serveur WAN         |       |                              |
 
-| De Client\_in\_LAN à | OK/KO | Commentaires et explications |
-| :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Client LAN           |       |                              |
-| Serveur WAN          |       |                              |
-
-
-| De Server\_in\_DMZ à | OK/KO | Commentaires et explications |
-| :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Serveur DMZ          |       |                              |
-| Serveur WAN          |       |                              |
-
+| De Server_in_DMZ à  | OK/KO | Commentaires et explications |
+| :------------------ | :---: | :--------------------------- |
+| Interface DMZ du FW |       |                              |
+| Interface LAN du FW |       |                              |
+| Serveur DMZ         |       |                              |
+| Serveur WAN         |       |                              |
 
 ## Règles pour le protocole DNS
 
@@ -491,7 +483,7 @@ traceroute 8.8.8.8
 ping www.google.com
 ```
 
-* Faire une capture du ping.
+- Faire une capture du ping.
 
 ---
 
@@ -499,7 +491,7 @@ ping www.google.com
 
 ---
 
-* Créer et appliquer la règle adéquate pour que la **condition 1 du cahier des charges** soit respectée.
+- Créer et appliquer la règle adéquate pour que la **condition 1 du cahier des charges** soit respectée.
 
 Commandes nftables :
 
@@ -528,22 +520,22 @@ LIVRABLE : Commandes nftables
 </ol>
 
 ---
+
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
 
 ---
 
-
 ## Règles pour les protocoles HTTP et HTTPS
 
-Créer et appliquer les règles adéquates pour que les **conditions 3 et 4 du cahier des charges** soient respectées. Tester que les règles soient fonctionnelles en utilisant wget depuis le Client\_in\_LAN pour télécharger une ressource depuis un site Web de votre choix (sur le WAN). Par exemple :
+Créer et appliquer les règles adéquates pour que les **conditions 3 et 4 du cahier des charges** soient respectées. Tester que les règles soient fonctionnelles en utilisant wget depuis le Client_in_LAN pour télécharger une ressource depuis un site Web de votre choix (sur le WAN). Par exemple :
 
 ```bash
 wget http://www.heig-vd.ch
 ```
 
-* Créer et appliquer les règles adéquates avec des commandes nftables.
+- Créer et appliquer les règles adéquates avec des commandes nftables.
 
 Commandes nftables :
 
@@ -555,7 +547,7 @@ LIVRABLE : Commandes nftables
 
 ---
 
-* Créer et appliquer les règles adéquates avec des commandes nftables pour que la **condition 5 du cahier des charges** soit respectée.
+- Créer et appliquer les règles adéquates avec des commandes nftables pour que la **condition 5 du cahier des charges** soit respectée.
 
 Commandes nftables :
 
@@ -564,6 +556,7 @@ Commandes nftables :
 ```bash
 LIVRABLE : Commandes nftables
 ```
+
 ---
 
 <ol type="a" start="13">
@@ -576,7 +569,6 @@ LIVRABLE : Commandes nftables
 **LIVRABLE : capture d'écran.**
 
 ---
-
 
 ## Règles pour le protocole ssh
 
@@ -613,6 +605,7 @@ ssh root@192.168.200.3
 </ol>
 
 ---
+
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
@@ -624,8 +617,8 @@ ssh root@192.168.200.3
   </li>                                  
 </ol>
 
-
 ---
+
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
