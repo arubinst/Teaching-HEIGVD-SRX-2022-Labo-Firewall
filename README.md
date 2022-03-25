@@ -224,6 +224,8 @@ ping 192.168.200.3
 ```
 ---
 
+**LIVRABLE : capture d'écran de votre tentative de ping.** 
+
 ![Ping that doesn't work](./figures/pingDoesntWork.png) 
 
 ---
@@ -263,6 +265,8 @@ ping 192.168.100.3
 
 ---
 
+**LIVRABLES : captures d'écran des routes des deux machines et de votre nouvelle tentative de ping.**
+
 ![Ping works](./figures/pingWorks.png) 
 
 ---
@@ -278,6 +282,8 @@ ping 8.8.8.8
 Si votre ping passe mais que la réponse contient un _Redirect Host_, ceci indique que votre ping est passé grâce à la redirection ICMP, mais que vous n'arrivez pas encore à contacter l'Internet à travers le Firewall. Ceci est donc aussi valable pour l'instant et accepté comme résultat.
 
 ---
+
+**LIVRABLE : capture d'écran de votre ping vers l'Internet. Un ping qui ne passe pas ou des réponses contenant des _Redirect Host_ sont acceptés.**
 
 ![Ping Internet Doesn't work](./figures/pingInternetDoesntWork.png) 
 
@@ -353,7 +359,10 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-**Réponse :**
+**Réponse :** Toutes les règles peuvent être sauvegardé dans le fichier `/etc/nftables.conf`. Ce fichier est utilisé pour configurer nftable à chaque redémarrage. C'est possible de rendre la configuration persistante avec la commande `nft list ruleset > /etc/nftables.conf`.
+On peut charger la config manuellement avec `nft -f /etc/nftables.conf`
+
+Référence : [Quick reference for nftables](https://wiki.nftables.org/wiki-nftables/index.php/Quick_reference-nftables_in_10_minutes)
 
 ---
 
@@ -368,7 +377,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-**Réponse :**
+**Réponse :** `nft list ruleset`
 
 ---
 
@@ -380,7 +389,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-**Réponse :**
+**Réponse :** `nft flush ruleset`
 
 ---
 
@@ -392,7 +401,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-**Réponse :**
+**Réponse :** `nft delete chain [family] <table_name> <chain_name>`
 
 ---
 
@@ -418,6 +427,18 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+# Créer une table "filter"
+nft add table filter
+
+# Créer une chaine qui s'appelle "forwarding" dans la table "filter" qui, par défaut, rejette tous les paquets.
+nft 'add chain filter forwarding { type filter hook forward priority 0; policy drop; }'
+
+# Autorise le protocole icmp lorsque la demande vient du LAN ou de la DMZ vers le LAN
+nft 'add rule filter forwarding ip saddr 192.168.100.0/24 icmp type { echo-request, echo-reply } accept'
+nft 'add rule filter forwarding ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type { echo-request, echo-reply } accept'
+
+# Maintient l'état "d'acceptation" des requêtes icmp déjà autorisées.
+nft 'add rule filter forwarding ct state established icmp type { echo-reply, echo-request } accept'
 ```
 ---
 
@@ -442,6 +463,7 @@ traceroute 8.8.8.8
 
 ---
 **LIVRABLE : capture d'écran du traceroute et de votre ping vers l'Internet. Il ne devrait pas y avoir des _Redirect Host_ dans les réponses au ping !**
+![Ping and traceroute to Internet](./figures/tracerouteAndPing.png) 
 
 ---
 
