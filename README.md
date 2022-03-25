@@ -599,7 +599,8 @@ nft add rule ip filter forward ip daddr 192.168.200.0/24 meta iifname "eth0" tcp
 
 ---
 
-**LIVRABLE : capture d'écran.**
+![lan_dmz_wget](figures/lan_dmz_wget.png)<br>
+
 
 ---
 
@@ -615,7 +616,10 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 tcp dport 22 accept
+
+nft 'add chain ip filter output {type filter hook output priority 0;}'
+nft add rule ip filter output ip daddr 192.168.100.0/24 ip saddr 192.168.100.2 tcp sport 22 accept
 ```
 
 ---
@@ -628,7 +632,7 @@ ssh root@192.168.200.3
 
 ---
 
-**LIVRABLE : capture d'écran de votre connexion ssh.**
+![ssh_lan_dmz](figures/ssh_lan_dmz.png)<br>
 
 ---
 
