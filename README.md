@@ -129,24 +129,21 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 **LIVRABLE : Remplir le tableau**
 
-| Adresse IP source | Adresse IP destination | Type    | Port src | Port dst | Action |
-| :---:             | :---:                  | :-----: | :------: | :------: | :----: |
-| 192.168.100.0/24  | interface WAN          | TCP     | *        | 53       | Accept |
-| 192.168.100.0/24  | interface WAN          | UDP     | *        | 53       | Accept |
-| 192.168.100.0/24  | interface WAN          | ICMP    | *        | *        | Accept |
-| 192.168.100.0/24  | 192.168.200.0/24       | ICMP    | *        | *        | Accept |
-| 192.168.200.0/24  | 192.168.100.0/24       | ICMP    | *        | *        | Accept |
-| interface WAN     | 192.168.100.0/24       | ICMP    | *        | *        | Accept |
-| 192.168.200.0/24  | 192.168.100.0/24       | ICMP    | *        | *        | Accept |
-| 192.168.100.0/24  | 192.168.200.0/24       | ICMP    | *        | *        | Accept |
-| 192.168.100.0/24  | Interface WAN          | TCP     | *        | 80       | Accept |
-| 192.168.100.0/24  | Interface WAN          | TCP     | *        | 8080     | Accept |
-| 192.168.100.0/24  | Interface WAN          | TCP     |          | 443      | Accept |
-| 192.168.100.0/24  | 192.168.200.0/24       | TCP     | *        | 80       | Accept |
-| Inteface WAN      | 192.168.200.0/24       | TCP     | *        | 80       | Accept |
-| 192.168.100.0/24  | 192.168.200.0/24       | TCP     | *        | 22       | Accept |
-| 192.168.100.0/24  | 192.168.100.2          | TCP     | *        | 22       | Accept |
-| *                 | *                      | *       | *        | *        | Drop   |
+|  Adresse IP source   | Adresse IP destination | Type              | Port src | Port dst | Action |
+| :------------------: | :--------------------: | :---------------: | :------: | :------: | :----: |
+|   192.168.100.0/24   |  Interface WAN (eth0)  | TCP               |    *     |    53    | Accept |
+|   192.168.100.0/24   |  Interface WAN (eth0)  | UDP               |    *     |    53    | Accept |
+|   192.168.100.0/24   |  Interface WAN (eth0)  | ICMP echo-request |    *     |    *     | Accept |
+|   192.168.100.0/24   |    192.168.200.0/24    | ICMP              |    *     |    *     | Accept |
+|   192.168.200.0/24   |    192.168.100.0/24    | ICMP              |    *     |    *     | Accept |
+|   192.168.100.0/24   |  Interface WAN (eth0)  | TCP               |    *     |    80    | Accept |
+|   192.168.100.0/24   |  Interface WAN (eth0)  | TCP               |    *     |   8080   | Accept |
+|   192.168.100.0/24   |  Interface WAN (eth0)  | TCP               |    *     |   443    | Accept |
+|   192.168.100.0/24   |     192.168.200.3      | TCP               |    *     |    80    | Accept |
+| Interface WAN (eth0) |     192.168.200.3      | TCP               |    *     |    80    | Accept |
+|    192.168.100.3     |     192.168.200.3      | TCP               |    *     |    22    | Accept |
+|    192.168.100.3     |     192.168.100.2      | TCP               |    *     |    22    | Accept |
+|          *           |           *            |  *                |    *     |    *     |  Drop  |
 
 
 ---
