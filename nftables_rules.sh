@@ -22,33 +22,28 @@ nft add table ip filter
 # --------------------- #
 
 # Ajout d'une chaîne contenant les règles pour accepter le ping
-nft 'add chain ip filter accept_ping { type filter hook forward  priority 100 ; policy drop ; }'
+nft 'add chain ip filter custom_rules { type filter hook forward  priority 100 ; policy drop ; }'
 
 # Ajout des règles
 
 # Autorise le ping du LAN vers la DMZ
+nft add rule ip filter custom_rules icmp type echo-request ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 accept
 
-nft add rule ip filter accept_ping icmp type echo-request ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 accept
-
-nft add rule ip filter accept_ping icmp type echo-reply ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 accept
+nft add rule ip filter custom_rules icmp type echo-reply ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 accept
 
 # Autorise le ping du LAN vers le WAN
+nft add rule ip filter custom_rules icmp type echo-request ip saddr 192.168.100.0/24 meta oif eth0 accept 
 
-nft add rule ip filter accept_ping icmp type echo-request ip saddr 192.168.100.0/24 meta oif eth0 accept 
-
-nft add rule ip filter accept_ping icmp type echo-reply meta iif eth0 ip daddr 192.168.100.0/24 accept 
+nft add rule ip filter custom_rules icmp type echo-reply meta iif eth0 ip daddr 192.168.100.0/24 accept 
 
 # Autorise le ping de la DMZ vers le LAN
-nft add rule ip filter accept_ping icmp type echo-request ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 accept
+nft add rule ip filter custom_rules icmp type echo-request ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 accept
 
-nft add rule ip filter accept_ping icmp type echo-reply ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 accept
+nft add rule ip filter custom_rules icmp type echo-reply ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 accept
 
 # --------------------- #
 # DNS                   #
 # --------------------- #
 
-# Ajout d'une chaîne contenant les règles pour accepter dns
-nft 'add chain ip filter dns_wan { type filter hook forward  priority 100 ; policy drop ; }'
-
-nft add rule ip filter dns_wan meta oif eth0 ip saddr 192.168.100.0/24 tcp sport 53 tcp dport 53 accept
-nft add rule ip filter dns_wan meta oif eth0 ip saddr 192.168.100.0/24 udp sport 53 udp dport 53 accept 
+nft add rule ip filter custom_rules meta oif eth0 ip saddr 192.168.100.0/24 tcp sport 53 tcp dport 53 accept
+nft add rule ip filter custom_rules meta oif eth0 ip saddr 192.168.100.0/24 udp sport 53 udp dport 53 accept 
