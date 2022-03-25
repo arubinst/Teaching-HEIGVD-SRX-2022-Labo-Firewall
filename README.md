@@ -597,15 +597,6 @@ nft add rule firewall forward \
 ip saddr 192.168.100.0/24 ip daddr !=192.168.0.0/16 tcp dport 443 accept \
 comment \"autorise le LAN à ouvrir des connexions TCP vers le WAN sur le port 443\"
 
-
-#
-# Règles pour HTTP vers la DMZ
-#
-
-nft add rule firewall forward \
-ip daddr 192.168.200.3 tcp dport 80 accept \
-comment \"autorise tout le monde à ouvrir des connexions TCP vers le serveur web de la DMZ sur le port 80\"
-
 #
 # Autorise toutes les réponses
 #
@@ -623,7 +614,20 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+#
+# Règles pour HTTP vers la DMZ
+#
+
+nft add rule firewall forward \
+ip daddr 192.168.200.3 tcp dport 80 accept \
+comment \"autorise tout le monde à ouvrir des connexions TCP vers le serveur web de la DMZ sur le port 80\"
+
+#
+# Autorise toutes les réponses
+#
+nft add rule firewall forward \
+ct state established accept \
+comment \"on autorise toutes les réponses à des requêtes que nous avons autorisées\"
 ```
 ---
 
@@ -634,7 +638,7 @@ LIVRABLE : Commandes nftables
 
 ---
 
-**LIVRABLE : capture d'écran.**
+![wget 192.168.200.3](livrables/wget_server_dmz.png)
 
 ---
 
@@ -651,7 +655,21 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+# création de la chaîne pour les règles d'input
+nft 'add chain firewall input {type filter hook input priority 0 ; policy drop ; }'
+
+# règle pour avoir un firewall stateful qui autorise les réponses à des connexions autorisées
+nft add rule firewall input \
+ct state established accept \
+comment \"on autorise toutes les réponses à des requêtes que nous avons autorisées\"
+
+#
+# Règles pour SSH du client LAN vers le firewall
+#
+
+nft add rule firewall input \
+ip saddr 192.168.100.3 ip daddr 192.168.100.2 tcp dport 22 accept \
+comment \"autorise le client du LAN à ouvrir des connexions TCP vers le firewall sur le port 22\"
 ```
 
 ---
@@ -676,7 +694,7 @@ ssh root@192.168.200.3
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+![ssh 192.168.200.3](livrables/ssh_client_to_server.png)
 
 ---
 
@@ -689,7 +707,7 @@ ssh root@192.168.200.3
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+À ne pas couper l'herbe sous le pied, comme disait l'autre. En d'autres termes, il faut faire attention aux règles qu'on écrit pour ne pas interdire l'accès au port SSH au Firewall depuis la machine depuis laquelle on configure celui-ci. Dans le cas où ce sénario arriverait, il faudrait se connecter physiquement à la machine pour ré-autoriser les connexions au port SSH depuis les machines légitimes vers le Firewall.
 
 ---
 
