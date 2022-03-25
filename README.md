@@ -493,6 +493,10 @@ traceroute 8.8.8.8
 
 Ajouter le traceroute ici
 
+
+![traceroute non fonctionnel](figures/traceroute.png)
+
+Le traceroute ne fonctionne pas à causes des règles du firewall mises en place.
 ---
 
 <ol type="a" start="9">
