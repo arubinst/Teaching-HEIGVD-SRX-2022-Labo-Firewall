@@ -129,24 +129,22 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 **LIVRABLE : Remplir le tableau**
 
-| Adresse IP source | Adresse IP destination |       Type        |   Port src    |   Port dst    | Action |
-| :---------------: | :--------------------: | :---------------: | :-----------: | :-----------: | :----: |
-| 192.168.100.0/24  |           \*           |      UDP/TCP      |      \*       |      53       | Accept |
-| 192.168.200.0/24  |           \*           |      UDP/TCP      |      \*       |      53       | Accept |
-|        \*         |    192.168.100.0/24    |      UDP/TCP      |      53       |      \*       | Accept |
-|        \*         |    192.168.200.0/24    |      UDP/TCP      |      53       |      \*       | Accept |
-| 192.168.100.0/24  |  \* via interface eth0  | ICMP:echo-request |       -       |       -       | Accept |
-|\* via interface eth0|    192.168.100.0/24    |  ICMP:echo-reply  |       -       |       -       | Accept |
-| 192.168.100.0/24  |  192.168.200.0/24  | ICMP:echo-request |       -       |       -       | Accept |
-|192.168.200.0/24|    192.168.100.0/24    |  ICMP:echo-reply  |       -       |       -       | Accept |
-| 192.168.200.0/24  |    192.168.100.0/24    | ICMP:echo-request |       -       |       -       | Accept |
-| 192.168.100.0/24  |    192.168.200.0/24    |  ICMP:echo-reply  |       -       |       -       | Accept |
-| 192.168.100.0/24  |           \*           |        TCP        |      \*       | 80, 443, 8080 | Accept |
-|        \*         |    192.168.100.0/24    |        TCP        | 80, 443, 8080 |      \*       | Accept |
-|        \*         |    192.168.200.0/24    |        TCP        |      \*       |      80       | Accept |
-|   192.168.100.3   |    192.168.200.0/24    |        TCP        |      \*       |      22       | Accept |
-|   192.168.200.3   |    192.168.100.0/24    |        TCP        |      22       |      \*       | Accept |
-|        \*         |           \*           |        \*         |      \*       |      \*       |  Drop  |
+|   Adresse IP source   | Adresse IP destination |       Type        |   Port src    |   Port dst    | Action |
+| :-------------------: | :--------------------: | :---------------: | :-----------: | :-----------: | :----: |
+|   192.168.100.0/24    |           \*           |      UDP/TCP      |      \*       |      53       | Accept |
+|          \*           |    192.168.100.0/24    |      UDP/TCP      |      53       |      \*       | Accept |
+|   192.168.100.0/24    | \* via interface eth0  | ICMP:echo-request |       -       |       -       | Accept |
+| \* via interface eth0 |    192.168.100.0/24    |  ICMP:echo-reply  |       -       |       -       | Accept |
+|   192.168.100.0/24    |    192.168.200.0/24    | ICMP:echo-request |       -       |       -       | Accept |
+|   192.168.200.0/24    |    192.168.100.0/24    |  ICMP:echo-reply  |       -       |       -       | Accept |
+|   192.168.200.0/24    |    192.168.100.0/24    | ICMP:echo-request |       -       |       -       | Accept |
+|   192.168.100.0/24    |    192.168.200.0/24    |  ICMP:echo-reply  |       -       |       -       | Accept |
+|   192.168.100.0/24    |           \*           |        TCP        |      \*       | 80, 443, 8080 | Accept |
+|          \*           |    192.168.100.0/24    |        TCP        | 80, 443, 8080 |      \*       | Accept |
+|          \*           |    192.168.200.0/24    |        TCP        |      \*       |      80       | Accept |
+|     192.168.100.3     |    192.168.200.0/24    |        TCP        |      \*       |      22       | Accept |
+|     192.168.200.3     |    192.168.100.0/24    |        TCP        |      22       |      \*       | Accept |
+|          \*           |           \*           |        \*         |      \*       |      \*       |  Drop  |
 
 ---
 
@@ -368,13 +366,14 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 **Réponse :**
 
 - Pour commencer, il faut copier la configuration affichée par la commande `nft list ruleset` dans le fichier `/etc/nftables.conf`.
-- Ensuite, il faut que le système exécute le script suivant au démarrage : 
-````bash
+- Ensuite, il faut que le système exécute le script suivant au démarrage :
+
+```bash
  #!/bin/sh
  /sbin/nft -f /etc/nftables.conf
-````
-Pour ce faire, il faudrait configurer soit systemd ou init.d, mais cela n'était pas le but du laboratoire.
----
+```
+
+## Pour ce faire, il faudrait configurer soit systemd ou init.d, mais cela n'était pas le but du laboratoire.
 
 &rarr; Note : Puisque vous travaillez depuis un terminal natif de votre machin hôte, vous pouvez facilement copier/coller les règles dans un fichier local. Vous pouvez ensuite les utiliser pour reconfigurer votre firewall en cas de besoin.
 
@@ -386,6 +385,7 @@ Pour ce faire, il faudrait configurer soit systemd ou init.d, mais cela n'était
 ---
 
 **Réponse :**
+
 ```
 nft list ruleset
 ```
@@ -400,6 +400,7 @@ nft list ruleset
 ---
 
 **Réponse :**
+
 ```
 nft flush ruleset
 ```
@@ -414,6 +415,7 @@ nft flush ruleset
 ---
 
 **Réponse :**
+
 ```
 nft delete chain [family] <table_name> <chain_name>
 ```
@@ -481,19 +483,19 @@ traceroute 8.8.8.8
   </li>                                  
 </ol>
 
-| De Client_in_LAN à  | OK/KO | Commentaires et explications |
-| :------------------ | :---: | :--------------------------- |
-| Interface DMZ du FW |       |                              |
-| Interface LAN du FW |       |                              |
-| Client LAN          |       |                              |
-| Serveur WAN         |       |                              |
+| De Client_in_LAN à  | OK/KO | Commentaires et explications         |
+| :------------------ | :---: | :----------------------------------- |
+| Interface DMZ du FW |  KO   | attendu, car règle forward sur le FW |
+| Interface LAN du FW |  KO   | attendu, car règle forward sur le FW |
+| Client LAN          |  OK   | ne passe pas par le FW               |
+| Serveur WAN         |  OK   |                                      |
 
-| De Server_in_DMZ à  | OK/KO | Commentaires et explications |
-| :------------------ | :---: | :--------------------------- |
-| Interface DMZ du FW |       |                              |
-| Interface LAN du FW |       |                              |
-| Serveur DMZ         |       |                              |
-| Serveur WAN         |       |                              |
+| De Server_in_DMZ à  | OK/KO | Commentaires et explications         |
+| :------------------ | :---: | :----------------------------------- |
+| Interface DMZ du FW |  KO   | attendu, car règle forward sur le FW |
+| Interface LAN du FW |  KO   | attendu, car règle forward sur le FW |
+| Serveur DMZ         |  OK   | attendu                              |
+| Serveur WAN         |  KO   | attendu                              |
 
 ## Règles pour le protocole DNS
 
@@ -521,7 +523,10 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+nft add rule ip filter forward ip saddr 192.168.100.0/24 tcp dport 53 accept
+nft add rule ip filter forward ip saddr 192.168.100.0/24 udp dport 53 accept
+nft add rule ip filter forward ip daddr 192.168.100.0/24 tcp sport 53 accept
+nft add rule ip filter forward ip daddr 192.168.100.0/24 udp sport 53 accept
 ```
 
 ---
@@ -533,7 +538,8 @@ LIVRABLE : Commandes nftables
 
 ---
 
-**LIVRABLE : capture d'écran de votre ping.**
+![ping_client_google](figures/ping_client_google.png)<br>
+
 
 ---
 
