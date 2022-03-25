@@ -141,8 +141,8 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 | 192.168.100.0/24  | Interface WAN          | TCP  | Any      | 443      | Accept |
 | 192.168.100.0/24  | 192.168.200.0/24       | TCP  | Any      | 80       | Accept |
 | Interface WAN     | 192.168.200.0/24       | TCP  | Any      | 80       | Accept |
-| 192.168.100.0/24  | 192.168.200.0/24       | TCP  | Any      | 22       | Accept |
-| 192.168.100.0/24  | 192.168.100.2          | TCP  | Any      | 22       | Accept |
+| 192.168.100.3     | 192.168.200.0/24       | TCP  | Any      | 22       | Accept |
+| 192.168.100.3     | 192.168.100.2          | TCP  | Any      | 22       | Accept |
 | *                 | *                      | Any  | Any      | Any      | Drop   |
 
 ---
@@ -637,8 +637,8 @@ Commandes nftables :
 ---
 
 ```bash
-nft add rule ip filter input ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 tcp dport 22 accept
-nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 22 accept 
+nft add rule ip filter input ip saddr 192.168.100.3 ip daddr 192.168.100.2 tcp dport 22 accept
+nft add rule ip filter forward ip saddr 192.168.100.3 ip daddr 192.168.200.3 tcp dport 22 accept 
 ```
 
 ---
