@@ -429,12 +429,24 @@ nft add table filter
 # Créer une chaine qui s'appelle "forwarding" dans la table "filter" qui, par défaut, rejette tous les paquets.
 nft 'add chain filter forwarding { type filter hook forward priority 0; policy drop; }'
 
-# Autorise le protocole icmp lorsque la demande vient du LAN, ou de la DMZ vers le LAN
-nft 'add rule filter forwarding ip saddr 192.168.100.0/24 icmp type { echo-request, echo-reply } accept'
-nft 'add rule filter forwarding ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type { echo-request, echo-reply } accept'
 
-# Maintient l'état "d'acceptation" des requêtes icmp déjà autorisées.
-nft 'add rule filter forwarding ct state established icmp type { echo-reply, echo-request } accept'
+Fichier nftables.conf :
+table ip filter {
+        chain forwarding {
+                type filter hook forward priority filter; policy drop;
+                # LAN to WAN only icmp request accept
+                ip saddr 192.168.100.0/24 meta oifname "eth0" icmp type echo-request accept
+
+                # WAN to LAN only icmp reply accept
+                meta iifname "eth0" ip daddr 192.168.100.0/24 icmp type echo-reply accept
+
+                # LAN to DMZ icmp request and reply accept
+                ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 icmp type { echo-request, echo-reply } accept
+
+                # DMZ to LAN icmp request and reply accept
+                ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type { echo-request, echo-reply } accept
+        }
+}
 ```
 ---
 
