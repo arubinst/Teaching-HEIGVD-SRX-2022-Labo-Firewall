@@ -127,8 +127,6 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 ---
 
-**LIVRABLE : Remplir le tableau**
-
 | Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
 | :---:             | :---:                  | :---:| :------: | :------: | :----: |
 | 192.168.100.0/24  | Interface WAN          | TCP  | Any      | 53       | Accept |
@@ -481,7 +479,6 @@ traceroute 8.8.8.8
 
 
 ---
-**LIVRABLE : capture d'écran du traceroute et de votre ping vers l'Internet. Il ne devrait pas y avoir des _Redirect Host_ dans les réponses au ping !**
 
 ![Ping vers WAN](figures/SRX_L1_LAN-to-WAN-ping-traceroute-OK.png)
 
@@ -548,7 +545,6 @@ nft add rule ip filter forward ip saddr 192.168.100.0/24 oif eth0 udp dport 53 a
 
 ---
 
-**LIVRABLE : capture d'écran de votre ping.**
 
 ![DNS passe vers le WAN](figures/SRX_L1_DNS-working-OK.png)
 
