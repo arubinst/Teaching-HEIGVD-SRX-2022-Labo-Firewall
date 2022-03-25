@@ -139,8 +139,8 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 | 192.168.100.0/24  | *                      | TCP  | *        | 8080     | ACCEPT | HTTP LAN -> * |
 | 192.168.100.0/24  | *                      | TCP  | *        | 443      | ACCEPT | HTTPS LAN -> * |
 | *                 | 192.168.200.0/24       | TCP  | *        | 80       | ACCEPT | HTTP * -> DMZ |
-| 192.168.100.0/24  | 192.168.200.0/24       | TCP  | *        | 22       | ACCEPT | SSH LAN -> DMZ |
-| 192.168.100.0/24  | 192.168.100.2          | TCP  | *        | 22       | ACCEPT | SSH LAN -> FW |
+| 192.168.100.3/24  | 192.168.200.0/24       | TCP  | *        | 22       | ACCEPT | SSH LAN -> DMZ |
+| 192.168.100.3/24  | 192.168.100.2          | TCP  | *        | 22       | ACCEPT | SSH LAN -> FW |
 | *                 | *                      | *    | *        | *        | DROP   | Bloque tout par défaut |
 |                   |                        |      |          |          |        |
 
@@ -822,10 +822,10 @@ Commandes nftables :
 LIVRABLE : Commandes nftables
 
 # allows SSH LAN -> web serv in DMZ
-nft add rule FORWARD filter ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 22 accept
+nft add rule FORWARD filter ip saddr 192.168.100.3/24 ip daddr 192.168.200.3 tcp dport 22 accept
 
 # allows ssh LAN -> FW_LAN
-nft add rule INPUT filter ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 tcp dport 22 accept
+nft add rule INPUT filter ip saddr 192.168.100.3/24 ip daddr 192.168.100.2 tcp dport 22 accept
 
 ```
 
@@ -929,7 +929,7 @@ table ip filter {
 		ip saddr 192.168.200.0/24 ip daddr 192.168.200.2 icmp type echo-request accept
         
 		# allows ssh LAN -> FW
-		ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 tcp dport 22 accept
+		ip saddr 192.168.100.3/24 ip daddr 192.168.100.2 tcp dport 22 accept
 
 		# allows ping LAN -> FW_DMZ
 		ip saddr 192.168.100.0/24 ip daddr 192.168.200.2 icmp type echo-request accept
@@ -970,7 +970,7 @@ table ip filter {
 		ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 80 accept
 
 		# allows SSH LAN -> web serv in DMZ
-		ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 22 accept
+		ip saddr 192.168.100.3/24 ip daddr 192.168.200.3 tcp dport 22 accept
 	}
 
 	chain OUTPUT {
@@ -998,7 +998,7 @@ table ip nat {
 table inet filter {
 	chain input {
 		type filter hook input priority filter; policy drop;
-		ip saddr 192.168.100.0/24 ip daddr 192.168.100.2 tcp dport 22 accept
+		ip saddr 192.168.100.3/24 ip daddr 192.168.100.2 tcp dport 22 accept
 		ip saddr 192.168.100.0/24 ip saddr 192.168.200.0/24 icmp type echo-request accept
 	}
 
@@ -1016,7 +1016,7 @@ table inet filter {
 		ip daddr 192.168.100.0/24 tcp flags ack accept
 		ip daddr 192.168.200.0/24 tcp dport 80 accept
 		ip saddr 192.168.200.0/24 tcp flags ack accept
-		ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 tcp dport 22 accept
+		ip saddr 192.168.100.3/24 ip daddr 192.168.200.0/24 tcp dport 22 accept
 	}
 
 	chain output {
