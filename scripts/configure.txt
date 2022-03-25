@@ -40,10 +40,14 @@ nft add rule ip filter forward ip daddr 192.168.100.0/24 meta iifname "eth0" icm
 nft add rule ip filter forward ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-request accept
 nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 icmp type echo-reply accept
 
-nft add rule ip filter forward ip saddr 192.168.100.0/24 tcp dport {80, 443, 8080} accept
-nft add rule ip filter forward ip daddr 192.168.100.0/24 tcp sport {80, 443, 8080} accept
+nft add rule ip filter forward ip saddr 192.168.100.0/24 meta oifname "eth0" tcp dport {80, 443, 8080} accept
+nft add rule ip filter forward ip daddr 192.168.100.0/24 meta iifname "eth0" tcp sport {80, 443, 8080} accept
 
-nft add rule ip filter forward ip daddr 192.168.200.0/24 tcp dport 80 accept
+nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 tcp dport 80 accept
+nft add rule ip filter forward ip daddr 192.168.100.0/24 ip saddr 192.168.200.0/24 tcp sport 80 accept
+
+nft add rule ip filter forward ip saddr 192.168.200.0/24 meta oifname "eth0" tcp sport 80 accept
+nft add rule ip filter forward ip daddr 192.168.200.0/24 meta iifname "eth0" tcp dport 80 accept
 
 nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 tcp dport 22 accept
 nft add rule ip filter forward ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 tcp sport 22 accept

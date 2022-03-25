@@ -552,8 +552,7 @@ nft add rule ip filter forward ip daddr 192.168.100.0/24 udp sport 53 accept
 
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
-
+Le message indique que la commande ne parvient pas à résoudre le nom de domaine, ce qui est normal, car le port utilisé par le protocole DNS est actuellement filtré par le FW.
 ---
 
 ## Règles pour les protocoles HTTP et HTTPS
@@ -571,7 +570,8 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+nft add rule ip filter forward ip saddr 192.168.100.0/24 meta oifname "eth0" tcp dport {80, 443, 8080} accept
+nft add rule ip filter forward ip daddr 192.168.100.0/24 meta iifname "eth0" tcp sport {80, 443, 8080} accept
 ```
 
 ---
@@ -583,7 +583,11 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 tcp dport 80 accept
+nft add rule ip filter forward ip daddr 192.168.100.0/24 ip saddr 192.168.200.0/24 tcp sport 80 accept
+
+nft add rule ip filter forward ip saddr 192.168.200.0/24 meta oifname "eth0" tcp sport 80 accept
+nft add rule ip filter forward ip daddr 192.168.200.0/24 meta iifname "eth0" tcp dport 80 accept
 ```
 
 ---
