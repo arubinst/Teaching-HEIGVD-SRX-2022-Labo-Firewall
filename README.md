@@ -899,13 +899,14 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 
 ---
 
-```
+
 Configuration Stateful
-Nous avons réalisé deux configuration pendant le laboratoire: une statefull, que
+
+*Nous avons réalisé deux configuration pendant le laboratoire: une statefull, que
 nous conservons comme version définitive, et une stateless qui nous a permis
 d'expérimenter. Nous mettons aussi cette dernière ci-dessous à titre de
-comparaison.
-
+comparaison.*
+```
 table ip nat {
 	chain postrouting {
 		type nat hook postrouting priority srcnat; policy accept;
