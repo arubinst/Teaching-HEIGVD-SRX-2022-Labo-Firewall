@@ -557,6 +557,8 @@ LIVRABLE : Commandes nftables
 
 **LIVRABLE : capture d'écran de votre ping.**
 
+![ping_fail](https://github.com/theomi/Teaching-HEIGVD-SRX-2022-Labo-Firewall/blob/main/Livrables/img/dns_ping_fail2.png)
+
 ---
 
 <ol type="a" start="12">
