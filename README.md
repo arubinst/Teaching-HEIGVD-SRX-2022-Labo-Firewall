@@ -262,11 +262,14 @@ ping 192.168.100.3
 ---
 
 **LIVRABLES : captures d'écran des routes des deux machines et de votre nouvelle tentative de ping.**
+
 ![client_route](img/client_in_lan_route.png)
+
 ![client_ping_working](img/client_in_lan_ping_working.png)
+
 ![server_route](img/server_in_dmz_route.png)
+
 ![server_ping_working](img/server_in_dmz_ping_working.png)
----
 
 La communication est maintenant possible entre les deux machines. Pourtant, si vous essayez de communiquer depuis le client ou le serveur vers l'Internet, ça ne devrait pas encore fonctionner sans une manipulation supplémentaire au niveau du firewall ou sans un service de redirection ICMP. Vous pouvez le vérifier avec un ping depuis le client ou le serveur vers une adresse Internet.
 
@@ -281,8 +284,8 @@ Si votre ping passe mais que la réponse contient un _Redirect Host_, ceci indiq
 ---
 
 **LIVRABLE : capture d'écran de votre ping vers l'Internet. Un ping qui ne passe pas ou des réponses contenant des _Redirect Host_ sont acceptés.**
+
 ![server_to_wan_not_working](img/server_in_dmz_ping_to_WAN_not_working.png)
----
 
 ### Configuration réseau du firewall
 
@@ -297,6 +300,8 @@ nft add rule nat postrouting meta oifname "eth0" masquerade
 La dernière commande `nftables` définit une règle dans le tableau NAT qui permet la redirection de ports et donc, l'accès à l'Internet pour les deux autres machines à travers l'interface eth0 qui est connectée au WAN.
 
 
+
+
 <ol type="a" start="2">
   <li>Quelle est l'utilité de la première commande ?
   </li>                                  
@@ -305,8 +310,10 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 ---
 
 **Réponse :**
+
 Elle sert à créer une table qui va stocker les translations NAT qui vont être faites pour que les machines puissent accéder à internet via le firewall.
----
+
+
 
 <ol type="a" start="3">
   <li>Quelle est l'utilité de la deuxième commande ? Expliquer chacun des paramètres.
@@ -317,8 +324,12 @@ Elle sert à créer une table qui va stocker les translations NAT qui vont être
 
 **Réponse :**
 Elle sert à définit les paramètres utilisés par la NAT que les machines vont utiliser pour accéder à internet via le Firewall.
+
 - `add chain nat postrouting`: ajoute (`add`) une nouvelle chaîne (`chain`) sur la table NAT (`nat`) créée précédemment. Une chaîne est un container qui va contenir des règles. `postrouting` est le nom de cette chaîne.
-`{ type nat hook postrouting priority 100 ; `} Cette ligne donne les indications sur le fonctionnement de la chaîne. `type nat` indique que la chaine est de type nat, soit que les adresses sont translatées. `hook postrouting` indique que la chaîne sera executée lorsque les paquets quittent le système. `priority 100` indique que la priorité de la chaîne est de 100. La priorité est utilisée pour définir l'ordre dans lequel sont interprété les chaînes s'il en existe plusieurs avec le même hook. La priorité 0 est la plus haute.
+- `{ type nat hook postrouting priority 100 ; `} Cette ligne donne les indications sur le fonctionnement de la chaîne.
+  - `type nat` indique que la chaine est de type nat, soit que les adresses sont translatées.
+  - `hook postrouting` indique que la chaîne sera executée lorsque les paquets quittent le système.
+  - `priority 100` indique que la priorité de la chaîne est de 100. La priorité est utilisée pour définir l'ordre dans lequel sont interprété les chaînes s'il en existe plusieurs avec le même hook. La priorité 0 est la plus haute.
 ---
 
 
@@ -375,7 +386,6 @@ nft -f ~/nft.conf		# Restore nft config from file
 **Réponse :**
 
 `nft list ruleset`
----
 
 
 <ol type="a" start="6">
@@ -388,7 +398,6 @@ nft -f ~/nft.conf		# Restore nft config from file
 **Réponse :**
 
 `nft flush ruleset`
----
 
 
 <ol type="a" start="7">
@@ -404,8 +413,8 @@ Syntaxe:
 `nft delete chain <table> <chain>`
 
 Exemple:
+
 `nft delete chain nat postrouting`
----
 
 
 ---
@@ -455,7 +464,7 @@ nft add rule filter forward icmp type echo-request ip saddr 192.168.100.0/24 met
 ```bash
 ping 8.8.8.8
 ```
-	            
+
 Faire une capture du ping.
 
 Vérifiez aussi la route entre votre client et le service `8.8.8.8`. Elle devrait partir de votre client et traverser votre Firewall :
@@ -463,15 +472,18 @@ Vérifiez aussi la route entre votre client et le service `8.8.8.8`. Elle devrai
 ```bash
 traceroute 8.8.8.8
 ```
-           
+
 
 ---
 **LIVRABLE : capture d'écran du traceroute et de votre ping vers l'Internet. Il ne devrait pas y avoir des _Redirect Host_ dans les réponses au ping !**
 
 ![client_in_lan_ping_via_firewall](img/client_in_lan_ping_via_firewall.png)
+
 ![client_in_lan_traceroute_via_firewall](img/client_in_lan_traceroute_via_firewall.png)
 
 ---
+
+
 
 <ol type="a" start="9">
   <li>Testez ensuite toutes les règles, depuis le Client_in_LAN puis depuis le serveur Web (Server_in_DMZ) et remplir le tableau suivant :
@@ -496,8 +508,9 @@ traceroute 8.8.8.8
 | Serveur DMZ          | OK    | Il peut se pinger lui-même                                                             |
 | Serveur WAN          | KO    | Selon cahier des charges, bloqué par défaut                                            |
 
-
 ## Règles pour le protocole DNS
+
+
 
 <ol type="a" start="10">
   <li>Si un ping est effectué sur un serveur externe en utilisant en argument un nom DNS, le client ne pourra pas le résoudre. Le démontrer à l'aide d'une capture, par exemple avec la commande suivante :
@@ -513,8 +526,8 @@ ping www.google.com
 ---
 
 **LIVRABLE : capture d'écran de votre ping.**
+
 ![client_in_lan_no_dns](img/client_in_lan_no_dns.png)
----
 
 * Créer et appliquer la règnslookle adéquate pour que la **condition 1 du cahier des charges** soit respectée.
 
@@ -531,6 +544,8 @@ nft rule filter forward tcp dport 53 ip saddr 192.168.100.0/24 meta oifname "eth
 
 ---
 
+
+
 <ol type="a" start="11">
   <li>Tester en réitérant la commande ping sur le serveur de test (Google ou autre) :
   </li>                                  
@@ -538,8 +553,8 @@ nft rule filter forward tcp dport 53 ip saddr 192.168.100.0/24 meta oifname "eth
 
 ---
 **LIVRABLE : capture d'écran de votre ping.**
+
 ![client_in_lan_name_resolution.png](img/client_in_lan_name_resolution.png)
----
 
 <ol type="a" start="12">
   <li>Remarques (sur le message du premier ping)?
@@ -552,7 +567,6 @@ nft rule filter forward tcp dport 53 ip saddr 192.168.100.0/24 meta oifname "eth
 **LIVRABLE : Votre réponse ici...**
 
 Nous n'avons pas autorisé la résolution de noms de domaine via DNS (UDP/TCP 53) donc on ne peut contacter un serveur DNS pour résoudre le nom www.google.com.
----
 
 
 ## Règles pour les protocoles HTTP et HTTPS
@@ -572,9 +586,6 @@ Commandes nftables :
 LIVRABLE : Commandes nftables
 
 nft rule filter forward tcp dport {80, 8080, 443} ip saddr 192.168.100.0/24 meta oifname "eth0" accept comment \"Rule 6: Allow TCP 80, 8080, 443 from Client_in_LAN to WAN\"
-
-
-
 ```
 
 ---
@@ -593,6 +604,8 @@ nft rule filter forward tcp dport 80 meta iifname "etho0" ip daddr 192.168.200.3
 ```
 ---
 
+
+
 <ol type="a" start="13">
   <li>Tester l’accès à ce serveur depuis le LAN utilisant utilisant wget (ne pas oublier les captures d'écran).
   </li>                                  
@@ -601,11 +614,12 @@ nft rule filter forward tcp dport 80 meta iifname "etho0" ip daddr 192.168.200.3
 ---
 
 **LIVRABLE : capture d'écran.**
-![client_in_lan_wget_to_server_in_dmz](img/client_in_lan_wget_to_server_in_dmz.png)
----
 
+![client_in_lan_wget_to_server_in_dmz](img/client_in_lan_wget_to_server_in_dmz.png)
 
 ## Règles pour le protocole ssh
+
+
 
 <ol type="a" start="14">
   <li>Créer et appliquer la règle adéquate pour que les <b>conditions 6 et 7 du cahier des charges</b> soient respectées.
@@ -618,6 +632,7 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+
 nft rule filter forward tcp dport 22 ip saddr 192.168.100.3 ip daddr 192.168.200.3 accept comment \"Rule 9: Client_in_LAN can SSH Server_in_DMZ\"
 nft rule filter forward tcp dport 22 ip saddr 192.168.100.3 ip daddr 192.168.100.2 accept comment \"Rule 10: Client_in_LAN can SSH Firewall\"
 ```
@@ -633,8 +648,10 @@ ssh root@192.168.200.3
 ---
 
 **LIVRABLE : capture d'écran de votre connexion ssh.**
+
 ![client_in_lan_ssh_to_server_in_dmz](img/client_in_lan_ssh_to_server_in_dmz.png)
----
+
+
 
 <ol type="a" start="15">
   <li>Expliquer l'utilité de <b>ssh</b> sur un serveur.
@@ -645,25 +662,27 @@ ssh root@192.168.200.3
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
+
 L'avantage c'est de pouvoir se connecter à distance à un shell sécurisé sur le serveur. ça nous évite de bouger notre gros cul jusqu'à la salle serveur et de brancher un clavier et un écran :)
----
+
+
 
 <ol type="a" start="16">
   <li>En général, à quoi faut-il particulièrement faire attention lors de l'écriture des règles du pare-feu pour ce type de connexion ?
   </li>                                  
 </ol>
-
-
 ---
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
+
 Il faut être sûr de bien limiter l'accès SSH à un serveur uniquement aux hôtes qui sont autorisés à le faire. De cette manière, nous limitons la surface d'attaque sur un serveur visible sur internet.
----
 
 ## Règles finales
 
 A présent, vous devriez avoir le matériel nécessaire afin de reproduire la table de filtrage que vous avez conçue au début de ce laboratoire.
+
+
 
 <ol type="a" start="17">
   <li>Insérer la capture d’écran avec toutes vos règles nftables
@@ -673,5 +692,5 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 ---
 
 **LIVRABLE : capture d'écran avec toutes vos règles.**
+
 ![final_nft_ruleset](img/final_nft_ruleset.png)
----
