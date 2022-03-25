@@ -129,24 +129,21 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 **LIVRABLE : Remplir le tableau**
 
-| Adresse IP source | Adresse IP destination | Type    | Port src | Port dst | Action |
-| :---:             | :---:                  | :-----: | :------: | :------: | :----: |
-| 192.168.100.0/24  | 0.0.0.0/0              | TCP     | *        | 53       | Accept |
-| 192.168.100.0/24  | 0.0.0.0/0              | UDP     | *        | 53       | Accept |
-| 192.168.100.0/24  | 0.0.0.0/0              | ICMP    | *        | *        | Accept |
-| 192.168.100.0/24  | 192.168.200.0/24       | ICMP    | *        | *        | Accept |
-| 192.168.200.0/24  | 192.168.100.0/24       | ICMP    | *        | *        | Accept |
-| 0.0.0.0/0         | 192.168.100.0/24       | ICMP    | *        | *        | Accept |
-| 192.168.200.0/24  | 192.168.100.0/24       | ICMP    | *        | *        | Accept |
-| 192.168.100.0/24  | 192.168.200.0/24       | ICMP    | *        | *        | Accept |
-| 192.168.100.0/24  | 0.0.0.0/0              | TCP     | *        | 80       | Accept |
-| 192.168.100.0/24  | 0.0.0.0/0              | TCP     | *        | 8080     | Accept |
-| 192.168.100.0/24  | 0.0.0.0/0              | TCP     |          | 443      | Accept |
-| 192.168.100.0/24  | 192.168.200.0/24       | TCP     | *        | 80       | Accept |
-| 0.0.0.0/0         | 192.168.200.0/24       | TCP     | *        | 80       | Accept |
-| 192.168.100.0/24  | 192.168.200.0/24       | TCP     | *        | 22       | Accept |
-| 192.168.100.0/24  | 192.168.100.2          | TCP     | *        | 22       | Accept |
-| *                 | *                      | *       | *        | *        | Drop   |
+| Adresse IP source | Adresse IP destination | Type          | Port src | Port dst | Action |
+| :---:             | :---:                  | :-----:       | :------: | :------: | :----: |
+| 192.168.100.0/24  | Interface WAN          | TCP           | *        | 53       | Accept |
+| 192.168.100.0/24  | Interface WAN          | UDP           | *        | 53       | Accept |
+| 192.168.100.0/24  | Interface WAN          | ICMP          | *        | *        | Accept |
+| 192.168.200.0/24  | 192.168.100.0/24       | ICMP          | *        | *        | Accept |
+| Interface WAN     | 192.168.100.0/24       | echo-reply    | *        | *        | Accept |
+| 192.168.100.0/24  | Interface WAN          | TCP           | *        | 80       | Accept |
+| 192.168.100.0/24  | Interface WAN          | TCP           | *        | 8080     | Accept |
+| 192.168.100.0/24  | Interface WAN          | TCP           |          | 443      | Accept |
+| 0.0.0.0/0         | 192.168.200.3          | TCP           | *        | 80       | Accept |
+| 0.0.0.0/0         | 192.168.200.0/24       | TCP           | *        | 80       | Drop
+| 192.168.100.3     | 192.168.200.3          | TCP           | *        | 22       | Accept |
+| 192.168.100.3     | 192.168.100.2          | TCP           | *        | 22       | Accept |
+| *                 | *                      | *             | *        | *        | Drop   |
 
 
 ---
@@ -284,7 +281,7 @@ Si votre ping passe mais que la réponse contient un _Redirect Host_, ceci indiq
 ---
 
 **LIVRABLE : capture d'écran de votre ping vers l'Internet. Un ping qui ne passe pas ou des réponses contenant des _Redirect Host_ sont acceptés.**
-![server_to_wan_not_working](server_in_dmz_ping_to_WAN_not_working.png)
+![server_to_wan_not_working](img/server_in_dmz_ping_to_WAN_not_working.png)
 ---
 
 ### Configuration réseau du firewall
@@ -376,6 +373,7 @@ nft -f ~/nft.conf		# Restore nft config from file
 ---
 
 **Réponse :**
+
 `nft list ruleset`
 ---
 
@@ -388,8 +386,8 @@ nft -f ~/nft.conf		# Restore nft config from file
 ---
 
 **Réponse :**
+
 `nft flush ruleset`
-`
 ---
 
 
@@ -401,8 +399,10 @@ nft -f ~/nft.conf		# Restore nft config from file
 ---
 
 **Réponse :**
+
 Syntaxe:
 `nft delete chain <table> <chain>`
+
 Exemple:
 `nft delete chain nat postrouting`
 ---
@@ -440,7 +440,8 @@ nft insert rule filter forward ct state established,related accept
 # Règles ajoutées
 nft add rule filter forward ip protocol icmp ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 accept comment \"Rule 1: ICMP LAN to DMZ\"
 nft add rule filter forward ip protocol icmp ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 accept comment \"Rule 2: ICMP DMZ to LAN\"
-nft add rule filter forward icmp type echo-request ip saddr 192.168.100.0/24 accept comment \"Rule 3: ICMP echo-request to WAN\"
+nft add rule filter forward icmp type echo-request ip saddr 192.168.100.0/24 meta oifname "eth0" accept comment \"Rule 3: ICMP echo-request to WAN\"
+
 ```
 ---
 
@@ -477,24 +478,23 @@ traceroute 8.8.8.8
   </li>                                  
 </ol>
 
-// TODO: server WAN = server DMZ ?
-// TODO: règles input/ouput différence ? 
-| De Client\_in\_LAN à | OK/KO | Commentaires et explications                                     |
-| :---                 | :---: | :---                                                             |
-| Interface DMZ du FW  | OK    | Autorisé par les règles 1 et 2 (voir commentaire sur les règles) |
-| Interface LAN du FW  | OK    | Autorisé car pas de règles input/output                          |
-| Client LAN           | OK    | Il peut se pinger lui-même                                       |
-| Server DMZ           | OK    | Autorisé par les règles 1 et 2 (voir commentaire sur les règles) |
-| Serveur WAN          | OK    | Autorisé par les règles 3 et 4 (voir commentaire sur les règles) |
+
+| De Client\_in\_LAN à | OK/KO | Commentaires et explications                                                            |
+| :---                 | :---: | :---                                                                                    |
+| Interface DMZ du FW  | OK    | Autorisé par la règle 1 (voir commentaire sur les règles)                               |
+| Interface LAN du FW  | OK    | Autorisé car pas de règles input/output sur le firewall, se situe dans le même réseau   |
+| Client LAN           | OK    | Il peut se pinger lui-même                                                              |
+| Server DMZ           | OK    | Autorisé par la règle 1  (voir commentaire sur les règles)                              |
+| Serveur WAN          | OK    | Autorisé par la règle 3 (voir commentaire sur les règles)                               |
 
 
 | De Server\_in\_DMZ à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  | OK    | Autorisé par les règles 1 et 2 (voir commentaire sur les règles) |
-| Interface LAN du FW  | OK    | Autorisé par les règles 1 et 2 (voir commentaire sur les règles) |
-7 Client LAN           | OK    | 
-| Serveur DMZ          | OK    |                              |
-| Serveur WAN          | KO    |                              |
+| Interface DMZ du FW  | OK    | Autorisé car pas de règles input/output sur le firewall, se situe dans le même réseau  |
+| Interface LAN du FW  | OK    | Autorisé par la règle 2 (voir commentaire sur les règles)                              |
+| Client LAN           | OK    | Autorisé par la règle 1 (voir commentaire sur les règles)                              | 
+| Serveur DMZ          | OK    | Il peut se pinger lui-même                                                             |
+| Serveur WAN          | KO    | Selon cahier des charges, bloqué par défaut                                            |
 
 
 ## Règles pour le protocole DNS
@@ -513,7 +513,7 @@ ping www.google.com
 ---
 
 **LIVRABLE : capture d'écran de votre ping.**
-![client_in_lan_no_dns](client_in_lan_no_dns.png)
+![client_in_lan_no_dns](img/client_in_lan_no_dns.png)
 ---
 
 * Créer et appliquer la règnslookle adéquate pour que la **condition 1 du cahier des charges** soit respectée.
@@ -521,12 +521,12 @@ ping www.google.com
 Commandes nftables :
 
 ---
-//TODO: Règle bidirectionnelle pour TCP, vu que session établie? Comment tester ?
+
 ```bash
 LIVRABLE : Commandes nftables
 
-nft rule filter forward udp dport 53 ip saddr 192.168.100.0/24 ip daddr 0.0.0.0/0 accept comment \"Rule 4: UDP DNS to anywhere\"
-nft rule filter forward tcp dport 53 ip saddr 192.168.100.0/24 ip daddr 0.0.0.0/0 accept comment \"Rule 5: TCP DNS to anywhere\"
+nft rule filter forward udp dport 53 ip saddr 192.168.100.0/24 meta oifname "eth0" accept comment \"Rule 4: UDP DNS to WAN\"
+nft rule filter forward tcp dport 53 ip saddr 192.168.100.0/24 meta oifname "eth0" accept comment \"Rule 5: TCP DNS to WAN\"
 ```
 
 ---
@@ -550,7 +550,7 @@ nft rule filter forward tcp dport 53 ip saddr 192.168.100.0/24 ip daddr 0.0.0.0/
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
-//TODO: WUT ?
+
 Nous n'avons pas autorisé la résolution de noms de domaine via DNS (UDP/TCP 53) donc on ne peut contacter un serveur DNS pour résoudre le nom www.google.com.
 ---
 
@@ -566,13 +566,14 @@ wget http://www.heig-vd.ch
 * Créer et appliquer les règles adéquates avec des commandes nftables.
 
 Commandes nftables :
-//TODO: Ordre des règles important, on ne peut pas subdiviser cela.. Comment faire ?
+
 ---
 ```bash
 LIVRABLE : Commandes nftables
-nft rule filter forward tcp dport 80 ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 accept comment \"Rule 6: TCP 80 to Server_in_DMZ\"
-nft rule filter forward tcp dport {80, 8080, 443} ip saddr 0.0.0.0/0 ip daddr 192.168.200.0/24 drop comment \"Rule 7: Drop HTTP/S to DMZ Network\"
-nft rule filter forward tcp dport {80, 8080, 443} ip saddr 192.168.100.0/24 ip daddr 0.0.0.0/0 accept comment \"Rule 8: Allow HTTP/S from LAN to anywhere\"
+
+nft rule filter forward tcp dport {80, 8080, 443} ip saddr 192.168.100.0/24 meta oifname "eth0" accept comment \"Rule 6: Allow TCP 80, 8080, 443 from Client_in_LAN to WAN\"
+
+
 
 ```
 
@@ -583,9 +584,12 @@ nft rule filter forward tcp dport {80, 8080, 443} ip saddr 192.168.100.0/24 ip d
 Commandes nftables :
 
 ---
-//TODO: Est-ce ok de se reporter au point précédent ?
+
 ```bash
 LIVRABLE : Commandes nftables
+
+nft rule filter forward tcp dport 80 ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 accept comment \"Rule 7: Allow TCP 80 from LAN to Server_in_DMZ\"
+nft rule filter forward tcp dport 80 meta iifname "etho0" ip daddr 192.168.200.3 accept comment \"Rule 8: Allow TCP 80 from WAN to Server_in_DMZ\"
 ```
 ---
 
@@ -615,6 +619,7 @@ Commandes nftables :
 ```bash
 LIVRABLE : Commandes nftables
 nft rule filter forward tcp dport 22 ip saddr 192.168.100.3 ip daddr 192.168.200.3 accept comment \"Rule 9: Client_in_LAN can SSH Server_in_DMZ\"
+nft rule filter forward tcp dport 22 ip saddr 192.168.100.3 ip daddr 192.168.100.2 accept comment \"Rule 10: Client_in_LAN can SSH Firewall\"
 ```
 
 ---
@@ -668,5 +673,5 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 ---
 
 **LIVRABLE : capture d'écran avec toutes vos règles.**
-
+![final_nft_ruleset](img/final_nft_ruleset.png)
 ---
