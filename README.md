@@ -141,7 +141,7 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 | 192.168.100.0/24  | Interface WAN          | TCP  | Any      | 443      | Accept |
 | 192.168.100.0/24  | 192.168.200.0/24       | TCP  | Any      | 80       | Accept |
 | Interface WAN     | 192.168.200.0/24       | TCP  | Any      | 80       | Accept |
-| 192.168.100.3     | 192.168.200.0/24       | TCP  | Any      | 22       | Accept |
+| 192.168.100.3     | 192.168.200.3          | TCP  | Any      | 22       | Accept |
 | 192.168.100.3     | 192.168.100.2          | TCP  | Any      | 22       | Accept |
 | *                 | *                      | Any  | Any      | Any      | Drop   |
 
@@ -219,9 +219,7 @@ Vous pouvez commencer par vérifier que le ping n'est pas possible actuellement 
 ```bash
 ping 192.168.200.3
 ```
----
-
-**LIVRABLE : capture d'écran de votre tentative de ping.**  
+--- 
 
 ![Ping vers serveur échec](figures/SRX_L1_ping-not-working-ok.png)
 ---
@@ -261,8 +259,6 @@ ping 192.168.100.3
 
 ---
 
-**LIVRABLES : captures d'écran des routes des deux machines et de votre nouvelle tentative de ping.**
-
 ![Routes et ping depuis LAN](figures/SRX_L1_routes-and-ping-from-lan-ok.png)
 ![Routes et ping depuis DMZ](figures/SRX_L1_routes-and-ping-from-dmz-ok.png)
 
@@ -279,8 +275,6 @@ ping 8.8.8.8
 Si votre ping passe mais que la réponse contient un _Redirect Host_, ceci indique que votre ping est passé grâce à la redirection ICMP, mais que vous n'arrivez pas encore à contacter l'Internet à travers le Firewall. Ceci est donc aussi valable pour l'instant et accepté comme résultat.
 
 ---
-
-**LIVRABLE : capture d'écran de votre ping vers l'Internet. Un ping qui ne passe pas ou des réponses contenant des _Redirect Host_ sont acceptés.**
 
 ![Ping vers WAN depuis LAN](figures/SRX_L1_ping-not-working-to-internet-ok_v2.png)
 
@@ -365,16 +359,12 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 **Réponse :**
 
-On peut créer ou modifier le fichier `/etc/nftables.conf` et y mettre la configuration effectuée auparavant :
+On peut copier la sortie de *nft list ruleset* dans le fichier */etc/nftables.conf* au moins de la commande suivante :
 
 ```
-table nat filter {
-  chain postrouting {
-    type nat hook postrouting priority 100;
-    oifname "eth0" masquerade
-  }
-}
+nft list ruleset > /etc/nftables.conf
 ```
+Cela fonctionnerait avec un firewall sur un serveur. Dans le cas de docker, il faudrait s'y prendre différemment, car les containers sont remis à zéro dès que l'on fait `docker compose up`. Il faudrait modifier le fichier `docker-compose.yml` et copier le fichier nftables.conf directement au lancement depuis l'hdans le container.
 
 ---
 
@@ -534,8 +524,6 @@ ping www.google.com
 
 ---
 
-**LIVRABLE : capture d'écran de votre ping.**
-
 ![DNS bloqué](figures/SRX_L1_DNS-not-working-OK.png)
 
 ---
@@ -618,8 +606,6 @@ nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 
 
 ---
 
-**LIVRABLE : capture d'écran.**
-
 ![wget vers WAN](figures/SRX_L1_HTTP-HTTPS-LAN-toWAN-toDMZ-working-OK.png)
 
 ---
@@ -650,8 +636,6 @@ ssh root@192.168.200.3
 ```
 
 ---
-
-**LIVRABLE : capture d'écran de votre connexion ssh.**
 
 ![ssh fonctionnel](figures/SRX_L1_SSH-working-OK.png)
 
@@ -694,6 +678,5 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 
 ---
 
-**LIVRABLE : capture d'écran avec toutes vos règles.**
 ![Set de règles entier](figures/SRX_L1_ruleset-ok.png)
 ---
