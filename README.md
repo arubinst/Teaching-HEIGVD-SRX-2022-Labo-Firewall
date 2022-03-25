@@ -364,7 +364,7 @@ On peut copier la sortie de *nft list ruleset* dans le fichier */etc/nftables.co
 ```
 nft list ruleset > /etc/nftables.conf
 ```
-Cela fonctionnerait avec un firewall sur un serveur. Dans le cas de docker, il faudrait s'y prendre différemment, car les containers sont remis à zéro dès que l'on fait `docker compose up`. Il faudrait modifier le fichier `docker-compose.yml` et copier le fichier nftables.conf directement au lancement depuis l'hdans le container.
+Cela fonctionnerait avec un firewall sur un serveur. Dans le cas de docker, il faudrait s'y prendre différemment, car les containers sont remis à zéro dès que l'on fait `docker compose up`. Il faudrait modifier le fichier `docker-compose.yml` et copier le fichier nftables.conf directement au lancement depuis l'hôte dans le container.
 
 ---
 
