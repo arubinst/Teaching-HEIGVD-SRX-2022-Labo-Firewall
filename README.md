@@ -659,9 +659,10 @@ Connexion HTTP sur le serveur DMZ :
 Commandes nftables :
 
 ---
+LIVRABLE : Commandes nftables
 
 ```bash
-LIVRABLE : Commandes nftables
+
 
 # règle permettant au client de se connecter au serveur de la DMZ via SSH.
 nft add rule filter forward tcp dport 22 ip saddr 192.168.100.3/24 ip daddr 192.168.200.3/24 accept
@@ -721,7 +722,7 @@ si le serveur n'est pas en local.
 
 **LIVRABLE : Votre réponse ici...**
 
-Etre bien sûr qu'il n'y pas n'importe qui ait accès à ce port (éviter par exemple de le laisser accessible pour le WAN) 
+Etre sûr qu'il n'y a pas n'importe qui ait accès à ce port (éviter par exemple de le laisser accessible pour le WAN) 
 et que le serveur sur lequel on se connecte possède un logiciel à jour pour les connexions SSH.
 
 
@@ -748,6 +749,5 @@ Règles de la table filter :
 
 ![Règles firewall table filter](figures/ListeRegleFirewall.PNG)
 
-ERREUR DANS LA CAPTURE D ECRAN Y A UN "tcp dport 80" EN TROP FAUT REFAIRE LA CAPTURE.
 
 ---
