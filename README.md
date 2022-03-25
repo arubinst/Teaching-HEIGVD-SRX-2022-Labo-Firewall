@@ -550,7 +550,7 @@ comment \"autorise les réponses DNS \(TCP\)\"
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+Il y a le message `Temporary failure in name resolution` car les requêtes DNS sont bloquées par le firewall et par conséquent il est impossible de résoudre le nom de domaine `www.google.com` en adresse IP.
 
 ---
 
