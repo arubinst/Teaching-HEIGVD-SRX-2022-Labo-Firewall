@@ -135,8 +135,10 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 | 192.168.200.0/24  |           \*           |      UDP/TCP      |      \*       |      53       | Accept |
 |        \*         |    192.168.100.0/24    |      UDP/TCP      |      53       |      \*       | Accept |
 |        \*         |    192.168.200.0/24    |      UDP/TCP      |      53       |      \*       | Accept |
-| 192.168.100.0/24  |           \*           | ICMP:echo-request |       -       |       -       | Accept |
-|        \*         |    192.168.100.0/24    |  ICMP:echo-reply  |       -       |       -       | Accept |
+| 192.168.100.0/24  |  \* via interface eth0  | ICMP:echo-request |       -       |       -       | Accept |
+|\* via interface eth0|    192.168.100.0/24    |  ICMP:echo-reply  |       -       |       -       | Accept |
+| 192.168.100.0/24  |  192.168.200.0/24  | ICMP:echo-request |       -       |       -       | Accept |
+|192.168.200.0/24|    192.168.100.0/24    |  ICMP:echo-reply  |       -       |       -       | Accept |
 | 192.168.200.0/24  |    192.168.100.0/24    | ICMP:echo-request |       -       |       -       | Accept |
 | 192.168.100.0/24  |    192.168.200.0/24    |  ICMP:echo-reply  |       -       |       -       | Accept |
 | 192.168.100.0/24  |           \*           |        TCP        |      \*       | 80, 443, 8080 | Accept |
@@ -377,6 +379,9 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 ---
 
 **Réponse :**
+```
+nft list ruleset
+```
 
 ---
 
@@ -388,6 +393,9 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 ---
 
 **Réponse :**
+```
+nft flush ruleset
+```
 
 ---
 
@@ -399,6 +407,9 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 ---
 
 **Réponse :**
+```
+nft delete chain [family] <table_name> <chain_name>
+```
 
 ---
 
@@ -423,7 +434,11 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+nft add rule ip filter forward ip saddr 192.168.100.0/24 icmp type echo-request accept
+nft add rule ip filter forward ip daddr 192.168.100.0/24 icmp type echo-reply accept
+
+nft add rule ip filter forward ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-request accept
+nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 icmp type echo-reply accept
 ```
 
 ---
@@ -450,6 +465,7 @@ traceroute 8.8.8.8
 ---
 
 **LIVRABLE : capture d'écran du traceroute et de votre ping vers l'Internet. Il ne devrait pas y avoir des _Redirect Host_ dans les réponses au ping !**
+![ping8.8.8.8FromClientLAN](figures/ping8.8.8.8FromClientLAN.png)<br>
 
 ---
 
