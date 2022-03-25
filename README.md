@@ -433,7 +433,17 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+nft add rule firewall forward \
+ip saddr 192.168.100.0/24 icmp type echo-request accept \
+comment \"allow LAN to ping\"
+
+nft add rule firewall forward \
+ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-request accept \
+comment \"allow DMZ to ping LAN\"
+
+nft add rule firewall forward \
+ct state established icmp type echo-reply accept \
+comment \"allow authorize response for ping\"
 ```
 ---
 
@@ -516,10 +526,26 @@ Le client n'a pas de résolution DNS
 
 Commandes nftables :
 
+
+
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+nft add rule firewall forward \
+ip saddr 192.168.100.0/24 udp dport 53 accept \
+comment \"allow LAN to send DNS resquest to WAN via UDP\"
+
+nft add rule firewall forward \
+ip saddr 192.168.100.0/24 tcp dport 53 accept \
+comment \"allow LAN to send DNS request to WAN via TCP\"
+
+nft add rule firewall forward \
+ct state established udp sport 53 accept \
+comment \"authorize UDP DNS response\"
+
+nft add rule firewall forward \
+ct state established tcp sport 53 accept \
+comment \"authorize TCP DNS response\"
 ```
 
 ---
@@ -569,8 +595,6 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
-
 nft add rule firewall forward \
 ip saddr 192.168.100.0/24 tcp dport 443 accept \
 comment \"authorize HTTPS request from LAN to WLAN\"
@@ -605,7 +629,9 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+nft add rule firewall forward \
+ip daddr 192.168.200.3 tcp dport 80 accept \
+comment \"allow all TCP connection on DMZ web server :80\"
 ```
 ---
 
@@ -636,7 +662,17 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+nft add rule firewall forward \
+ip saddr 192.168.100.3 ip daddr 192.168.200.3 tcp dport 22 accept \
+comment \"allow LAN client TCP connection on DMZ server :22\"
+
+nft add rule firewall forward \
+ip saddr 192.168.100.3 ip daddr 192.168.100.2 tcp dport 22 accept \
+comment \"allow LAN client TCP connection on FW :22\"
+
+nft add rule firewall forward \
+ct state established tcp sport 22 accept \
+comment \"authorize connectoin on port 22\"
 ```
 
 ---
@@ -651,6 +687,9 @@ ssh root@192.168.200.3
 
 **LIVRABLE : capture d'écran de votre connexion ssh.**
 
+![Route DMZ](figures/client_ssh.png)
+
+
 ---
 
 <ol type="a" start="15">
@@ -662,6 +701,8 @@ ssh root@192.168.200.3
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
+
+C'est très utile pour configurer un serveur à distance. Effectivement, c'est plutôt embêtant de devoir se connecter physiquement sur le serveur à chaque fois que l'on souhaite faire des configurations.
 
 ---
 
@@ -675,6 +716,8 @@ ssh root@192.168.200.3
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
+
+Il faut faire attention à bien spécifier les connexions autorisées. Il ne faut pas s'auto-couper la connection.
 
 ---
 
@@ -690,5 +733,7 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 ---
 
 **LIVRABLE : capture d'écran avec toutes vos règles.**
+
+![Route DMZ](figures/rules.png)
 
 ---
