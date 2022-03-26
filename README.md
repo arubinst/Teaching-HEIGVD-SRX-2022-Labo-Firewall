@@ -682,7 +682,8 @@ ssh root@192.168.200.3
 
 ---
 
-**LIVRABLE : capture d'écran de votre connexion ssh.**
+
+![ssh 192.168.200.3](livrables/ssh_client_to_server.png)
 
 ---
 
@@ -694,7 +695,7 @@ ssh root@192.168.200.3
 ---
 **Réponse**
 
-![ssh 192.168.200.3](livrables/ssh_client_to_server.png)
+SSH nous permet de se connecter à distance à un ( / d'avoir accès au shell du) serveur sans avoir besoin d'avoir un accès physique au serveur. C'est donc très pratique lorsqu'on souhaite modifier une configuration, effectuer une maintenance ou toute autre action nécessitant l'accès au serveur via un shell.
 
 ---
 
@@ -707,7 +708,7 @@ ssh root@192.168.200.3
 ---
 **Réponse**
 
-À ne pas couper l'herbe sous le pied, comme disait l'autre. En d'autres termes, il faut faire attention aux règles qu'on écrit pour ne pas interdire l'accès au port SSH au Firewall depuis la machine depuis laquelle on configure celui-ci. Dans le cas où ce sénario arriverait, il faudrait se connecter physiquement à la machine pour ré-autoriser les connexions au port SSH depuis les machines légitimes vers le Firewall.
+À ne pas couper l'herbe sous le pied, comme disait l'autre. En d'autres termes, il faut faire attention aux règles qu'on écrit pour ne pas interdire l'accès au port SSH au Firewall depuis la machine depuis laquelle on configure celui-ci. Dans le cas où ce sénario arriverait, il faudrait se connecter physiquement à la machine pour ré-autoriser les connexions au port SSH depuis les machines légitimes vers le Firewall, ce qui peut parfois être pénible.
 
 ---
 
