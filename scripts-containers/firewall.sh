@@ -42,11 +42,11 @@ comment \"autorise la DMZ à pinger le LAN\"
 #
 
 nft add rule firewall forward \
-ip saddr 192.168.100.0/24 ip daddr !=192.168.0.0/16 udp dport 53 accept \
+ip saddr 192.168.100.0/24 meta oifname "eth0" udp dport 53 accept \
 comment \"autorise le LAN à envoyer des requêtes DNS \(UDP\) sur le WAN\"
 
 nft add rule firewall forward \
-ip saddr 192.168.100.0/24 ip daddr !=192.168.0.0/16 tcp dport 53 accept \
+ip saddr 192.168.100.0/24 meta oifname "eth0" tcp dport 53 accept \
 comment \"autorise le LAN à envoyer des requêtes DNS \(TCP\) sur le WAN\"
 
 #
@@ -54,16 +54,16 @@ comment \"autorise le LAN à envoyer des requêtes DNS \(TCP\) sur le WAN\"
 #
 
 nft add rule firewall forward \
-ip saddr 192.168.100.0/24 ip daddr !=192.168.0.0/16 tcp dport 80 accept \
+ip saddr 192.168.100.0/24 ip meta oifname "eth0" tcp dport 80 accept \
 comment \"autorise le LAN à ouvrir des connexions TCP vers le WAN sur le port 80\"
 
 nft add rule firewall forward \
-ip saddr 192.168.100.0/24 ip daddr !=192.168.0.0/16 tcp dport 8080 accept \
+ip saddr 192.168.100.0/24 ip meta oifname "eth0" tcp dport 8080 accept \
 comment \"autorise le LAN à ouvrir des connexions TCP vers le WAN sur le port 8080\"
 
 
 nft add rule firewall forward \
-ip saddr 192.168.100.0/24 ip daddr !=192.168.0.0/16 tcp dport 443 accept \
+ip saddr 192.168.100.0/24 ip meta oifname "eth0" tcp dport 443 accept \
 comment \"autorise le LAN à ouvrir des connexions TCP vers le WAN sur le port 443\"
 
 
