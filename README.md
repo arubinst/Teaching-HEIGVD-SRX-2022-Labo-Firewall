@@ -468,21 +468,21 @@ traceroute 8.8.8.8
   </li>                                  
 </ol>
 
-TODO
-| De Client\_in\_LAN à | OK/KO | Commentaires et explications |
-| :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Client LAN           |       |                              |
-| Serveur WAN          |       |                              |
+
+| De Client\_in\_LAN à | OK/KO  | Commentaires et explications                     |
+| :---                 | :----: | :---                                             |
+| Interface DMZ du FW  |   KO   | Le ping est accepté en FORWARD mais pas en INPUT |
+| Interface LAN du FW  |   KO   | Pareil, FORWARD ok mais pas INPUT                |
+| Client LAN           |   OK   | Reste en interne, ne passe pas par le Firewall   |
+| Serveur WAN          |   OK   | Une règle le permet                              |
 
 
-| De Server\_in\_DMZ à | OK/KO | Commentaires et explications |
-| :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Serveur DMZ          |       |                              |
-| Serveur WAN          |       |                              |
+| De Server\_in\_DMZ à | OK/KO  | Commentaires et explications |
+| :---                 | :---:  | :---                         |
+| Interface DMZ du FW  |   KO   | ICMP en FORWARD, pas en INPUT         |
+| Interface LAN du FW  |   KO   | ICMP en FORWARD, pas en INPUT         |
+| Serveur DMZ          |   OK   | Interne, ne passe pas par le Firewall |
+| Serveur WAN          |   KO   | Pas de règle qui l\'autorise          |
 
 
 ## Règles pour le protocole DNS
@@ -580,6 +580,7 @@ nft 'add rule filter tcp-forward meta iifname "eth0" ip daddr 192.168.200.3 tcp 
 ---
 
 **LIVRABLE : capture d'écran.**
+![](./screenshots/wget_dmz.png)
 
 ---
 
