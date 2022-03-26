@@ -223,7 +223,7 @@ ping 192.168.200.3
 
 **LIVRABLE : capture d'écran de votre tentative de ping.**  
 
-![](./screenshots/tentative_ping_internet.png)
+![](./screenshots/tentative_ping_local.png)
 
 ---
 
