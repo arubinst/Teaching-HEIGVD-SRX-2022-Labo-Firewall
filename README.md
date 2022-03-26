@@ -303,7 +303,7 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 </ol>
 
 **Réponse :**
-Elle permet de créer une nouvelle table appelée "nat"
+Elle permet de créer une nouvelle table appelée "nat". Comme la famille n'est pas précisée, la table appartient à la famillet par défaut qui est ip.
 
 ---
 
@@ -322,9 +322,9 @@ Elle permet de créer une nouvelle table appelée "nat"
 
 `type nat` : la chaîne est de type NAT (translation d'adresse)
 
-`hook postrouting` : la chaîne s'applique aux packets à la fin de leur traitement par netfilter
+`hook postrouting` : la chaîne s'applique aux paquets sortant de la machine (donc les paquets forwardés et les paquets provenant de la machine)
 
-`priority 100` : netfilters applique les chaînes d'un hook donné dans l'ordre de leur niveau de priorité (du plus petit au plus grand). Ce paramètre permet donc de contrôler quand cette chaîne sera appliquée par rapport à d'autres.
+`priority 100` : netfilters applique les chaînes d'un hook donné dans l'ordre de leur niveau de priorité (du plus petit au plus grand). Ce paramètre permet donc de contrôler quand cette chaîne sera appliquée par rapport à d'autres chaînes et par rapport à d'autres outils intervenant dans le traitement des paquets
 
 ---
 
