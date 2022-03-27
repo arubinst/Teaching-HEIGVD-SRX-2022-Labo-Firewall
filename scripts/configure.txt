@@ -26,11 +26,13 @@ nft table filter
 nft 'add chain ip filter input {type filter hook input priority 0; policy drop;}'
 nft 'add chain ip filter forward {type filter hook forward priority 0; policy drop;}'
 
-nft add rule ip filter forward ip saddr 192.168.100.0/24 tcp dport 53 accept
-nft add rule ip filter forward ip saddr 192.168.100.0/24 udp dport 53 accept
-nft add rule ip filter forward ip daddr 192.168.100.0/24 tcp sport 53 accept
-nft add rule ip filter forward ip daddr 192.168.100.0/24 udp sport 53 accept
+# Condition 1
+nft add rule ip filter forward ip saddr 192.168.100.0/24 meta oifname "eth0" tcp dport 53 accept
+nft add rule ip filter forward ip saddr 192.168.100.0/24 meta oifname "eth0" udp dport 53 accept
+nft add rule ip filter forward ip daddr 192.168.100.0/24 meta iifname "eth0" tcp sport 53 accept
+nft add rule ip filter forward ip daddr 192.168.100.0/24 meta iifname "eth0" udp sport 53 accept
 
+# Condition 2
 nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 icmp type echo-request accept
 nft add rule ip filter forward ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-reply accept
 
@@ -40,21 +42,23 @@ nft add rule ip filter forward ip daddr 192.168.100.0/24 meta iifname "eth0" icm
 nft add rule ip filter forward ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-request accept
 nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 icmp type echo-reply accept
 
+# Condition 3 et 4
 nft add rule ip filter forward ip saddr 192.168.100.0/24 meta oifname "eth0" tcp dport {80, 443, 8080} accept
 nft add rule ip filter forward ip daddr 192.168.100.0/24 meta iifname "eth0" tcp sport {80, 443, 8080} accept
 
+# Condition 5
 nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 tcp dport 80 accept
 nft add rule ip filter forward ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 tcp sport 80 accept
 
 nft add rule ip filter forward ip saddr 192.168.200.0/24 meta oifname "eth0" tcp sport 80 accept
 nft add rule ip filter forward ip daddr 192.168.200.0/24 meta iifname "eth0" tcp dport 80 accept
 
+# Condition 6
 nft add rule ip filter forward ip saddr 192.168.100.3 ip daddr 192.168.200.3 tcp dport 22 accept
 nft add rule ip filter forward ip saddr 192.168.200.3 ip daddr 192.168.100.3 tcp sport 22 accept
 
-
+# Condition 7
 nft add rule ip filter input ip saddr 192.168.100.3 ip daddr 192.168.100.2 tcp dport 22 accept
-
 
 nft 'add chain ip filter output {type filter hook output priority 0;}'
 nft add rule ip filter output ip daddr 192.168.100.3 ip saddr 192.168.100.2 tcp sport 22 accept

@@ -131,17 +131,17 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 |   Adresse IP source   | Adresse IP destination |       Type        |   Port src    |   Port dst    | Action |
 | :-------------------: | :--------------------: | :---------------: | :-----------: | :-----------: | :----: |
-|   192.168.100.0/24    |           \*           |      UDP/TCP      |      \*       |      53       | Accept |
-|          \*           |    192.168.100.0/24    |      UDP/TCP      |      53       |      \*       | Accept |
+|   192.168.100.0/24    | \* via interface eth0  |      UDP/TCP      |      \*       |      53       | Accept |
+| \* via interface eth0 |    192.168.100.0/24    |      UDP/TCP      |      53       |      \*       | Accept |
 |   192.168.100.0/24    | \* via interface eth0  | ICMP:echo-request |       -       |       -       | Accept |
 | \* via interface eth0 |    192.168.100.0/24    |  ICMP:echo-reply  |       -       |       -       | Accept |
 |   192.168.100.0/24    |    192.168.200.0/24    | ICMP:echo-request |       -       |       -       | Accept |
 |   192.168.200.0/24    |    192.168.100.0/24    |  ICMP:echo-reply  |       -       |       -       | Accept |
 |   192.168.200.0/24    |    192.168.100.0/24    | ICMP:echo-request |       -       |       -       | Accept |
 |   192.168.100.0/24    |    192.168.200.0/24    |  ICMP:echo-reply  |       -       |       -       | Accept |
-|   192.168.100.0/24    |           \*           |        TCP        |      \*       | 80, 443, 8080 | Accept |
-|          \*           |    192.168.100.0/24    |        TCP        | 80, 443, 8080 |      \*       | Accept |
-|          \*           |    192.168.200.0/24    |        TCP        |      \*       |      80       | Accept |
+|   192.168.100.0/24    | \* via interface eth0  |        TCP        |      \*       | 80, 443, 8080 | Accept |
+| \* via interface eth0 |    192.168.100.0/24    |        TCP        | 80, 443, 8080 |      \*       | Accept |
+| \* via interface eth0 |    192.168.200.0/24    |        TCP        |      \*       |      80       | Accept |
 |     192.168.100.3     |    192.168.200.3    |        TCP        |      \*       |      22       | Accept |
 |     192.168.200.3     |    192.168.100.3    |        TCP        |      22       |      \*       | Accept |
 |     192.168.100.3     |    192.168.300.3    |        TCP        |      \*       |      22       | Accept |
@@ -445,8 +445,11 @@ Commandes nftables :
 ---
 
 ```bash
-nft add rule ip filter forward ip saddr 192.168.100.0/24 icmp type echo-request accept
-nft add rule ip filter forward ip daddr 192.168.100.0/24 icmp type echo-reply accept
+nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 icmp type echo-request accept
+nft add rule ip filter forward ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-reply accept
+
+nft add rule ip filter forward ip saddr 192.168.100.0/24 meta oifname "eth0" icmp type echo-request accept
+nft add rule ip filter forward ip daddr 192.168.100.0/24 meta iifname "eth0" icmp type echo-reply accept
 
 nft add rule ip filter forward ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-request accept
 nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 icmp type echo-reply accept
@@ -525,10 +528,10 @@ Commandes nftables :
 ---
 
 ```bash
-nft add rule ip filter forward ip saddr 192.168.100.0/24 tcp dport 53 accept
-nft add rule ip filter forward ip saddr 192.168.100.0/24 udp dport 53 accept
-nft add rule ip filter forward ip daddr 192.168.100.0/24 tcp sport 53 accept
-nft add rule ip filter forward ip daddr 192.168.100.0/24 udp sport 53 accept
+nft add rule ip filter forward ip saddr 192.168.100.0/24 meta oifname "eth0" tcp dport 53 accept
+nft add rule ip filter forward ip saddr 192.168.100.0/24 meta oifname "eth0" udp dport 53 accept
+nft add rule ip filter forward ip daddr 192.168.100.0/24 meta iifname "eth0" tcp sport 53 accept
+nft add rule ip filter forward ip daddr 192.168.100.0/24 meta iifname "eth0" udp sport 53 accept
 ```
 
 ---
@@ -586,7 +589,7 @@ Commandes nftables :
 
 ```bash
 nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 tcp dport 80 accept
-nft add rule ip filter forward ip daddr 192.168.100.0/24 ip saddr 192.168.200.0/24 tcp sport 80 accept
+nft add rule ip filter forward ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 tcp sport 80 accept
 
 nft add rule ip filter forward ip saddr 192.168.200.0/24 meta oifname "eth0" tcp sport 80 accept
 nft add rule ip filter forward ip daddr 192.168.200.0/24 meta iifname "eth0" tcp dport 80 accept
@@ -618,10 +621,14 @@ Commandes nftables :
 ---
 
 ```bash
-nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 tcp dport 22 accept
+nft add rule ip filter forward ip saddr 192.168.100.3 ip daddr 192.168.200.3 tcp dport 22 accept
+nft add rule ip filter forward ip saddr 192.168.200.3 ip daddr 192.168.100.3 tcp sport 22 accept
+
+nft add rule ip filter input ip saddr 192.168.100.3 ip daddr 192.168.100.2 tcp dport 22 accept
 
 nft 'add chain ip filter output {type filter hook output priority 0;}'
-nft add rule ip filter output ip daddr 192.168.100.0/24 ip saddr 192.168.100.2 tcp sport 22 accept
+nft add rule ip filter output ip daddr 192.168.100.3 ip saddr 192.168.100.2 tcp sport 22 accept
+
 ```
 
 ---
