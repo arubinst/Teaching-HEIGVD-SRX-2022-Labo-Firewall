@@ -557,6 +557,7 @@ nft add rule ip filter forward ip daddr 192.168.100.0/24 meta iifname "eth0" udp
 
 **Réponse**
 Le message indique que la commande ne parvient pas à résoudre le nom de domaine, ce qui est normal, car le port utilisé par le protocole DNS est actuellement filtré par le FW.
+
 ---
 
 ## Règles pour les protocoles HTTP et HTTPS
@@ -667,6 +668,7 @@ ssh permet de se connecter au serveur à distance. Cela est utile pour le config
 **Réponse**
 
 Ce type de connexion est très sensible. Il faut donc s'assurer que le port utilisé par le service ssh ne soit accessible depuis des ip explicitement autorisées.
+
 ---
 
 ## Règles finales
