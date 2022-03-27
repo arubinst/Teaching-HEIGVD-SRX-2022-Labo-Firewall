@@ -695,7 +695,7 @@ Ainsi, on peut modifier la configuration, réparer des erreurs, ou rajouter des 
 
 De manière général, modifier les règles du pare-feu sans savoir ce qu'on fait peut rendre le système complètement inaccessible.
 Il est possible de, sans le faire exprès, bloquer toutes entrées SSH, et de ne plus pouvoir se connecter au pare-feu.
-Ou, au contraire, permettre à n'importe qui d'essayer de se connecter via le port SSH.
+Ou, au contraire, permettre à n'importe qui d'essayer de se connecter via le port SSH et perdre la main mise sur ses serveurs par des hackeurs.
 
 ---
 
@@ -711,5 +711,7 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 ---
 
 **LIVRABLE : capture d'écran avec toutes vos règles.**
+![Règles finales](./figures/finalRules.png) 
+
 
 ---
