@@ -423,6 +423,7 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+
 # Créer une table "filter"
 nft add table filter
 
@@ -434,6 +435,7 @@ Fichier nftables.conf :
 table ip filter {
         chain forwarding {
                 type filter hook forward priority filter; policy drop;
+				
                 # LAN to WAN only icmp request accept
                 ip saddr 192.168.100.0/24 meta oifname "eth0" icmp type echo-request accept
 
@@ -484,18 +486,18 @@ traceroute 8.8.8.8
 
 | De Client\_in\_LAN à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Client LAN           |       |                              |
-| Serveur WAN          |       |                              |
+| Interface DMZ du FW  |  OK   | Le ping a le droit d'aller dans le réseau de la DMZ, pour ça, il doit pouvoir pinguer, évidemment, l'interface du FW.  |
+| Interface LAN du FW  |  OK   | Pareil pour l'interface côté LAN.  |
+| Serveur DMZ          |  OK   | Le ping entre le client et le serveur DMZ est autorisé dans le FW.  |
+| Serveur WAN          |  OK   | Le ping est autorisé à sortir et à recevoir une réponse. Le contraire n'est pas possible.   |
 
 
 | De Server\_in\_DMZ à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Serveur DMZ          |       |                              |
-| Serveur WAN          |       |                              |
+| Interface DMZ du FW  |  OK   | Le serveur DMZ doit pouvoir passer pour pinguer le réseau LAN, donc il pouvoir passer par l'interface du FW et donc pouvoir pinguer son interface  |
+| Interface LAN du FW  |  OK   | Pareil, pour l'interface LAN du FW.                             |
+| Client LAN           |  OK   | Le ping est autorisé entre le serveur et le réseau LAN.                             |
+| Serveur WAN          |  KO   | Le serveur DMZ n'a aucune règle qui autorise la DMZ à pinguer le WAN.                             |
 
 
 ## Règles pour le protocole DNS
@@ -515,6 +517,8 @@ ping www.google.com
 
 **LIVRABLE : capture d'écran de votre ping.**
 
+![Ping DNS doesn't work](./figures/pingDNSDoesntWork.png) 
+
 ---
 
 * Créer et appliquer la règle adéquate pour que la **condition 1 du cahier des charges** soit respectée.
@@ -526,7 +530,12 @@ Commandes nftables :
 ```bash
 LIVRABLE : Commandes nftables
 ```
+# Accèpte les envoie du réseau LAN vers le port 53 en UDP et en TCP
+nft 'add rule filter forwarding udp dport 53 ip saddr 192.168.100.0/24 meta oifname "eth0" accept'
+nft 'add rule filter forwarding tcp dport 53 ip saddr 192.168.100.0/24 meta oifname "eth0" accept'
 
+# Accèpte les réponses à un envoie autorisé précédemment
+nft 'add rule filter forwarding ct state established accept'
 ---
 
 <ol type="a" start="11">
@@ -538,6 +547,8 @@ LIVRABLE : Commandes nftables
 
 **LIVRABLE : capture d'écran de votre ping.**
 
+![Ping DNS Work](./figures/pingDNSWork.png) 
+
 ---
 
 <ol type="a" start="12">
@@ -548,7 +559,7 @@ LIVRABLE : Commandes nftables
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+Le ping ne fonctionnait pas car la politique par défaut étant le drop des toutes les requêtes, celle du DNS était tous simplement droppé. Donc même si le ping pouvait fonctionner, la traduction du DNS n'était pas effectuée.
 
 ---
 
