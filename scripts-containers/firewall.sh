@@ -1,3 +1,5 @@
+service ssh start
+
 # on efface toute la configuration
 nft flush ruleset
 
@@ -5,7 +7,6 @@ nft flush ruleset
 nft add table nat
 nft 'add chain nat postrouting { type nat hook postrouting priority 100 ; }'
 nft add rule nat postrouting meta oifname "eth0" masquerade
-service ssh start
 
 # création de la table
 nft add table firewall
@@ -114,8 +115,6 @@ nft 'add chain firewall output {type filter hook output priority 0 ; policy drop
 nft add rule firewall output \
 ct state established accept \
 comment \"on autorise toutes les réponses à des requêtes que nous avons autorisées\"
-
-
 
 
 
