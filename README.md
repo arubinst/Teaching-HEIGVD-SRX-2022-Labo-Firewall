@@ -575,11 +575,13 @@ wget http://www.heig-vd.ch
 * Créer et appliquer les règles adéquates avec des commandes nftables.
 
 Commandes nftables :
-
 ---
 
 ```bash
 LIVRABLE : Commandes nftables
+
+nft 'add rule filter forwarding ip saddr 192.168.100.0/24 tcp dport {80, 8080, 443} meta oifname "eth0" accept'
+
 ```
 
 ---
@@ -592,6 +594,10 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+
+nft 'add rule filter forwarding ip saddr 192.168.100.0/24 tcp dport 80 ip daddr 192.168.200.3 accept'
+nft 'add rule filter forwarding meta iifname "eth0" tcp dport 80 ip daddr 192.168.200.3 accept'
+
 ```
 ---
 
@@ -603,6 +609,10 @@ LIVRABLE : Commandes nftables
 ---
 
 **LIVRABLE : capture d'écran.**
+![HTTP LAN to WAN](./figures/httpWAN.png) 
+![HTTPS LAN to WAN](./figures/httpSWAN.png) 
+![HTTP LAN to DMZ](./figures/httpDMZClient.png) 
+
 
 ---
 
