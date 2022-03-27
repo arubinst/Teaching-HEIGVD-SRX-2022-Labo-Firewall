@@ -681,7 +681,6 @@ ssh root@192.168.200.3
 
 ![ssh_proof](https://github.com/theomi/Teaching-HEIGVD-SRX-2022-Labo-Firewall/blob/main/Livrables/img/ssh_proof.png)
 
-
 ---
 
 <ol type="a" start="15">

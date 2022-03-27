@@ -93,4 +93,8 @@ nft add rule ip filter forward ip saddr 192.168.200.3 meta oif eth0 tcp sport 80
 
 # Autorise le HTTP du LAN vers le serveur dans la DMZ
 nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 80 accept
+<<<<<<< HEAD
 nft add rule ip filter forward ip saddr 192.168.200.3 ip daddr 192.168.100.0/24 tcp sport 80 accept
+=======
+nft add rule ip filter forward ip saddr 192.168.200.3 ip daddr 192.168.100.0/24 tcp sport 80 accept
+>>>>>>> 7811a76cf4eb53a4bcca0ee3109d8611c769c5b3
