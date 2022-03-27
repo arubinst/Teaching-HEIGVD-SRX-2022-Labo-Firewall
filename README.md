@@ -310,7 +310,7 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 
 **Réponse :**
 
-On créé une table qu'on appelle table associée a la famille ip (par défaut). Une table est un conteneur de chains, sets, maps, elle doit être associée a une famille (dans notre cas ip(v4)).
+On créé une table qu'on appelle nat associée a la famille ip (par défaut). Une table est un conteneur de chains, sets, maps, elle doit être associée a une famille (dans notre cas ip(v4)).
 
 ---
 
