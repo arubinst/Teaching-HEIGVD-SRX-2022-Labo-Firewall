@@ -144,8 +144,8 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 | \* via interface eth0 |    192.168.200.0/24    |        TCP        |      \*       |      80       | Accept |
 |     192.168.100.3     |    192.168.200.3    |        TCP        |      \*       |      22       | Accept |
 |     192.168.200.3     |    192.168.100.3    |        TCP        |      22       |      \*       | Accept |
-|     192.168.100.3     |    192.168.300.3    |        TCP        |      \*       |      22       | Accept |
-|     192.168.300.3     |    192.168.100.3    |        TCP        |      22       |      \*       | Accept |
+|     192.168.100.3     |    192.168.100.2    |        TCP        |      \*       |      22       | Accept |
+|     192.168.100.2     |    192.168.100.3    |        TCP        |      22       |      \*       | Accept |
 |          \*           |           \*           |        \*         |      \*       |      \*       |  Drop  |
 
 ---
