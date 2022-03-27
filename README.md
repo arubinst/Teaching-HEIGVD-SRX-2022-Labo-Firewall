@@ -126,6 +126,7 @@ Appliquer le principe inverse (être le plus large possible) lorsqu'il faut refu
 _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec son masque (par exemple, "/24" correspond à 255.255.255.0) ou l'interface réseau (par exemple : "interface WAN") si l'adresse du sous-réseau ne peut pas être déterminé avec précision._
 
 ---
+
 | Adresse IP source | Adresse IP destination | Type    | Port src | Port dst | Action |
 | :---:             | :---:                  | :-----: | :------: | :------: | :----: |
 | *                 | *                      | any     | *        | *        | Drop   |
@@ -135,21 +136,16 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 | interface WAN     | 192.168.100.0/24       | ICMP    | -        | -        | Accept |
 | 192.168.100.0/24  | 192.168.200.0/24       | ICMP    | -        | -        | Accept |
 | 192.168.200.0/24  | 192.168.100.0/24       | ICMP    | -        | -        | Accept |
-
 | 192.168.100.0/24  | interface WAN          | TCP     | *        | 80, 8080, 443 | Accept |
 | interface WAN     | 192.168.100.0/24       | TCP     | 80, 8080, 443         | * | Accept |
-
 | interface WAN     | 192.168.200.3       | TCP     | *         | 80 | Accept |
 | 192.168.200.3  | interface WAN          | TCP     | 80        | * | Accept |
-
 | 192.168.100.0/24  | 192.168.200.3         | TCP     | *        | 80 | Accept |
 | 192.168.200.3   |   192.168.100.3       | TCP     | 80       | * | Accept |
-
 | 192.168.100.3     | 192.168.200.3          | TCP     | *        | 22       | Accept |
 | 192.168.200.3     | 192.168.100.3          | TCP     | 22       | *        | Accept |
 | 192.168.100.3     | 192.168.100.2          | TCP     | *        | 22       | Accept |
 | 192.168.100.2     | 192.168.100.3          | TCP     | 22       | *       | Accept |
-
 
 ---
 
