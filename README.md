@@ -371,7 +371,7 @@ On remarque qu'un fichier est déja existant avec le Shebang suivant :
 suivi de la commande :
 
 ```bash
-nft flush ruleset
+flush ruleset
 ```
 
 donc quand on a fini d'ajouter une table / chain / rule : on rajoute la table modifée dans ce fichier.
