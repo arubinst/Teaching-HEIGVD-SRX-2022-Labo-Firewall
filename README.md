@@ -127,17 +127,35 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 ---
 
+Chaine *FORWARD* :
+
+Toutes les réponses liées aux requêtes sont acceptées (stateful).
+
 | Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
 | :---:             | :---:                  | :---:| :------: | :------: | :----: |
-| 192.168.100.0/24  | 192.168.200.0/24       | any  | *        | 53       | Accept |
 | 192.168.100.0/24  | *                      | ICMP | *        | *        | Accept |
 | 192.168.200.0/24  | 192.168.100.0/24       | ICMP | *        | *        | Accept |
-| 192.168.100.0/24  | *                      | TCP  | *        | 80       | Accept |
-| 192.168.100.0/24  | *                      | TCP  | *        | 8080     | Accept |
-| 192.168.100.0/24  | *                      | TCP  | *        | 443      | Accept |
+| 192.168.100.0/24  | interface WAN          | any  | *        | 53       | Accept |
+| 192.168.100.0/24  | interface WAN          | TCP  | *        | 80       | Accept |
+| 192.168.100.0/24  | interface WAN          | TCP  | *        | 8080     | Accept |
+| 192.168.100.0/24  | interface WAN          | TCP  | *        | 443      | Accept |
 | *                 | 192.168.200.3          | TCP  | *        | 80       | Accept |
 | 192.168.100.3     | 192.168.200.3          | TCP  | *        | 22       | Accept |
+| *                 | *                      | any  | *        | *        | Drop   |
+
+Chaine *INPUT* :
+
+| Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
+| :---:             | :---:                  | :---:| :------: | :------: | :----: |
 | 192.168.100.3     | 192.168.100.2          | TCP  | *        | 22       | Accept |
+| *                 | *                      | any  | *        | *        | Drop   |
+
+Chaine *OUTPUT* :
+
+Toutes les réponses liées aux requêtes entrantes sont acceptées (stateful).
+
+| Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
+| :---:             | :---:                  | :---:| :------: | :------: | :----: |
 | *                 | *                      | any  | *        | *        | Drop   |
 
 ---
