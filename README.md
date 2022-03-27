@@ -654,7 +654,7 @@ ssh root@192.168.200.3
 
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+ssh permet de se connecter au serveur à distance. Cela est utile pour le configurer si c'est une machine sans écran ou encore pour faire des opérations de maintenances.
 
 ---
 
