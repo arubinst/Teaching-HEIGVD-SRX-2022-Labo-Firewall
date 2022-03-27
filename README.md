@@ -26,7 +26,7 @@ Vous pouvez répondre aux questions en modifiant directement votre clone du READ
 
 [Installation de l’environnement virtualisé](#installation-de-lenvironnement-virtualisé)
 
-[Tests des connections et exemple de l'application d'une règle](#tests-des-connections-et-exemple-de-lapplication-dune-règle)
+[Tests des connexions et exemple de l'application d'une règle](#tests-des-connexions-et-exemple-de-lapplication-dune-règle)
 
 [Règles pour le protocole DNS](#règles-pour-le-protocole-dns)
 
@@ -131,14 +131,19 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 | Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
 | :---:             | :---:                  | :---:| :------: | :------: | :----: |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-
+| 192.168.100.0/24  | interface WAN          | ANY  |     *    |    53    | Accept |
+| 192.168.100.0/24  | interface WAN          | ICMP, request |     *    |     *    | Accept |
+| interface WAN     | 192.168.100.0/24       | ICMP, reply |     *    |     *    | Accept   |
+| 192.168.100.0/24  | 192.168.200.0/24       | ICMP |     *    |     *    | Accept   |
+| 192.168.200.0/24  | 192.168.100.0/24       | ICMP |     *    |     *    | Accept   |
+| 192.168.100.0/24  | interface WAN          | TCP  |     *    |    80    | Accept |
+| 192.168.100.0/24  | interface WAN          | TCP  |     *    |   8080   | Accept |
+| 192.168.100.0/24  | interface WAN          | TCP  |     *    |   443   | Accept |
+| 192.168.100.0/24  | 192.168.200.3          | TCP  |     *    |    80    | Accept |
+| interface WAN     | 192.168.200.3          | TCP  |     *    |    80    | Accept |
+| 192.168.100.3     | 192.168.200.3          | TCP  |     *    |    22    | Accept |
+| 192.168.100.3     | 192.168.100.2          | TCP  |     *    |    22    | Accept |
+| 	*     | *          | ANY  |     *    |    *    | Drop |
 ---
 
 # Installation de l’environnement virtualisé
@@ -215,7 +220,9 @@ ping 192.168.200.3
 ```
 ---
 
-**LIVRABLE : capture d'écran de votre tentative de ping.**  
+**LIVRABLE : capture d'écran de votre tentative de ping.** 
+
+![Ping that doesn't work](./figures/pingDoesntWork.png) 
 
 ---
 
@@ -256,6 +263,8 @@ ping 192.168.100.3
 
 **LIVRABLES : captures d'écran des routes des deux machines et de votre nouvelle tentative de ping.**
 
+![Ping works](./figures/pingWorks.png) 
+
 ---
 
 La communication est maintenant possible entre les deux machines. Pourtant, si vous essayez de communiquer depuis le client ou le serveur vers l'Internet, ça ne devrait pas encore fonctionner sans une manipulation supplémentaire au niveau du firewall ou sans un service de redirection ICMP. Vous pouvez le vérifier avec un ping depuis le client ou le serveur vers une adresse Internet.
@@ -271,6 +280,8 @@ Si votre ping passe mais que la réponse contient un _Redirect Host_, ceci indiq
 ---
 
 **LIVRABLE : capture d'écran de votre ping vers l'Internet. Un ping qui ne passe pas ou des réponses contenant des _Redirect Host_ sont acceptés.**
+
+![Ping Internet Doesn't work](./figures/pingInternetDoesntWork.png) 
 
 ---
 
@@ -294,7 +305,7 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 
 ---
 
-**Réponse :**
+**Réponse :** `add table nat` permet de créer une nouvelle table qui s'appelle "nat".
 
 ---
 
@@ -306,7 +317,10 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 ---
 
 **Réponse :**
-
+- `add chain nat postrouting` permet d'ajouter une nouvelle chaîne qui s'appelle "postrouting" à la table "nat".
+- `type nat` indique que la chaîne est de de type NAT (pour effectuer la traduction d'adresses réseau). Ce type prendre en charge les familles ip, ip6 et inet.
+- `hook postrouting` précise que la chaîne est déclanchée après que les paquets ont été routé, juste avant qu'ils ne quittent le système local. 
+- `priority 100` indique la priorité de la chaîne. Plus le nombre est petit, plus il a de priorité.
 ---
 
 
@@ -341,12 +355,15 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-**Réponse :**
+**Réponse :** Toutes les règles peuvent être sauvegardées dans le fichier `/etc/nftables.conf`. Ce fichier est utilisé pour configurer nftable à chaque redémarrage. C'est possible de rendre la configuration persistante avec la commande `nft list ruleset > /etc/nftables.conf`.
+On peut charger la config manuellement avec `nft -f /etc/nftables.conf`
+
+Référence : [Quick reference for nftables](https://wiki.nftables.org/wiki-nftables/index.php/Quick_reference-nftables_in_10_minutes)
 
 ---
 
 
-&rarr; Note : Puisque vous travaillez depuis un terminal natif de votre machin hôte, vous pouvez facilement copier/coller les règles dans un fichier local. Vous pouvez ensuite les utiliser pour reconfigurer votre firewall en cas de besoin.
+&rarr; Note : Puisque vous travaillez depuis un terminal natif de votre machine hôte, vous pouvez facilement copier/coller les règles dans un fichier local. Vous pouvez ensuite les utiliser pour reconfigurer votre firewall en cas de besoin.
 
 
 <ol type="a" start="5">
@@ -356,7 +373,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-**Réponse :**
+**Réponse :** `nft list ruleset`
 
 ---
 
@@ -368,7 +385,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-**Réponse :**
+**Réponse :** `nft flush ruleset`
 
 ---
 
@@ -380,14 +397,14 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-**Réponse :**
+**Réponse :** `nft delete chain [family] <table_name> <chain_name>`
 
 ---
 
 
 ---
 
-## Tests des connections et exemple de l'application d'une règle
+## Tests des connexions et exemple de l'application d'une règle
 
 Pour chaque manipulation, il est important de **garder les règles déjà créées**, les nouvelles sont ajoutées aux existantes.
 
@@ -398,7 +415,7 @@ Le but est de configurer les règles pour que le pare-feu accepte
 -	les ping depuis le LAN sur le WAN,
 -	les ping depuis la DMZ vers le LAN.
 
-Ceci correspond a la **condition 2** du cahier des charges.
+Ceci correspond à la **condition 2** du cahier des charges.
 
 Commandes nftables :
 
@@ -406,6 +423,32 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+
+# Créer une table "filter"
+nft add table filter
+
+# Créer une chaine qui s'appelle "forwarding" dans la table "filter" qui, par défaut, rejette tous les paquets.
+nft 'add chain filter forwarding { type filter hook forward priority 0; policy drop; }'
+
+
+Fichier nftables.conf :
+table ip filter {
+        chain forwarding {
+                type filter hook forward priority filter; policy drop;
+				
+                # LAN to WAN only icmp request accept
+                ip saddr 192.168.100.0/24 meta oifname "eth0" icmp type echo-request accept
+
+                # WAN to LAN only icmp reply accept
+                meta iifname "eth0" ip daddr 192.168.100.0/24 icmp type echo-reply accept
+
+                # LAN to DMZ icmp request and reply accept
+                ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 icmp type { echo-request, echo-reply } accept
+
+                # DMZ to LAN icmp request and reply accept
+                ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type { echo-request, echo-reply } accept
+        }
+}
 ```
 ---
 
@@ -431,6 +474,8 @@ traceroute 8.8.8.8
 ---
 **LIVRABLE : capture d'écran du traceroute et de votre ping vers l'Internet. Il ne devrait pas y avoir des _Redirect Host_ dans les réponses au ping !**
 
+![Ping and traceroute to Internet](./figures/tracerouteAndPing.png) 
+
 ---
 
 <ol type="a" start="9">
@@ -441,18 +486,20 @@ traceroute 8.8.8.8
 
 | De Client\_in\_LAN à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Client LAN           |       |                              |
-| Serveur WAN          |       |                              |
+| Interface DMZ du FW  |  OK   | Etant donné qu'il est possible d'atteindre la DMZ avec un ping depuis le Client dans le LAN, il doit donc être possible d'atteindre l'interface du firewall dans la DMZ.  |
+| Interface LAN du FW  |  OK   | C'est également le cas pour l'interface du firewall côté LAN.  |
+| Client LAN		   |  OK   | Le client se ping lui-même, il ne touche pas le firewall, ça reste en local. |
+| Serveur DMZ          |  OK   | Le ping entre le client et le serveur DMZ est autorisé dans le FW.  |
+| Serveur WAN          |  OK   | Le ping est autorisé à sortir du LAN et à recevoir une réponse du WAN. Le contraire n'est pas possible.   |
 
 
 | De Server\_in\_DMZ à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Serveur DMZ          |       |                              |
-| Serveur WAN          |       |                              |
+| Interface DMZ du FW  |  OK   | Etant donné qu'il est possible d'envoyer des pings depuis le serveur DMZ à des machines se trouvant sur le réseau LAN, il doit donc être possible d'atteindre l'interface du firewall dans le réseau de la DMZ avec un ping.  |
+| Interface LAN du FW  |  OK   | Il doit bien entendu être possible d'atteindre l'interface du firewall du côté du LAN par le serveur de la DMZ. |
+| Client LAN           |  OK   | Le ping est autorisé entre le serveur et le réseau LAN.  |
+| Serveur DMZ		   |  OK   | Le serveur se ping lui-même, il ne touche pas le firewall, ça reste en local. |
+| Serveur WAN          |  KO   | Le serveur DMZ ne possède aucune règle spécifiant qu'il est autorisé à atteindre un serveur dans le WAN.  |
 
 
 ## Règles pour le protocole DNS
@@ -472,6 +519,8 @@ ping www.google.com
 
 **LIVRABLE : capture d'écran de votre ping.**
 
+![Ping DNS doesn't work](./figures/pingDNSDoesntWork.png) 
+
 ---
 
 * Créer et appliquer la règle adéquate pour que la **condition 1 du cahier des charges** soit respectée.
@@ -483,7 +532,12 @@ Commandes nftables :
 ```bash
 LIVRABLE : Commandes nftables
 ```
+# Accepte le traffic du réseau LAN sur le port 53 en UDP et en TCP
+nft 'add rule filter forwarding udp dport 53 ip saddr 192.168.100.0/24 meta oifname "eth0" accept'
+nft 'add rule filter forwarding tcp dport 53 ip saddr 192.168.100.0/24 meta oifname "eth0" accept'
 
+# Accepte les réponses à un envoi autorisé précédemment
+nft 'add rule filter forwarding ct state established accept'
 ---
 
 <ol type="a" start="11">
@@ -495,6 +549,8 @@ LIVRABLE : Commandes nftables
 
 **LIVRABLE : capture d'écran de votre ping.**
 
+![Ping DNS Work](./figures/pingDNSWork.png) 
+
 ---
 
 <ol type="a" start="12">
@@ -505,7 +561,7 @@ LIVRABLE : Commandes nftables
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+Le ping ne fonctionnait pas car, la politique par défaut étant le drop de toutes les requêtes, celle pour le DNS était tout simplement ignorée. Donc même si le ping, en lui-même, pourrait fonctionner, la traduction de l'adresse en IP par le DNS n'était pas effectuée.
 
 ---
 
@@ -521,11 +577,13 @@ wget http://www.heig-vd.ch
 * Créer et appliquer les règles adéquates avec des commandes nftables.
 
 Commandes nftables :
-
 ---
 
 ```bash
 LIVRABLE : Commandes nftables
+
+nft 'add rule filter forwarding ip saddr 192.168.100.0/24 tcp dport {80, 8080, 443} meta oifname "eth0" accept'
+
 ```
 
 ---
@@ -538,6 +596,10 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+
+nft 'add rule filter forwarding ip saddr 192.168.100.0/24 tcp dport 80 ip daddr 192.168.200.3 accept'
+nft 'add rule filter forwarding meta iifname "eth0" tcp dport 80 ip daddr 192.168.200.3 accept'
+
 ```
 ---
 
@@ -549,6 +611,15 @@ LIVRABLE : Commandes nftables
 ---
 
 **LIVRABLE : capture d'écran.**
+
+Wget en HTTP du client vers le WAN
+![HTTP LAN to WAN](./figures/httpWAN.png)
+
+Wget en HTTPS du client vers le WAN
+![HTTPS LAN to WAN](./figures/httpSWAN.png) 
+
+Wget en HTTP du client vers le serveur sur la DMZ
+![HTTP LAN to DMZ](./figures/httpDMZClient.png) 
 
 ---
 
@@ -566,6 +637,19 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+
+# Table utilisée pour la connexion en SSH sur le Firewall (en input)
+nft 'add chain filter input { type filter hook input priority 0; policy drop; }'
+
+# Accepte que le Client\_in\_LAN puisse se connecter en SSH au Firewall
+nft 'add rule filter input ip saddr 192.168.100.3 ip daddr 192.168.100.2 tcp dport 22 accept'
+
+# Maintient la connexion pour les requêtes qui ont été acceptées
+nft 'add rule filter input ct state established accept'
+
+# Accepte de laisser passer les requêtes SSH du Client\_in\_LAN vers le Server\_In\_DMZ
+nft 'add rule filter forwarding ip saddr 192.168.100.3 ip daddr 192.168.200.3 tcp dport 22 accept'
+
 ```
 
 ---
@@ -580,6 +664,12 @@ ssh root@192.168.200.3
 
 **LIVRABLE : capture d'écran de votre connexion ssh.**
 
+Connexion en SSH du client sur le LAN vers le serveur sur la DMZ
+![SSH LAN to DMZ](./figures/sshLANtoDMZ.png) 
+
+Connexion en SSH du client sur le LAN vers le Firewall
+![SSH LAN to Firewall](./figures/sshLANtoFirewall.png) 
+
 ---
 
 <ol type="a" start="15">
@@ -590,7 +680,9 @@ ssh root@192.168.200.3
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+Une connexion en SSH permet de se connecter à un serveur à distance et de pouvoir le configurer sans avoir besoin d'être physiquement connecter avec un câble.
+
+Ainsi, on peut modifier la configuration, réparer des erreurs, ou rajouter des fonctionnalités sans avoir besoin d'un accès physique à la machine ce qui est très pratique si le serveur se trouve dans une autre zone géographique.
 
 ---
 
@@ -603,7 +695,7 @@ ssh root@192.168.200.3
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+Ces règles de pare-feu sont particulièrement sensible. Il faut être absolument certain de ce que l'on fait durant le paramétrage, car on peut rendre le système totalement inaccessible pour nous si par exemple on bloque toutes connexions SSH. Ou au contraire le rendre vulnérable à des tentatives de connexions par des entités non autorisées, ce qui pourrait avoir des conséquences désastreuses comme une utilisation malveillante du serveur.
 
 ---
 
@@ -619,5 +711,7 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 ---
 
 **LIVRABLE : capture d'écran avec toutes vos règles.**
+![Règles finales](./figures/finalRules.png) 
+
 
 ---
