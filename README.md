@@ -315,7 +315,7 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 </ol>
 
 **Réponse :**
-Elle permet de créer une nouvelle table appelée "nat". Comme la famille n'est pas précisée, la table appartient à la famillet par défaut qui est ip.
+Elle permet de créer une nouvelle table appelée "nat". Comme la famille n'est pas précisée, la table appartient à la famille par défaut qui est ip.
 
 ---
 
@@ -336,7 +336,7 @@ Elle permet de créer une nouvelle table appelée "nat". Comme la famille n'est 
 
 `hook postrouting` : la chaîne s'applique aux paquets sortant de la machine (donc les paquets forwardés et les paquets provenant de la machine)
 
-`priority 100` : netfilters applique les chaînes d'un hook donné dans l'ordre de leur niveau de priorité (du plus petit au plus grand). Ce paramètre permet donc de contrôler quand cette chaîne sera appliquée par rapport à d'autres chaînes et par rapport à d'autres outils intervenant dans le traitement des paquets
+`priority 100` : Netfilters applique les chaînes d'un hook donné dans l'ordre de leur niveau de priorité (du plus petit au plus grand). Ce paramètre permet donc de contrôler quand cette chaîne sera appliquée par rapport à d'autres chaînes et par rapport à d'autres outils intervenant dans le traitement des paquets.
 
 ---
 
@@ -434,6 +434,36 @@ Commandes nftables :
 ---
 
 ```bash
+# création de la table
+nft add table firewall
+
+# création de la chaîne pour les règles de forward
+nft 'add chain firewall forward {type filter hook forward priority 0 ; policy drop ; }'
+
+# création de la chaîne pour les règles d'input
+nft 'add chain firewall input {type filter hook input priority 0 ; policy drop ; }'
+
+# création de la chaîne pour les règles d'output
+nft 'add chain firewall output {type filter hook output priority 0 ; policy drop ; }'
+
+# règles pour avoir un firewall stateful qui autorise les réponses à des connexions autorisées
+# (en principe il faudrait aussi une règle similaire pour la chaîne d'input,
+# mais en l'occurrence ça n'est pas nécessaire pour ce TP)
+nft add rule firewall forward \
+ct state established accept \
+comment \"on autorise toutes les réponses à des requêtes que nous avons autorisées\"
+nft add rule firewall output \
+ct state established accept \
+comment \"on autorise toutes les réponses à des requêtes que nous avons autorisées\"
+
+
+
+
+#############################################
+#### FORWARD
+#############################################
+
+
 #
 # règles pour le ping
 #
@@ -445,6 +475,15 @@ comment \"autorise le LAN à tout pinger\"
 nft add rule firewall forward \
 ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-request accept \
 comment \"autorise la DMZ à pinger le LAN\"
+
+
+#
+# Règles pour traceroute
+#
+
+nft add rule firewall forward \
+ip daddr 192.168.100.0/24 icmp type time-exceeded accept \
+comment \"autorise le LAN à recevoir les erreurs ICMP utilisées par traceroute\"
 ```
 ---
 
@@ -480,7 +519,7 @@ traceroute 8.8.8.8
   </li>                                  
 </ol>
 
-**Remarque importante: Avec nftables il n'y a pas de chaîne par défaut. Le résultat ci-dessous est obtenu parce que nous avons déjà créé des chaînes pour input et output, avec drop comme action par défaut. Si nous n'avions pas encore créé des deux chaînes à ce moment du TP, tous les pings passeraient.**
+**Remarque: Avec nftables il n'y a pas de chaîne par défaut. Le résultat ci-dessous est obtenu parce que nous avons déjà créé des chaînes pour input et output, avec drop comme action par défaut. Si nous n'avions pas encore créé ces deux chaînes à ce moment du TP, tous les pings passeraient.**
 
 | De Client\_in\_LAN à | OK/KO | Commentaires et explications                                                                                                 |
 | :---                 |:-----:|:-----------------------------------------------------------------------------------------------------------------------------|
@@ -584,24 +623,16 @@ Commandes nftables :
 #
 
 nft add rule firewall forward \
-ip saddr 192.168.100.0/24 ip daddr !=192.168.0.0/16 tcp dport 80 accept \
+ip saddr 192.168.100.0/24 meta oifname "eth0" tcp dport 80 accept \
 comment \"autorise le LAN à ouvrir des connexions TCP vers le WAN sur le port 80\"
 
 nft add rule firewall forward \
-ip saddr 192.168.100.0/24 ip daddr !=192.168.0.0/16 tcp dport 8080 accept \
+ip saddr 192.168.100.0/24 meta oifname "eth0" tcp dport 8080 accept \
 comment \"autorise le LAN à ouvrir des connexions TCP vers le WAN sur le port 8080\"
 
-
 nft add rule firewall forward \
-ip saddr 192.168.100.0/24 ip daddr !=192.168.0.0/16 tcp dport 443 accept \
+ip saddr 192.168.100.0/24 meta oifname "eth0" tcp dport 443 accept \
 comment \"autorise le LAN à ouvrir des connexions TCP vers le WAN sur le port 443\"
-
-#
-# Autorise toutes les réponses
-#
-nft add rule firewall forward \
-ct state established accept \
-comment \"on autorise toutes les réponses à des requêtes que nous avons autorisées\"
 ```
 
 ---
@@ -614,19 +645,12 @@ Commandes nftables :
 
 ```bash
 #
-# Règles pour HTTP vers la DMZ
+# Règles pour HTTP vers le serveur de la DMZ
 #
 
 nft add rule firewall forward \
 ip daddr 192.168.200.3 tcp dport 80 accept \
 comment \"autorise tout le monde à ouvrir des connexions TCP vers le serveur web de la DMZ sur le port 80\"
-
-#
-# Autorise toutes les réponses
-#
-nft add rule firewall forward \
-ct state established accept \
-comment \"on autorise toutes les réponses à des requêtes que nous avons autorisées\"
 ```
 ---
 
@@ -654,18 +678,18 @@ Commandes nftables :
 ---
 
 ```bash
-# création de la chaîne pour les règles d'input
-nft 'add chain firewall input {type filter hook input priority 0 ; policy drop ; }'
+#
+# Règles pour SSH du client LAN vers le serveur de la DMZ
+#
 
-# règle pour avoir un firewall stateful qui autorise les réponses à des connexions autorisées
-nft add rule firewall input \
-ct state established accept \
-comment \"on autorise toutes les réponses à des requêtes que nous avons autorisées\"
+nft add rule firewall forward \
+ip saddr 192.168.100.3 ip daddr 192.168.200.3 tcp dport 22 accept \
+comment \"autorise le client du LAN à ouvrir des connexions TCP vers le serveur web de la DMZ sur le port 22\"
+
 
 #
 # Règles pour SSH du client LAN vers le firewall
 #
-
 nft add rule firewall input \
 ip saddr 192.168.100.3 ip daddr 192.168.100.2 tcp dport 22 accept \
 comment \"autorise le client du LAN à ouvrir des connexions TCP vers le firewall sur le port 22\"
@@ -709,6 +733,8 @@ SSH nous permet de se connecter à distance à un ( / d'avoir accès au shell du
 
 À ne pas couper l'herbe sous le pied, comme disait l'autre. En d'autres termes, il faut faire attention aux règles qu'on écrit pour ne pas interdire l'accès au port SSH au Firewall depuis la machine depuis laquelle on configure celui-ci. Dans le cas où ce sénario arriverait, il faudrait se connecter physiquement à la machine pour ré-autoriser les connexions au port SSH depuis les machines légitimes vers le Firewall, ce qui peut parfois être pénible.
 
+Il faut aussi être certain que l'accès par SSH est correctement sécurisé (authentification), car le service SSH peut donner énormément de pouvoir à un attaquant.
+
 ---
 
 ## Règles finales
@@ -724,6 +750,8 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 
 Règles (en commandes bash) pour arriver à notre solution finale :
 ```bash
+service ssh start
+
 # on efface toute la configuration
 nft flush ruleset
 
@@ -732,21 +760,36 @@ nft add table nat
 nft 'add chain nat postrouting { type nat hook postrouting priority 100 ; }'
 nft add rule nat postrouting meta oifname "eth0" masquerade
 
+
+
 # création de la table
 nft add table firewall
-
-#############################################
-#### FORWARD
-#############################################
 
 # création de la chaîne pour les règles de forward
 nft 'add chain firewall forward {type filter hook forward priority 0 ; policy drop ; }'
 
+# création de la chaîne pour les règles d'input
+nft 'add chain firewall input {type filter hook input priority 0 ; policy drop ; }'
 
-# règle pour avoir un firewall stateful qui autorise les réponses à des connexions autorisées
+# création de la chaîne pour les règles d'output
+nft 'add chain firewall output {type filter hook output priority 0 ; policy drop ; }'
+
+# règles pour avoir un firewall stateful qui autorise les réponses à des connexions autorisées
+# (en principe il faudrait aussi une règle similaire pour la chaîne d'input,
+# mais en l'occurrence ça n'est pas nécessaire pour ce TP)
 nft add rule firewall forward \
 ct state established accept \
 comment \"on autorise toutes les réponses à des requêtes que nous avons autorisées\"
+nft add rule firewall output \
+ct state established accept \
+comment \"on autorise toutes les réponses à des requêtes que nous avons autorisées\"
+
+
+
+
+#############################################
+#### FORWARD
+#############################################
 
 
 #
@@ -763,6 +806,15 @@ comment \"autorise la DMZ à pinger le LAN\"
 
 
 #
+# Règles pour traceroute
+#
+
+nft add rule firewall forward \
+ip daddr 192.168.100.0/24 icmp type time-exceeded accept \
+comment \"autorise le LAN à recevoir les erreurs ICMP utilisées par traceroute\"
+
+
+#
 # Règles pour le DNS
 #
 
@@ -774,21 +826,21 @@ nft add rule firewall forward \
 ip saddr 192.168.100.0/24 meta oifname "eth0" tcp dport 53 accept \
 comment \"autorise le LAN à envoyer des requêtes DNS \(TCP\) sur le WAN\"
 
+
 #
 # Règles pour HTTP et HTTPS du LAN vers WAN
 #
 
 nft add rule firewall forward \
-ip saddr 192.168.100.0/24 ip meta oifname "eth0" tcp dport 80 accept \
+ip saddr 192.168.100.0/24 meta oifname "eth0" tcp dport 80 accept \
 comment \"autorise le LAN à ouvrir des connexions TCP vers le WAN sur le port 80\"
 
 nft add rule firewall forward \
-ip saddr 192.168.100.0/24 ip meta oifname "eth0" tcp dport 8080 accept \
+ip saddr 192.168.100.0/24 meta oifname "eth0" tcp dport 8080 accept \
 comment \"autorise le LAN à ouvrir des connexions TCP vers le WAN sur le port 8080\"
 
-
 nft add rule firewall forward \
-ip saddr 192.168.100.0/24 ip meta oifname "eth0" tcp dport 443 accept \
+ip saddr 192.168.100.0/24 meta oifname "eth0" tcp dport 443 accept \
 comment \"autorise le LAN à ouvrir des connexions TCP vers le WAN sur le port 443\"
 
 
@@ -815,8 +867,6 @@ comment \"autorise le client du LAN à ouvrir des connexions TCP vers le serveur
 #### INPUT
 #############################################
 
-# création de la chaîne pour les règles d'input
-nft 'add chain firewall input {type filter hook input priority 0 ; policy drop ; }'
 
 #
 # Règles pour SSH du client LAN vers le firewall
@@ -828,50 +878,49 @@ comment \"autorise le client du LAN à ouvrir des connexions TCP vers le firewal
 
 
 
-#############################################
-#### OUTPUT
-#############################################
 
-# création de la chaîne pour les règles d'output
-nft 'add chain firewall output {type filter hook output priority 0 ; policy drop ; }'
 
-# règle pour avoir un firewall stateful qui autorise les réponses à des connexions autorisées
-nft add rule firewall output \
-ct state established accept \
-comment \"on autorise toutes les réponses à des requêtes que nous avons autorisées\"
+# on affiche la configuration obtenue
+nft list ruleset
+
 ```
 
 Configuration finale (`cat /etc/nftables.conf`) :
 
 ```
 table ip nat {
-        chain postrouting {
-                type nat hook postrouting priority srcnat; policy accept;
-                oifname "eth0" masquerade
-        }
+	chain postrouting {
+		type nat hook postrouting priority srcnat; policy accept;
+		oifname "eth0" masquerade
+	}
 }
 table ip firewall {
-        chain forward {
-                type filter hook forward priority filter; policy drop;
-                ct state established accept comment "on autorise toutes les réponses à des requêtes que nous avons autorisées"
-                ip saddr 192.168.100.0/24 icmp type echo-request accept comment "autorise le LAN à tout pinger"
-                ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-request accept comment "autorise la DMZ à pinger le LAN"
-                ip saddr 192.168.100.0/24 oifname "eth0" udp dport 53 accept comment "autorise le LAN à envoyer des requêtes DNS (UDP) sur le WAN"
-                ip saddr 192.168.100.0/24 oifname "eth0" tcp dport 53 accept comment "autorise le LAN à envoyer des requêtes DNS (TCP) sur le WAN"
-                ip daddr 192.168.200.3 tcp dport 80 accept comment "autorise tout le monde à ouvrir des connexions TCP vers le serveur web de la DMZ sur le port 80"
-                ip saddr 192.168.100.3 ip daddr 192.168.200.3 tcp dport 22 accept comment "autorise le client du LAN à ouvrir des connexions TCP vers le serveur web de la DMZ sur le port 22"
-        }
+	chain forward {
+		type filter hook forward priority filter; policy drop;
+		ct state established accept comment "on autorise toutes les réponses à des requêtes que nous avons autorisées"
+		ip saddr 192.168.100.0/24 icmp type echo-request accept comment "autorise le LAN à tout pinger"
+		ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-request accept comment "autorise la DMZ à pinger le LAN"
+		ip daddr 192.168.100.0/24 icmp type time-exceeded accept comment "autorise le LAN à recevoir les erreurs ICMP utilisées par traceroute"
+		ip saddr 192.168.100.0/24 oifname "eth0" udp dport 53 accept comment "autorise le LAN à envoyer des requêtes DNS (UDP) sur le WAN"
+		ip saddr 192.168.100.0/24 oifname "eth0" tcp dport 53 accept comment "autorise le LAN à envoyer des requêtes DNS (TCP) sur le WAN"
+		ip saddr 192.168.100.0/24 oifname "eth0" tcp dport 80 accept comment "autorise le LAN à ouvrir des connexions TCP vers le WAN sur le port 80"
+		ip saddr 192.168.100.0/24 oifname "eth0" tcp dport 8080 accept comment "autorise le LAN à ouvrir des connexions TCP vers le WAN sur le port 8080"
+		ip saddr 192.168.100.0/24 oifname "eth0" tcp dport 443 accept comment "autorise le LAN à ouvrir des connexions TCP vers le WAN sur le port 443"
+		ip daddr 192.168.200.3 tcp dport 80 accept comment "autorise tout le monde à ouvrir des connexions TCP vers le serveur web de la DMZ sur le port 80"
+		ip saddr 192.168.100.3 ip daddr 192.168.200.3 tcp dport 22 accept comment "autorise le client du LAN à ouvrir des connexions TCP vers le serveur web de la DMZ sur le port 22"
+	}
 
-        chain input {
-                type filter hook input priority filter; policy drop;
-                ip saddr 192.168.100.3 ip daddr 192.168.100.2 tcp dport 22 accept comment "autorise le client du LAN à ouvrir des connexions TCP vers le firewall sur le port 22"
-        }
+	chain input {
+		type filter hook input priority filter; policy drop;
+		ip saddr 192.168.100.3 ip daddr 192.168.100.2 tcp dport 22 accept comment "autorise le client du LAN à ouvrir des connexions TCP vers le firewall sur le port 22"
+	}
 
-        chain output {
-                type filter hook output priority filter; policy drop;
-                ct state established accept comment "on autorise toutes les réponses à des requêtes que nous avons autorisées"
-        }
+	chain output {
+		type filter hook output priority filter; policy drop;
+		ct state established accept comment "on autorise toutes les réponses à des requêtes que nous avons autorisées"
+	}
 }
+
 ```
 
 ---
