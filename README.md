@@ -486,18 +486,20 @@ traceroute 8.8.8.8
 
 | De Client\_in\_LAN à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |  OK   | Il doit être possible d'atteindre la DMZ avec un ping depuis le Client dans le LAN. Il doit donc être possible d'atteindre l'interface du firewall dans la DMZ.  |
+| Interface DMZ du FW  |  OK   | Etant donné qu'il est possible d'atteindre la DMZ avec un ping depuis le Client dans le LAN, il doit donc être possible d'atteindre l'interface du firewall dans la DMZ.  |
 | Interface LAN du FW  |  OK   | C'est également le cas pour l'interface du firewall côté LAN.  |
+| Client LAN		   |  OK   | Le client se ping lui-même, il ne touche pas le firewall, ça reste en local. |
 | Serveur DMZ          |  OK   | Le ping entre le client et le serveur DMZ est autorisé dans le FW.  |
-| Serveur WAN          |  OK   | Le ping est autorisé à sortir et à recevoir une réponse. Le contraire n'est pas possible.   |
+| Serveur WAN          |  OK   | Le ping est autorisé à sortir du LAN et à recevoir une réponse du WAN. Le contraire n'est pas possible.   |
 
 
 | De Server\_in\_DMZ à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |  OK   | Il doit être possible d'envoyer des pings depuis le serveur DMZ à des machines se trouvant sur le réseau LAN. Il doit donc être possible d'atteindre l'interface du firewall dans le réseau de la DMZ avec un ping.  |
+| Interface DMZ du FW  |  OK   | Etant donné qu'il est possible d'envoyer des pings depuis le serveur DMZ à des machines se trouvant sur le réseau LAN, il doit donc être possible d'atteindre l'interface du firewall dans le réseau de la DMZ avec un ping.  |
 | Interface LAN du FW  |  OK   | Il doit bien entendu être possible d'atteindre l'interface du firewall du côté du LAN par le serveur de la DMZ. |
-| Client LAN           |  OK   | Le ping est autorisé entre le serveur et le réseau LAN.                             |
-| Serveur WAN          |  KO   | Le serveur DMZ ne possède aucune règle spécifiant qu'il est autorisé à atteindre un.                             |
+| Client LAN           |  OK   | Le ping est autorisé entre le serveur et le réseau LAN.  |
+| Serveur DMZ		   |  OK   | Le serveur se ping lui-même, il ne touche pas le firewall, ça reste en local. |
+| Serveur WAN          |  KO   | Le serveur DMZ ne possède aucune règle spécifiant qu'il est autorisé à atteindre un serveur dans le WAN.  |
 
 
 ## Règles pour le protocole DNS
@@ -559,7 +561,7 @@ nft 'add rule filter forwarding ct state established accept'
 ---
 **Réponse**
 
-Le ping ne fonctionnait pas car la politique par défaut étant le drop des toutes les requêtes, celle du DNS était tout simplement ignorée. Donc même si le ping pouvait fonctionner, la traduction du DNS n'était pas effectuée.
+Le ping ne fonctionnait pas car, la politique par défaut étant le drop de toutes les requêtes, celle pour le DNS était tout simplement ignorée. Donc même si le ping, en lui-même, pourrait fonctionner, la traduction de l'adresse en IP par le DNS n'était pas effectuée.
 
 ---
 
@@ -680,7 +682,7 @@ Connexion en SSH du client sur le LAN vers le Firewall
 
 Une connexion en SSH permet de se connecter à un serveur à distance et de pouvoir le configurer sans avoir besoin d'être physiquement connecter avec un câble.
 
-Ainsi, on peut modifier la configuration, réparer des erreurs, ou rajouter des fonctionnalités sans avoir besoin d'un accès physique à la machine ce qui est très pratique si le serveur se trouve dans un autre zone géographique.
+Ainsi, on peut modifier la configuration, réparer des erreurs, ou rajouter des fonctionnalités sans avoir besoin d'un accès physique à la machine ce qui est très pratique si le serveur se trouve dans une autre zone géographique.
 
 ---
 
