@@ -29,12 +29,14 @@ nft 'add chain ip filter customRules { type filter hook forward  priority 100 ; 
 # Ajout des règles
 
 # Autorise le ping du LAN vers la DMZ
+nft add rule ip filter custom_rules icmp type echo-request ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 accept
 
 nft add rule ip filter customRules icmp type echo-request ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 accept
 
 nft add rule ip filter customRules icmp type echo-reply ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 accept
 
 # Autorise le ping du LAN vers le WAN
+nft add rule ip filter custom_rules icmp type echo-request ip saddr 192.168.100.0/24 meta oif eth0 accept 
 
 nft add rule ip filter customRules icmp type echo-request ip saddr 192.168.100.0/24 meta oif eth0 accept 
 

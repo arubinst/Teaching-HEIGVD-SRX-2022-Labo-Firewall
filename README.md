@@ -310,7 +310,7 @@ La dernière commande `nftables` définit une règle dans le tableau NAT qui per
 
 **Réponse :**
 
-On créé une table qu'on appelle table associée a la famille ip (par défaut). Une table est un conteneur de chains, sets, maps, elle doit être associée a une famille (dans notre cas ip(v4)).
+On créé une table qu'on appelle nat associée a la famille ip (par défaut). Une table est un conteneur de chains, sets, maps, elle doit être associée a une famille (dans notre cas ip(v4)).
 
 ---
 
@@ -501,18 +501,18 @@ traceroute 8.8.8.8
 
 | De Client\_in\_LAN à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Client LAN           |       |                              |
-| Serveur WAN          |       |                              |
+| Interface DMZ du FW  | OK    |                              |
+| Interface LAN du FW  | OK    |                              |
+| Client LAN           | OK    |                              |
+| Serveur WAN          | OK    |                              |
 
 
 | De Server\_in\_DMZ à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Serveur DMZ          |       |                              |
-| Serveur WAN          |       |                              |
+| Interface DMZ du FW  |   OK  |                              |
+| Interface LAN du FW  |   OK  |                              |
+| Serveur DMZ          |   OK  |                              |
+| Serveur WAN          |   KO  | Normal car demandé dans le cahier des charges |
 
 
 ## Règles pour le protocole DNS
@@ -531,6 +531,8 @@ ping www.google.com
 ---
 
 **LIVRABLE : capture d'écran de votre ping.**
+
+![ping_fail](https://github.com/theomi/Teaching-HEIGVD-SRX-2022-Labo-Firewall/blob/main/Livrables/img/dns_ping_fail.png)
 
 ---
 
@@ -554,6 +556,8 @@ LIVRABLE : Commandes nftables
 ---
 
 **LIVRABLE : capture d'écran de votre ping.**
+
+![ping_fail](https://github.com/theomi/Teaching-HEIGVD-SRX-2022-Labo-Firewall/blob/main/Livrables/img/dns_ping_fail2.png)
 
 ---
 
