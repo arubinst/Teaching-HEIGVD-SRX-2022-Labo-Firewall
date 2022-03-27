@@ -375,9 +375,9 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
  /sbin/nft -f /etc/nftables.conf
 ```
 
-## Pour ce faire, il faudrait configurer soit systemd ou init.d, mais cela n'était pas le but du laboratoire.
+Pour ce faire, il faudrait configurer soit systemd ou init.d, mais cela n'était pas le but du laboratoire.
 
-&rarr; Note : Puisque vous travaillez depuis un terminal natif de votre machin hôte, vous pouvez facilement copier/coller les règles dans un fichier local. Vous pouvez ensuite les utiliser pour reconfigurer votre firewall en cas de besoin.
+&rarr; Note : Puisque vous travaillez depuis un terminal natif de votre machine hôte, vous pouvez facilement copier/coller les règles dans un fichier local. Vous pouvez ensuite les utiliser pour reconfigurer votre firewall en cas de besoin.
 
 <ol type="a" start="5">
   <li>Quelle commande affiche toutes les règles de filtrage en vigueur ?
@@ -493,7 +493,7 @@ traceroute 8.8.8.8
 | Interface DMZ du FW |  KO   | attendu, car règle forward sur le FW |
 | Interface LAN du FW |  KO   | attendu, car règle forward sur le FW |
 | Client LAN          |  OK   | ne passe pas par le FW               |
-| Serveur WAN         |  OK   |                                      |
+| Serveur WAN         |  OK   | attendu                              |
 
 | De Server_in_DMZ à  | OK/KO | Commentaires et explications         |
 | :------------------ | :---: | :----------------------------------- |
@@ -517,7 +517,7 @@ ping www.google.com
 
 ---
 
-**LIVRABLE : capture d'écran de votre ping.**
+![ping_client_google_before_rule](figures/ping_client_google_before_rule.png)<br>
 
 ---
 
@@ -556,7 +556,6 @@ nft add rule ip filter forward ip daddr 192.168.100.0/24 meta iifname "eth0" udp
 ---
 
 **Réponse**
-
 Le message indique que la commande ne parvient pas à résoudre le nom de domaine, ce qui est normal, car le port utilisé par le protocole DNS est actuellement filtré par le FW.
 ---
 
@@ -667,8 +666,7 @@ ssh permet de se connecter au serveur à distance. Cela est utile pour le config
 
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
-
+Ce type de connexion est très sensible. Il faut donc s'assurer que le port utilisé par le service ssh ne soit accessible depuis des ip explicitement autorisées.
 ---
 
 ## Règles finales
@@ -682,6 +680,6 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 
 ---
 
-**LIVRABLE : capture d'écran avec toutes vos règles.**
+![list_final](figures/list_final.png)<br>
 
 ---

@@ -60,7 +60,7 @@ nft add rule ip filter forward ip saddr 192.168.200.3 ip daddr 192.168.100.3 tcp
 # Condition 7
 nft add rule ip filter input ip saddr 192.168.100.3 ip daddr 192.168.100.2 tcp dport 22 accept
 
-nft 'add chain ip filter output {type filter hook output priority 0;}'
+nft 'add chain ip filter output {type filter hook output priority 0; policy drop;}'
 nft add rule ip filter output ip daddr 192.168.100.3 ip saddr 192.168.100.2 tcp sport 22 accept
 
 
