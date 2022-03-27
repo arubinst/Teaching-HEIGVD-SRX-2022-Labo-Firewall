@@ -131,18 +131,18 @@ Chaine *FORWARD* :
 
 Toutes les réponses liées aux requêtes sont acceptées (stateful).
 
-| Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
-| :---:             | :---:                  | :---:| :------: | :------: | :----: |
-| 192.168.100.0/24  | interface WAN          | ICMP | *        | *        | Accept |
-| 192.168.100.0/24  | interface DMZ          | ICMP | *        | *        | Accept |
-| 192.168.200.0/24  | interface LAN          | ICMP | *        | *        | Accept |
-| 192.168.100.0/24  | interface WAN          | any  | *        | 53       | Accept |
-| 192.168.100.0/24  | interface WAN          | TCP  | *        | 80       | Accept |
-| 192.168.100.0/24  | interface WAN          | TCP  | *        | 8080     | Accept |
-| 192.168.100.0/24  | interface WAN          | TCP  | *        | 443      | Accept |
-| *                 | 192.168.200.3          | TCP  | *        | 80       | Accept |
-| 192.168.100.3     | 192.168.200.3          | TCP  | *        | 22       | Accept |
-| *                 | *                      | any  | *        | *        | Drop   |
+| Adresse IP source | Adresse IP destination |       Type        | Port src | Port dst | Action |
+| :---:             | :---:                  |:-----------------:| :------: | :------: | :----: |
+| 192.168.100.0/24  | interface WAN          | ICMP echo request | *        | *        | Accept |
+| 192.168.100.0/24  | interface DMZ          | ICMP echo request | *        | *        | Accept |
+| 192.168.200.0/24  | interface LAN          |       ICMP echo request       | *        | *        | Accept |
+| 192.168.100.0/24  | interface WAN          |        any        | *        | 53       | Accept |
+| 192.168.100.0/24  | interface WAN          |        TCP        | *        | 80       | Accept |
+| 192.168.100.0/24  | interface WAN          |        TCP        | *        | 8080     | Accept |
+| 192.168.100.0/24  | interface WAN          |        TCP        | *        | 443      | Accept |
+| *                 | 192.168.200.3          |        TCP        | *        | 80       | Accept |
+| 192.168.100.3     | 192.168.200.3          |        TCP        | *        | 22       | Accept |
+| *                 | *                      |        any        | *        | *        | Drop   |
 
 Chaine *INPUT* :
 
@@ -445,13 +445,6 @@ comment \"autorise le LAN à tout pinger\"
 nft add rule firewall forward \
 ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 icmp type echo-request accept \
 comment \"autorise la DMZ à pinger le LAN\"
-
-#
-# Autorise toutes les réponses
-#
-nft add rule firewall forward \
-ct state established accept \
-comment \"on autorise toutes les réponses à des requêtes que nous avons autorisées\"
 ```
 ---
 
@@ -487,21 +480,22 @@ traceroute 8.8.8.8
   </li>                                  
 </ol>
 
+**Remarque importante: Avec nftables il n'y a pas de chaîne par défaut. Le résultat ci-dessous est obtenu parce que nous avons déjà créé des chaînes pour input et output, avec drop comme action par défaut. Si nous n'avions pas encore créé des deux chaînes à ce moment du TP, tous les pings passeraient.**
 
-| De Client\_in\_LAN à | OK/KO | Commentaires et explications |
-| :---                 | :---: | :---                         |
-| Interface DMZ du FW  | OK    | Nous avons autorisé le LAN à effectuer un ping sur n'importe quelle adresse |
-| Interface LAN du FW  | OK    | "                            |
-| Serveur DMZ          | OK    | "                            |
-| Serveur WAN          | OK    | "                            |
+| De Client\_in\_LAN à | OK/KO | Commentaires et explications                                                                                                 |
+| :---                 |:-----:|:-----------------------------------------------------------------------------------------------------------------------------|
+| Interface DMZ du FW  |  KO   | Ce cas tombe dans la chaîne input du firewall, qui n'a aucune règle pour autoriser un ping                                   |
+| Interface LAN du FW  |   KO   | idem                                                                                                                         |
+| Serveur DMZ          |  OK   | Ce cas tombe dans la chaîne forward du firewall, qui autorise les pings du LAN vers tout le monde (et autorise les réponses) |
+| Serveur WAN          |  OK   | idem                                                                                                                         |
 
 
-| De Server\_in\_DMZ à | OK/KO | Commentaires et explications |
-| :---                 | :---: | :---                         |
-| Interface DMZ du FW  | OK    | Fonctionne car le serveur DMZ et l'interface réseau DMZ du firewall sont dans le même réseau |
-| Interface LAN du FW  | OK    | Fonctionne car nous avons autorisé le réseau DMZ à effectuer un ping sur le réseau LAN |
-| Client LAN           | OK    | "                            |
-| Serveur WAN          | KO    | Ne fonctionne pas car aucune règle dans le firewall n'autorise un ping depuis la DMZ vers le WAN |
+| De Server\_in\_DMZ à | OK/KO | Commentaires et explications                                                                                             |
+| :---                 |:-----:|:-------------------------------------------------------------------------------------------------------------------------|
+| Interface DMZ du FW  |  KO   | Ce cas tombe dans la chaîne input du firewall, qui n'a aucune règle pour autoriser un ping                               |
+| Interface LAN du FW  |  KO   | idem                                                                                                                     |
+| Client LAN           |  OK   | Ce cas tombe dans la chaîne forward du firewall, qui autorise les pings de la DMZ vers le LAN (et autorise les réponses) |
+| Serveur WAN          |  KO   | Ce cas tombe dans la chaîne forward du firewall, qui n'a aucune règle qui autorise un ping depuis la DMZ vers le WAN     |
 
 
 ## Règles pour le protocole DNS
@@ -542,12 +536,6 @@ nft add rule firewall forward \
 ip saddr 192.168.100.0/24 tcp dport 53 accept \
 comment \"autorise le LAN à envoyer des requêtes DNS \(TCP\) sur le WAN\"
 
-#
-# Autorise toutes les réponses
-#
-nft add rule firewall forward \
-ct state established accept \
-comment \"on autorise toutes les réponses à des requêtes que nous avons autorisées\"
 ```
 
 ---
