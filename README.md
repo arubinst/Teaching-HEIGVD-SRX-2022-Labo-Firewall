@@ -127,8 +127,6 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 ---
 
-**LIVRABLE : Remplir le tableau**
-
 | Adresse IP source | Adresse IP destination | Type    | Port src | Port dst | Action |
 | :---:             | :---:                  | :-----: | :------: | :------: | :----: |
 | *                 | *                      | any     | *        | *        | Drop   |
@@ -218,8 +216,6 @@ ping 192.168.200.3
 ```
 ---
 
-**LIVRABLE : capture d'écran de votre tentative de ping.**  
-
 ![img](https://github.com/theomi/Teaching-HEIGVD-SRX-2022-Labo-Firewall/blob/main/Livrables/img/ping_tentatives.png)
 
 ---
@@ -259,8 +255,6 @@ ping 192.168.100.3
 
 ---
 
-**LIVRABLES : captures d'écran des routes des deux machines et de votre nouvelle tentative de ping.**
-
 DMZ to lan Traceroute
 
 ![img](https://github.com/theomi/Teaching-HEIGVD-SRX-2022-Labo-Firewall/blob/main/Livrables/img/DMZ_to_Lan.png)
@@ -282,9 +276,7 @@ Si votre ping passe mais que la réponse contient un _Redirect Host_, ceci indiq
 
 ---
 
-**LIVRABLE : capture d'écran de votre ping vers l'Internet. Un ping qui ne passe pas ou des réponses contenant des _Redirect Host_ sont acceptés.**
 ![img](https://github.com/theomi/Teaching-HEIGVD-SRX-2022-Labo-Firewall/blob/main/Livrables/img/ping_wan.png)
-
 
 ---
 
@@ -465,7 +457,17 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+# Autorise le ping du LAN vers la DMZ
+nft add rule ip filter forward icmp type echo-request ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 accept
+nft add rule ip filter forward icmp type echo-reply ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 accept
+
+# Autorise le ping du LAN vers le WAN
+nft add rule ip filter forward icmp type echo-request ip saddr 192.168.100.0/24 meta oif eth0 accept 
+nft add rule ip filter forward icmp type echo-reply meta iif eth0 ip daddr 192.168.100.0/24 accept 
+
+# Autorise le ping de la DMZ vers le LAN
+nft add rule ip filter forward icmp type echo-request ip saddr 192.168.200.0/24 ip daddr 192.168.100.0/24 accept
+nft add rule ip filter forward icmp type echo-reply ip saddr 192.168.100.0/24 ip daddr 192.168.200.0/24 accept
 ```
 ---
 
