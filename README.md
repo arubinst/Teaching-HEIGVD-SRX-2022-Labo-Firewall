@@ -609,10 +609,15 @@ nft 'add rule filter forwarding meta iifname "eth0" tcp dport 80 ip daddr 192.16
 ---
 
 **LIVRABLE : capture d'écran.**
-![HTTP LAN to WAN](./figures/httpWAN.png) 
-![HTTPS LAN to WAN](./figures/httpSWAN.png) 
-![HTTP LAN to DMZ](./figures/httpDMZClient.png) 
 
+Wget en HTTP du client vers le WAN
+![HTTP LAN to WAN](./figures/httpWAN.png)
+
+Wget en HTTPS du client vers le WAN
+![HTTPS LAN to WAN](./figures/httpSWAN.png) 
+
+Wget en HTTP du client vers le serveur sur la DMZ
+![HTTP LAN to DMZ](./figures/httpDMZClient.png) 
 
 ---
 
@@ -630,6 +635,19 @@ Commandes nftables :
 
 ```bash
 LIVRABLE : Commandes nftables
+
+# Table utilisée pour la connexion en SSH sur le Firewall (en input)
+nft 'add chain filter input { type filter hook input priority 0; policy drop; }'
+
+# Accèpte que le Client\_in\_LAN puisse se connecter en SSH au Firewall
+nft 'add rule filter input ip saddr 192.168.100.3 ip daddr 192.168.100.2 tcp dport 22 accept'
+
+# Maintient la connexion pour les requêtes qui ont été acceptées
+nft 'add rule filter input ct state established accept'
+
+# Accèpte de laisser passer les requêtes SSH du Client\_in\_LAN vers le Server\_In\_DMZ
+nft 'add rule filter forwarding ip saddr 192.168.100.3 ip daddr 192.168.200.3 tcp dport 22 accept'
+
 ```
 
 ---
@@ -644,6 +662,12 @@ ssh root@192.168.200.3
 
 **LIVRABLE : capture d'écran de votre connexion ssh.**
 
+Connexion en SSH du client sur le LAN vers le serveur sur la DMZ
+![SSH LAN to DMZ](./figures/sshLANtoDMZ.png) 
+
+Connexion en SSH du client sur le LAN vers le Firewall
+![SSH LAN to Firewall](./figures/sshLANtoFirewall.png) 
+
 ---
 
 <ol type="a" start="15">
@@ -654,7 +678,9 @@ ssh root@192.168.200.3
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+Une connexion en SSH permet de se connecter au serveur à distance et de pouvoir le configurer sans avoir besoin d'être physiquement connecter avec un câble.
+
+Ainsi, on peut modifier la configuration, réparer des erreurs, ou rajouter des fonctionnalités sans devoir se lever. (Très pratique si le serveur est dans un autre pays...)
 
 ---
 
@@ -667,7 +693,9 @@ ssh root@192.168.200.3
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+De manière général, modifier les règles du pare-feu sans savoir ce qu'on fait peut rendre le système complètement inaccessible.
+Il est possible de, sans le faire exprès, bloquer toutes entrées SSH, et de ne plus pouvoir se connecter au pare-feu.
+Ou, au contraire, permettre à n'importe qui d'essayer de se connecter via le port SSH.
 
 ---
 
