@@ -3,22 +3,23 @@ version: '3.7'
 services:
     firewall:
         privileged: true
-        container_name : Firewall
+        container_name: Firewall
         build: .
-        cap_add : 
-            - NET_ADMIN 
+        cap_add:
+            - NET_ADMIN
         stdin_open: true
+        hostname: firewall
         tty: true
         networks:
-           0wan:
-             priority: 1000 # eth0
-             ipv4_address: 172.20.10.2 
-           1lan:
-             priority: 900 # eth1
-             ipv4_address: 192.168.100.2
-           2dmz:
-             priority: 800 # eth2
-             ipv4_address: 192.168.200.2
+            0wan:
+                priority: 1000 # eth0
+                ipv4_address: 172.20.10.2
+            1lan:
+                priority: 900 # eth1
+                ipv4_address: 192.168.100.2
+            2dmz:
+                priority: 800 # eth2
+                ipv4_address: 192.168.200.2
         command: /bin/bash
         sysctls:
             net.ipv4.conf.all.send_redirects: 0
@@ -27,42 +28,43 @@ services:
 
     client_in_lan:
         privileged: true
-        container_name : Client_in_LAN
+        container_name: Client_in_LAN
         build: .
-        cap_add : 
+        cap_add:
             - NET_ADMIN
-        depends_on: 
+        depends_on:
             - firewall
         stdin_open: true
+        hostname: client
         tty: true
         networks:
-           1lan:
-             ipv4_address: 192.168.100.3
+            1lan:
+                ipv4_address: 192.168.100.3
         command: /bin/bash
         sysctls:
             net.ipv4.conf.all.send_redirects: 0
-            net.ipv4.conf.all.secure_redirects: 0 
+            net.ipv4.conf.all.secure_redirects: 0
             net.ipv4.conf.all.accept_redirects: 0
 
     server_in_dmz:
         privileged: true
-        container_name : Server_in_DMZ
+        container_name: Server_in_DMZ
         build: .
-        cap_add : 
+        cap_add:
             - NET_ADMIN
-        depends_on: 
+        depends_on:
             - firewall
         stdin_open: true
         tty: true
+        hostname: server
         networks:
             2dmz:
-              ipv4_address: 192.168.200.3
+                ipv4_address: 192.168.200.3
         command: /bin/bash
         sysctls:
             net.ipv4.conf.all.send_redirects: 0
-            net.ipv4.conf.all.secure_redirects: 0 
+            net.ipv4.conf.all.secure_redirects: 0
             net.ipv4.conf.all.accept_redirects: 0
-        
 
 networks:
     1lan:
@@ -70,21 +72,18 @@ networks:
         name: 1lan
         ipam:
             config:
-                - 
-                 subnet: 192.168.100.0/24
-                 #gateway: 192.168.100.2
+                - subnet: 192.168.100.0/24
+                  #gateway: 192.168.100.2
     2dmz:
         driver: "bridge"
         name: 2dmz
         ipam:
             config:
-                - 
-                 subnet: 192.168.200.0/24
-                 #gateway: 192.168.200.2
+                - subnet: 192.168.200.0/24
+                  #gateway: 192.168.200.2
     0wan:
         driver: "bridge"
         name: 0wan
         ipam:
             config:
-                -
-                 subnet: 172.20.10.0/24
+                - subnet: 172.20.10.0/24
