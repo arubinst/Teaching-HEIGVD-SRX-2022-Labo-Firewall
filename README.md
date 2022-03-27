@@ -348,7 +348,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 <ol type="a" start="4">
   <li>Faire une recherche et expliquer une méthode de rendre la config de votre firewall persistente.
-  </li>                                  
+  </li>
 </ol>
 
 ---
@@ -487,12 +487,11 @@ Vérifiez aussi la route entre votre client et le service `8.8.8.8`. Elle devrai
 
 ```bash
 traceroute 8.8.8.8
-``` 	            
-
+```
 
 ---
-**LIVRABLE : capture d'écran du traceroute et de votre ping vers l'Internet. Il ne devrait pas y avoir des _Redirect Host_ dans les réponses au ping !**
-
+![ping_8.8.8.8](./Livrables/img/ping_8.8.8.8.png)
+![traceroute_8.8.8.8](./Livrables/img/traceroute_8.8.8.8.png)
 ---
 
 <ol type="a" start="9">
@@ -521,7 +520,7 @@ traceroute 8.8.8.8
 
 <ol type="a" start="10">
   <li>Si un ping est effectué sur un serveur externe en utilisant en argument un nom DNS, le client ne pourra pas le résoudre. Le démontrer à l'aide d'une capture, par exemple avec la commande suivante :
-  </li>                                  
+  </li>
 </ol>
 
 ```bash
@@ -534,7 +533,7 @@ ping www.google.com
 
 **LIVRABLE : capture d'écran de votre ping.**
 
-![ping_fail](https://github.com/theomi/Teaching-HEIGVD-SRX-2022-Labo-Firewall/blob/main/Livrables/img/dns_ping_fail.png)
+![ping_fail](./Livrables/img/dns_ping_fail.png)
 
 ---
 
@@ -545,7 +544,13 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+# Autorise le DNS en sortie (LAN vers WAN)
+nft add rule ip filter forward ip saddr 192.168.100.0/24 meta oif eth0 tcp dport 53 accept
+nft add rule ip filter forward ip saddr 192.168.100.0/24 meta oif eth0 udp dport 53 accept 
+
+# Autorise le DNS en entrée (WAN vers LAN)
+nft add rule ip filter forward meta iif eth0 ip daddr 192.168.100.0/24 tcp sport 53 accept
+nft add rule ip filter forward meta iif eth0 ip daddr 192.168.100.0/24 udp sport 53 accept 
 ```
 
 ---
@@ -559,7 +564,7 @@ LIVRABLE : Commandes nftables
 
 **LIVRABLE : capture d'écran de votre ping.**
 
-![ping_fail](https://github.com/theomi/Teaching-HEIGVD-SRX-2022-Labo-Firewall/blob/main/Livrables/img/dns_ping_fail2.png)
+![ping_ok](./Livrables/img/dns_ping_ok.png)
 
 ---
 
@@ -571,7 +576,7 @@ LIVRABLE : Commandes nftables
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+Le premier ping n'est pas parvenu à résoudre le nom `google.com` car les ports du DNS n'étaient pas ouverts, donc malgré la présence d'un serveur DNS dans la configuration IP, les trames DNS ne pouvaient pas être transmises entre le client et le serveur DNS. En rajoutant les règles susmentionnées, la résolution de noms s'effectue correctement.
 
 ---
 
@@ -591,7 +596,19 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+# Autorise le HTTP du LAN vers le WAN
+nft add rule ip filter forward ip saddr 192.168.100.0/24 meta oif eth0 tcp dport 80 accept
+nft add rule ip filter forward ip saddr 192.168.100.0/24 meta oif eth0 tcp dport 8080 accept
+
+# Autorise le HTTP du WAN vers le LAN
+nft add rule ip filter forward meta iif eth0 ip daddr 192.168.100.0/24 tcp sport 80 accept
+nft add rule ip filter forward meta iif eth0 ip daddr 192.168.100.0/24 tcp sport 8080 accept
+
+# Autorise le HTTPS du LAN vers le WAN
+nft add rule ip filter forward ip saddr 192.168.100.0/24 meta oif eth0 tcp dport 443 accept
+
+# Autorise le HTTPS du WAN vers le LAN
+nft add rule ip filter forward meta iif eth0 ip daddr 192.168.100.0/24 tcp sport 443 accept
 ```
 
 ---
@@ -603,18 +620,25 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+# Autorise le HTTP du WAN vers le serveur dans la DMZ
+nft add rule ip filter forward meta iif eth0 ip daddr 192.168.200.3 tcp dport 80 accept
+nft add rule ip filter forward ip saddr 192.168.200.3 meta oif eth0 tcp sport 80 accept
+
+# Autorise le HTTP du LAN vers le serveur dans la DMZ
+nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 80 accept
+nft add rule ip filter forward ip saddr 192.168.200.3 ip daddr 192.168.100.0/24 tcp sport 80 accept
 ```
+
 ---
 
 <ol type="a" start="13">
   <li>Tester l’accès à ce serveur depuis le LAN utilisant utilisant wget (ne pas oublier les captures d'écran).
-  </li>                                  
+  </li>
 </ol>
 
 ---
 
-**LIVRABLE : capture d'écran.**
+![wget_lan_dmz](./Livrables/img/wget_lan_dmz.png)
 
 ---
 
@@ -623,7 +647,7 @@ LIVRABLE : Commandes nftables
 
 <ol type="a" start="14">
   <li>Créer et appliquer la règle adéquate pour que les <b>conditions 6 et 7 du cahier des charges</b> soient respectées.
-  </li>                                  
+  </li>
 </ol>
 
 Commandes nftables :
@@ -631,7 +655,18 @@ Commandes nftables :
 ---
 
 ```bash
-LIVRABLE : Commandes nftables
+# Autorise LAN to DMZ .3 Host
+nft add rule ip filter forward ip saddr 192.168.100.3 ip daddr 192.168.200.3 tcp dport 22 accept
+nft add rule ip filter forward ip saddr 192.168.200.3 ip daddr 192.168.100.3 tcp sport 22 accept
+
+# Ajout d'une chaîne contenant les règles pour le hook input
+nft 'add chain ip filter input { type filter hook input  priority 100 ; policy drop ;}'
+# Ajout d'une chaîne contenant les règles pour le hook input
+nft 'add chain ip filter output { type filter hook output  priority 100 ; policy drop ;}'
+
+# Autorise LAN to FW
+nft add rule ip filter input ip saddr 192.168.100.3 ip daddr 192.168.100.2 tcp dport 22 accept
+nft add rule ip filter output ip saddr 192.168.100.2 ip daddr 192.168.100.3 tcp sport 22 accept
 ```
 
 ---
@@ -644,32 +679,33 @@ ssh root@192.168.200.3
 
 ---
 
-**LIVRABLE : capture d'écran de votre connexion ssh.**
+![ssh_proof](https://github.com/theomi/Teaching-HEIGVD-SRX-2022-Labo-Firewall/blob/main/Livrables/img/ssh_proof.png)
+
 
 ---
 
 <ol type="a" start="15">
   <li>Expliquer l'utilité de <b>ssh</b> sur un serveur.
-  </li>                                  
+  </li>
 </ol>
 
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+SSH est utile pour configurer une machine à distance (remote shell), c'est une manière plus sécurisée de faire du remote management que son ancêtre "telnet"
 
 ---
 
 <ol type="a" start="16">
   <li>En général, à quoi faut-il particulièrement faire attention lors de l'écriture des règles du pare-feu pour ce type de connexion ?
-  </li>                                  
+  </li>
 </ol>
 
 
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+SSH permet un accès "complet" à la machine il faut donc être très restrictif sur qui peut se connecter à la machine en question. Une machine mal configurée (pas d'auth avec clef SSH, pas de filtre geoIP) pourrait être victime de bruteforce (pour trouver le login root par exemple) !
 
 ---
 
