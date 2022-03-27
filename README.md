@@ -531,8 +531,6 @@ ping www.google.com
 
 ---
 
-**LIVRABLE : capture d'écran de votre ping.**
-
 ![ping_fail](./Livrables/img/dns_ping_fail.png)
 
 ---
@@ -561,8 +559,6 @@ nft add rule ip filter forward meta iif eth0 ip daddr 192.168.100.0/24 udp sport
 </ol>
 
 ---
-
-**LIVRABLE : capture d'écran de votre ping.**
 
 ![ping_ok](./Livrables/img/dns_ping_ok.png)
 
