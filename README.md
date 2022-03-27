@@ -26,7 +26,7 @@ Vous pouvez répondre aux questions en modifiant directement votre clone du READ
 
 [Installation de l’environnement virtualisé](#installation-de-lenvironnement-virtualisé)
 
-[Tests des connections et exemple de l'application d'une règle](#tests-des-connections-et-exemple-de-lapplication-dune-règle)
+[Tests des connexions et exemple de l'application d'une règle](#tests-des-connexions-et-exemple-de-lapplication-dune-règle)
 
 [Règles pour le protocole DNS](#règles-pour-le-protocole-dns)
 
@@ -355,7 +355,7 @@ Chaque règle doit être tapée sur une ligne séparée. Référez-vous à la th
 
 ---
 
-**Réponse :** Toutes les règles peuvent être sauvegardé dans le fichier `/etc/nftables.conf`. Ce fichier est utilisé pour configurer nftable à chaque redémarrage. C'est possible de rendre la configuration persistante avec la commande `nft list ruleset > /etc/nftables.conf`.
+**Réponse :** Toutes les règles peuvent être sauvegardées dans le fichier `/etc/nftables.conf`. Ce fichier est utilisé pour configurer nftable à chaque redémarrage. C'est possible de rendre la configuration persistante avec la commande `nft list ruleset > /etc/nftables.conf`.
 On peut charger la config manuellement avec `nft -f /etc/nftables.conf`
 
 Référence : [Quick reference for nftables](https://wiki.nftables.org/wiki-nftables/index.php/Quick_reference-nftables_in_10_minutes)
@@ -363,7 +363,7 @@ Référence : [Quick reference for nftables](https://wiki.nftables.org/wiki-nfta
 ---
 
 
-&rarr; Note : Puisque vous travaillez depuis un terminal natif de votre machin hôte, vous pouvez facilement copier/coller les règles dans un fichier local. Vous pouvez ensuite les utiliser pour reconfigurer votre firewall en cas de besoin.
+&rarr; Note : Puisque vous travaillez depuis un terminal natif de votre machine hôte, vous pouvez facilement copier/coller les règles dans un fichier local. Vous pouvez ensuite les utiliser pour reconfigurer votre firewall en cas de besoin.
 
 
 <ol type="a" start="5">
@@ -404,7 +404,7 @@ Référence : [Quick reference for nftables](https://wiki.nftables.org/wiki-nfta
 
 ---
 
-## Tests des connections et exemple de l'application d'une règle
+## Tests des connexions et exemple de l'application d'une règle
 
 Pour chaque manipulation, il est important de **garder les règles déjà créées**, les nouvelles sont ajoutées aux existantes.
 
@@ -415,7 +415,7 @@ Le but est de configurer les règles pour que le pare-feu accepte
 -	les ping depuis le LAN sur le WAN,
 -	les ping depuis la DMZ vers le LAN.
 
-Ceci correspond a la **condition 2** du cahier des charges.
+Ceci correspond à la **condition 2** du cahier des charges.
 
 Commandes nftables :
 
@@ -486,18 +486,18 @@ traceroute 8.8.8.8
 
 | De Client\_in\_LAN à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |  OK   | Le ping a le droit d'aller dans le réseau de la DMZ, pour ça, il doit pouvoir pinguer, évidemment, l'interface du FW.  |
-| Interface LAN du FW  |  OK   | Pareil pour l'interface côté LAN.  |
+| Interface DMZ du FW  |  OK   | Il doit être possible d'atteindre la DMZ avec un ping depuis le Client dans le LAN. Il doit donc être possible d'atteindre l'interface du firewall dans la DMZ.  |
+| Interface LAN du FW  |  OK   | C'est également le cas pour l'interface du firewall côté LAN.  |
 | Serveur DMZ          |  OK   | Le ping entre le client et le serveur DMZ est autorisé dans le FW.  |
 | Serveur WAN          |  OK   | Le ping est autorisé à sortir et à recevoir une réponse. Le contraire n'est pas possible.   |
 
 
 | De Server\_in\_DMZ à | OK/KO | Commentaires et explications |
 | :---                 | :---: | :---                         |
-| Interface DMZ du FW  |  OK   | Le serveur DMZ doit pouvoir passer pour pinguer le réseau LAN, donc il pouvoir passer par l'interface du FW et donc pouvoir pinguer son interface  |
-| Interface LAN du FW  |  OK   | Pareil, pour l'interface LAN du FW.                             |
+| Interface DMZ du FW  |  OK   | Il doit être possible d'envoyer des pings depuis le serveur DMZ à des machines se trouvant sur le réseau LAN. Il doit donc être possible d'atteindre l'interface du firewall dans le réseau de la DMZ avec un ping.  |
+| Interface LAN du FW  |  OK   | Il doit bien entendu être possible d'atteindre l'interface du firewall du côté du LAN par le serveur de la DMZ. |
 | Client LAN           |  OK   | Le ping est autorisé entre le serveur et le réseau LAN.                             |
-| Serveur WAN          |  KO   | Le serveur DMZ n'a aucune règle qui autorise la DMZ à pinguer le WAN.                             |
+| Serveur WAN          |  KO   | Le serveur DMZ ne possède aucune règle spécifiant qu'il est autorisé à atteindre un.                             |
 
 
 ## Règles pour le protocole DNS
@@ -530,11 +530,11 @@ Commandes nftables :
 ```bash
 LIVRABLE : Commandes nftables
 ```
-# Accèpte les envoie du réseau LAN vers le port 53 en UDP et en TCP
+# Accepte le traffic du réseau LAN sur le port 53 en UDP et en TCP
 nft 'add rule filter forwarding udp dport 53 ip saddr 192.168.100.0/24 meta oifname "eth0" accept'
 nft 'add rule filter forwarding tcp dport 53 ip saddr 192.168.100.0/24 meta oifname "eth0" accept'
 
-# Accèpte les réponses à un envoie autorisé précédemment
+# Accepte les réponses à un envoi autorisé précédemment
 nft 'add rule filter forwarding ct state established accept'
 ---
 
@@ -559,7 +559,7 @@ nft 'add rule filter forwarding ct state established accept'
 ---
 **Réponse**
 
-Le ping ne fonctionnait pas car la politique par défaut étant le drop des toutes les requêtes, celle du DNS était tous simplement droppé. Donc même si le ping pouvait fonctionner, la traduction du DNS n'était pas effectuée.
+Le ping ne fonctionnait pas car la politique par défaut étant le drop des toutes les requêtes, celle du DNS était tout simplement ignorée. Donc même si le ping pouvait fonctionner, la traduction du DNS n'était pas effectuée.
 
 ---
 
@@ -639,13 +639,13 @@ LIVRABLE : Commandes nftables
 # Table utilisée pour la connexion en SSH sur le Firewall (en input)
 nft 'add chain filter input { type filter hook input priority 0; policy drop; }'
 
-# Accèpte que le Client\_in\_LAN puisse se connecter en SSH au Firewall
+# Accepte que le Client\_in\_LAN puisse se connecter en SSH au Firewall
 nft 'add rule filter input ip saddr 192.168.100.3 ip daddr 192.168.100.2 tcp dport 22 accept'
 
 # Maintient la connexion pour les requêtes qui ont été acceptées
 nft 'add rule filter input ct state established accept'
 
-# Accèpte de laisser passer les requêtes SSH du Client\_in\_LAN vers le Server\_In\_DMZ
+# Accepte de laisser passer les requêtes SSH du Client\_in\_LAN vers le Server\_In\_DMZ
 nft 'add rule filter forwarding ip saddr 192.168.100.3 ip daddr 192.168.200.3 tcp dport 22 accept'
 
 ```
@@ -678,9 +678,9 @@ Connexion en SSH du client sur le LAN vers le Firewall
 ---
 **Réponse**
 
-Une connexion en SSH permet de se connecter au serveur à distance et de pouvoir le configurer sans avoir besoin d'être physiquement connecter avec un câble.
+Une connexion en SSH permet de se connecter à un serveur à distance et de pouvoir le configurer sans avoir besoin d'être physiquement connecter avec un câble.
 
-Ainsi, on peut modifier la configuration, réparer des erreurs, ou rajouter des fonctionnalités sans devoir se lever. (Très pratique si le serveur est dans un autre pays...)
+Ainsi, on peut modifier la configuration, réparer des erreurs, ou rajouter des fonctionnalités sans avoir besoin d'un accès physique à la machine ce qui est très pratique si le serveur se trouve dans un autre zone géographique.
 
 ---
 
@@ -693,9 +693,7 @@ Ainsi, on peut modifier la configuration, réparer des erreurs, ou rajouter des 
 ---
 **Réponse**
 
-De manière général, modifier les règles du pare-feu sans savoir ce qu'on fait peut rendre le système complètement inaccessible.
-Il est possible de, sans le faire exprès, bloquer toutes entrées SSH, et de ne plus pouvoir se connecter au pare-feu.
-Ou, au contraire, permettre à n'importe qui d'essayer de se connecter via le port SSH et perdre la main mise sur ses serveurs par des hackeurs.
+Ces règles de pare-feu sont particulièrement sensible. Il faut être absolument certain de ce que l'on fait durant le paramétrage, car on peut rendre le système totalement inaccessible pour nous si par exemple on bloque toutes connexions SSH. Ou au contraire le rendre vulnérable à des tentatives de connexions par des entités non autorisées, ce qui pourrait avoir des conséquences désastreuses comme une utilisation malveillante du serveur.
 
 ---
 
