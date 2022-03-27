@@ -127,8 +127,6 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 ---
 
-**LIVRABLE : Remplir le tableau**
-
 | Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
 | :---:             | :---:                  | :---:| :------: | :------: | :----: |
 | 192.168.100.0/24  | 192.168.200.0/24       | any  | *        | 53       | Accept |
@@ -218,8 +216,6 @@ ping 192.168.200.3
 ```
 ---
 
-**LIVRABLE : capture d'écran de votre tentative de ping.**
-
 ![ping attempt](livrables/ping_attempt.png)
 
 ---
@@ -259,8 +255,6 @@ ping 192.168.100.3
 
 ---
 
-**LIVRABLES : captures d'écran des routes des deux machines et de votre nouvelle tentative de ping.**
-
 ![ip route dmz](livrables/ip_route_dmz.png)
 ![ip route client](livrables/ip_route_client.png)
 
@@ -278,7 +272,6 @@ Si votre ping passe mais que la réponse contient un _Redirect Host_, ceci indiq
 
 ---
 
-**LIVRABLE : capture d'écran de votre ping vers l'Internet. Un ping qui ne passe pas ou des réponses contenant des _Redirect Host_ sont acceptés.**
 
 ![ping 8.8.8.8](livrables/ping_8888_attempt.png)
 
@@ -463,7 +456,6 @@ traceroute 8.8.8.8
 
 
 ---
-**LIVRABLE : capture d'écran du traceroute et de votre ping vers l'Internet. Il ne devrait pas y avoir des _Redirect Host_ dans les réponses au ping !**
 
 ![traceroute 8.8.8.8](livrables/traceroute_question_h.png)
 
