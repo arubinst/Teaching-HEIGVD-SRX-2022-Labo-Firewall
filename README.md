@@ -133,8 +133,9 @@ Toutes les réponses liées aux requêtes sont acceptées (stateful).
 
 | Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
 | :---:             | :---:                  | :---:| :------: | :------: | :----: |
-| 192.168.100.0/24  | *                      | ICMP | *        | *        | Accept |
-| 192.168.200.0/24  | 192.168.100.0/24       | ICMP | *        | *        | Accept |
+| 192.168.100.0/24  | interface WAN          | ICMP | *        | *        | Accept |
+| 192.168.100.0/24  | interface DMZ          | ICMP | *        | *        | Accept |
+| 192.168.200.0/24  | interface LAN          | ICMP | *        | *        | Accept |
 | 192.168.100.0/24  | interface WAN          | any  | *        | 53       | Accept |
 | 192.168.100.0/24  | interface WAN          | TCP  | *        | 80       | Accept |
 | 192.168.100.0/24  | interface WAN          | TCP  | *        | 8080     | Accept |
