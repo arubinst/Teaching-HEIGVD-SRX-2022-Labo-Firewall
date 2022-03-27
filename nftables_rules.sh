@@ -72,3 +72,25 @@ nft add rule ip filter output ip saddr 192.168.100.2 ip daddr 192.168.100.3 tcp 
 # --------------------- #
 # HTTP                  #
 # --------------------- #
+
+# Autorise le HTTP du LAN vers le WAN
+nft add rule ip filter forward ip saddr 192.168.100.0/24 meta oif eth0 tcp dport 80 accept
+nft add rule ip filter forward ip saddr 192.168.100.0/24 meta oif eth0 tcp dport 8080 accept
+
+# Autorise le HTTP du WAN vers le LAN
+nft add rule ip filter forward meta iif eth0 ip daddr 192.168.100.0/24 tcp sport 80 accept
+nft add rule ip filter forward meta iif eth0 ip daddr 192.168.100.0/24 tcp sport 8080 accept
+
+# Autorise le HTTPS du LAN vers le WAN
+nft add rule ip filter forward ip saddr 192.168.100.0/24 meta oif eth0 tcp dport 443 accept
+
+# Autorise le HTTPS du WAN vers le LAN
+nft add rule ip filter forward meta iif eth0 ip daddr 192.168.100.0/24 tcp sport 443 accept
+
+# Autorise le HTTP du WAN vers le serveur dans la DMZ
+nft add rule ip filter forward meta iif eth0 ip daddr 192.168.200.3 tcp dport 80 accept
+nft add rule ip filter forward ip saddr 192.168.200.3 meta oif eth0 tcp sport 80 accept
+
+# Autorise le HTTP du LAN vers le serveur dans la DMZ
+nft add rule ip filter forward ip saddr 192.168.100.0/24 ip daddr 192.168.200.3 tcp dport 80 accept
+nft add rule ip filter forward ip saddr 192.168.200.3 ip daddr 192.168.100.0/24 tcp sport 80 accept
