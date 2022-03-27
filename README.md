@@ -645,6 +645,7 @@ ssh root@192.168.200.3
 ---
 
 **LIVRABLE : capture d'écran de votre connexion ssh.**
+![ssh_proof](https://github.com/theomi/Teaching-HEIGVD-SRX-2022-Labo-Firewall/blob/main/Livrables/img/ssh_proof.png)
 
 ---
 
@@ -656,7 +657,7 @@ ssh root@192.168.200.3
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+SSH est utile pour configurer une machine à distance (remote shell), c'est une manière plus sécurisée de faire du remote management que son ancêtre "telnet"
 
 ---
 
@@ -669,7 +670,7 @@ ssh root@192.168.200.3
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+SSH permet un accès "complet" à la machine il faut donc être très restrictif sur qui peut se connecter à la machine en question. Une machine mal configurée (pas d'auth avec clef SSH, pas de filtre geoIP) pourrait être victime de bruteforce (pour trouver le login root par exemple) !
 
 ---
 
