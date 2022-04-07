@@ -117,6 +117,7 @@ Pour établir la table de filtrage, voici les **conditions à respecter** dans l
 
 <ol type="a" start="1">
   <li>En suivant la méthodologie vue en classe, établir la table de filtrage avec précision en spécifiant la source et la destination, le type de trafic (TCP/UDP/ICMP/any), les ports sources et destinations ainsi que l'action désirée (<b>Accept</b> ou <b>Drop</b>, éventuellement <b>Reject</b>).
+  Pour cette partie, écrivez les règles en prenant en compte que vous allez mettre en place un Firewall <b>stateless</b>.
   </li>                                  
 </ol>
 
@@ -424,7 +425,7 @@ Faire une capture du ping.
 Vérifiez aussi la route entre votre client et le service `8.8.8.8`. Elle devrait partir de votre client et traverser votre Firewall :
 
 ```bash
-traceroute 8.8.8.8
+traceroute -I 8.8.8.8
 ``` 	            
 
 
@@ -434,6 +435,17 @@ traceroute 8.8.8.8
 ---
 
 <ol type="a" start="9">
+  <li>Analysez le résultat de la commande traceroute. Que se passe-t-il lors du premier saut ?
+  </li>                                  
+</ol>
+
+---
+
+**Réponse :**
+
+---
+
+<ol type="a" start="10">
   <li>Testez ensuite toutes les règles, depuis le Client_in_LAN puis depuis le serveur Web (Server_in_DMZ) et remplir le tableau suivant :
   </li>                                  
 </ol>
@@ -457,7 +469,7 @@ traceroute 8.8.8.8
 
 ## Règles pour le protocole DNS
 
-<ol type="a" start="10">
+<ol type="a" start="11">
   <li>Si un ping est effectué sur un serveur externe en utilisant en argument un nom DNS, le client ne pourra pas le résoudre. Le démontrer à l'aide d'une capture, par exemple avec la commande suivante :
   </li>                                  
 </ol>
@@ -486,7 +498,7 @@ LIVRABLE : Commandes nftables
 
 ---
 
-<ol type="a" start="11">
+<ol type="a" start="12">
   <li>Tester en réitérant la commande ping sur le serveur de test (Google ou autre) :
   </li>                                  
 </ol>
@@ -497,7 +509,7 @@ LIVRABLE : Commandes nftables
 
 ---
 
-<ol type="a" start="12">
+<ol type="a" start="13">
   <li>Remarques (sur le message du premier ping)?
   </li>                                  
 </ol>
@@ -541,7 +553,7 @@ LIVRABLE : Commandes nftables
 ```
 ---
 
-<ol type="a" start="13">
+<ol type="a" start="14">
   <li>Tester l’accès à ce serveur depuis le LAN utilisant utilisant wget (ne pas oublier les captures d'écran).
   </li>                                  
 </ol>
@@ -555,7 +567,7 @@ LIVRABLE : Commandes nftables
 
 ## Règles pour le protocole ssh
 
-<ol type="a" start="14">
+<ol type="a" start="15">
   <li>Créer et appliquer la règle adéquate pour que les <b>conditions 6 et 7 du cahier des charges</b> soient respectées.
   </li>                                  
 </ol>
@@ -582,7 +594,7 @@ ssh root@192.168.200.3
 
 ---
 
-<ol type="a" start="15">
+<ol type="a" start="16">
   <li>Expliquer l'utilité de <b>ssh</b> sur un serveur.
   </li>                                  
 </ol>
@@ -594,7 +606,7 @@ ssh root@192.168.200.3
 
 ---
 
-<ol type="a" start="16">
+<ol type="a" start="17">
   <li>En général, à quoi faut-il particulièrement faire attention lors de l'écriture des règles du pare-feu pour ce type de connexion ?
   </li>                                  
 </ol>
@@ -611,7 +623,7 @@ ssh root@192.168.200.3
 
 A présent, vous devriez avoir le matériel nécessaire afin de reproduire la table de filtrage que vous avez conçue au début de ce laboratoire.
 
-<ol type="a" start="17">
+<ol type="a" start="18">
   <li>Insérer la capture d’écran avec toutes vos règles nftables
   </li>                                  
 </ol>
